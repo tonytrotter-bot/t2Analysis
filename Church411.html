@@ -1,0 +1,3345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Church411</title>
+    <!-- PWA / Home Screen App -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Church Dir">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#1a3050">
+    <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxODAgMTgwIj48cmVjdCB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIgcng9IjQwIiBmaWxsPSIjMWEzMDUwIi8+PGxpbmUgeDE9IjkwIiB5MT0iMzAiIHgyPSI5MCIgeTI9IjE1MCIgc3Ryb2tlPSIjYTBiOGQwIiBzdHJva2Utd2lkdGg9IjgiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxsaW5lIHgxPSI1MCIgeTE9IjY1IiB4Mj0iMTMwIiB5Mj0iNjUiIHN0cm9rZT0iI2EwYjhkMCIgc3Ryb2tlLXdpZHRoPSI4IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48L3N2Zz4=">
+    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiQ2h1cmNoIERpcmVjdG9yeSIsInNob3J0X25hbWUiOiJDaHVyY2ggRGlyIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJiYWNrZ3JvdW5kX2NvbG9yIjoiI2VhZjBmNyIsInRoZW1lX2NvbG9yIjoiIzFhMzA1MCIsInN0YXJ0X3VybCI6Ii4vIn0=">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            background: #eaf0f7;
+            color: #1a2a40;
+            padding: 0;
+        }
+
+        /* ── Banner ── */
+        .banner-wrap {
+            position: relative;
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+            height: 260px;
+            overflow: hidden;
+            background: #b0c4de;
+            border-bottom: 3px solid #2a5a8a;
+        }
+        .banner-img {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: opacity 0.3s;
+        }
+        .banner-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #2a5a8a;
+            font-style: italic;
+            gap: 8px;
+        }
+        .banner-placeholder svg {
+            width: 48px; height: 48px;
+            stroke: #7a9cc6;
+            fill: none;
+            stroke-width: 1.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        .banner-edit-btn {
+            position: absolute;
+            bottom: 14px;
+            right: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 14px;
+            background: rgba(0,0,0,0.55);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.78em;
+            cursor: pointer;
+            transition: background 0.2s;
+            z-index: 5;
+        }
+        .banner-edit-btn:hover { background: rgba(0,0,0,0.75); }
+        .banner-edit-btn svg {
+            width: 14px; height: 14px;
+            fill: none; stroke: #fff;
+            stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+        }
+
+        /* ── Banner Editor Overlay ── */
+        .banner-editor-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 100;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.2s ease;
+        }
+        .banner-editor-overlay.show { display: flex; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .editor-title {
+            color: #fff;
+            font-size: 1.1em;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+        .editor-title small {
+            display: block;
+            font-size: 0.72em;
+            color: rgba(255,255,255,0.5);
+            font-style: italic;
+            margin-top: 4px;
+        }
+        .editor-preview-wrap {
+            position: relative;
+            width: 90vw;
+            max-width: 700px;
+            height: 0;
+            padding-bottom: min(30vw, 230px);
+            overflow: hidden;
+            border-radius: 10px;
+            border: 2px solid rgba(255,255,255,0.25);
+            background: #2a2a2a;
+            cursor: grab;
+            touch-action: none;
+        }
+        .editor-preview-wrap:active { cursor: grabbing; }
+        .editor-preview-img {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            pointer-events: none;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        .editor-zoom-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 16px;
+            color: rgba(255,255,255,0.6);
+            font-size: 0.82em;
+        }
+        .editor-zoom-row input[type="range"] {
+            width: 200px;
+            accent-color: #2a5a8a;
+        }
+        .zoom-label { min-width: 44px; text-align: center; color: #fff; }
+        .editor-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .editor-actions button {
+            font-family: inherit;
+            font-size: 0.9em;
+            padding: 9px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .btn-editor-save { background: #2a5a8a; color: #fff; border: 1px solid #2a5a8a; }
+        .btn-editor-save:hover { background: #3a6a9a; }
+        .btn-editor-cancel { background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.3); }
+        .btn-editor-cancel:hover { background: rgba(255,255,255,0.25); }
+        .btn-editor-change {
+            background: rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.7);
+            border: 1px dashed rgba(255,255,255,0.3);
+        }
+        .btn-editor-change:hover { background: rgba(255,255,255,0.2); color: #fff; }
+        .hidden-input { display: none; }
+
+        /* ── Container ── */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* ── Header ── */
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 3px double #2a5a8a;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        header h1 {
+            font-size: 2.2em;
+            color: #1a3050;
+            letter-spacing: 2px;
+            margin: 0;
+        }
+        .page-title-cross {
+            width: 40px;
+            height: 40px;
+            fill: none;
+            stroke: #2a5a8a;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            flex-shrink: 0;
+        }
+        header p {
+            font-style: italic;
+            color: #4a6a8a;
+            font-size: 1em;
+            width: 100%;
+            margin-top: 8px;
+            text-align: center;
+        }
+
+        .stats {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #4a6a8a;
+            font-size: 0.95em;
+        }
+        .toolbar {
+            text-align: center;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .toolbar button {
+            font-family: inherit;
+            font-size: 0.9em;
+            padding: 8px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-edit {
+            background: #2a5a8a;
+            color: #fff;
+            border: 2px solid #2a5a8a;
+        }
+        .btn-edit:hover { background: #3a6a9a; border-color: #3a6a9a; }
+        .btn-edit.active {
+            background: #fff;
+            color: #2a5a8a;
+        }
+        .btn-add {
+            background: #3a6b3a;
+            color: #fff;
+            border: 2px solid #3a6b3a;
+            display: none;
+        }
+        .btn-add:hover { background: #4a8a4a; border-color: #4a8a4a; }
+
+        .search-bar {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .search-bar input {
+            width: 100%;
+            max-width: 400px;
+            padding: 10px 16px;
+            font-size: 1em;
+            border: 1px solid #a0b8d0;
+            border-radius: 6px;
+            background: #fff;
+            font-family: inherit;
+            color: #1a2a40;
+        }
+        .search-bar input:focus {
+            outline: none;
+            border-color: #2a5a8a;
+            box-shadow: 0 0 4px rgba(42,90,138,0.3);
+        }
+
+        .letter-group {
+            margin-bottom: 30px;
+        }
+        .letter-header {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #2a5a8a;
+            border-bottom: 1px solid #d0dcea;
+            padding-bottom: 4px;
+            margin-bottom: 14px;
+        }
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 16px;
+            padding: 0 4px;
+        }
+
+        .person-card {
+            text-align: center;
+            padding: 10px 6px;
+            border-radius: 8px;
+            transition: background 0.2s;
+            position: relative;
+        }
+        .person-card:hover {
+            background: #dde6f0;
+        }
+        .photo-frame {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            margin: 0 auto 8px;
+            overflow: hidden;
+            border: 3px solid #a0b8d0;
+            background: #d8e6f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .photo-frame img {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transform-origin: center center;
+        }
+        .photo-frame .placeholder {
+            display: none;
+            width: 60%;
+            height: 60%;
+            opacity: 0.3;
+        }
+        .photo-frame img.broken + .placeholder,
+        .photo-frame .placeholder.show {
+            display: block;
+        }
+        .photo-frame {
+            cursor: pointer;
+        }
+        .photo-frame:hover {
+            border-color: #7a9cc6;
+            box-shadow: 0 0 6px rgba(42,90,138,0.25);
+        }
+        body.edit-mode .photo-frame {
+            border-color: #2a5a8a;
+        }
+        body.edit-mode .photo-frame:hover {
+            border-color: #3a7aaa;
+            box-shadow: 0 0 6px rgba(42,90,138,0.4);
+        }
+
+        .person-name {
+            font-size: 0.9em;
+            line-height: 1.3;
+            color: #1a2a40;
+        }
+        .person-name .last {
+            font-weight: bold;
+        }
+        .person-church {
+            font-size: 0.75em;
+            color: #2a5a8a;
+            font-style: italic;
+            margin-top: 2px;
+        }
+
+        /* ── Photo Upload ── */
+        .placeholder-upload {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: #7a9cc6;
+            transition: color 0.2s;
+            cursor: pointer;
+        }
+        .photo-frame:hover .placeholder-upload {
+            color: #2a5a8a;
+        }
+        .placeholder-upload svg {
+            width: 28px;
+            height: 28px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 1.8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        .placeholder-upload span {
+            font-size: 0.6em;
+            font-style: italic;
+        }
+        .btn-upload-photo {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 18px;
+            font-family: inherit;
+            font-size: 0.88em;
+            background: #e8f0fa;
+            color: #2a5a8a;
+            border: 1px dashed #7a9cc6;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 16px;
+        }
+        .btn-upload-photo:hover {
+            background: #dce8f4;
+            border-color: #2a5a8a;
+            color: #1a3050;
+        }
+        .btn-upload-photo svg {
+            width: 16px;
+            height: 16px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        .photo-upload-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+        .photo-upload-circle {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            border: 3px dashed #a0b8d0;
+            background: #f0f4fa;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 8px;
+            overflow: hidden;
+            position: relative;
+        }
+        .photo-upload-circle:hover {
+            border-color: #2a5a8a;
+            background: #e8f0fa;
+        }
+        .photo-upload-circle.has-photo {
+            border-style: solid;
+            border-color: #a0b8d0;
+        }
+        .photo-upload-circle.has-photo:hover {
+            border-color: #2a5a8a;
+        }
+        .photo-upload-circle svg {
+            width: 28px;
+            height: 28px;
+            stroke: #7a9cc6;
+            fill: none;
+            stroke-width: 1.8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        .photo-upload-circle .upload-label {
+            font-size: 0.68em;
+            color: #7a9cc6;
+            font-style: italic;
+        }
+        .photo-upload-circle img {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .photo-upload-hint {
+            font-size: 0.75em;
+            color: #7a9cc6;
+        }
+
+        /* ── Card Flip Overlay ── */
+        .card-flip-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.75);
+            z-index: 120;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            animation: lbFadeIn 0.2s ease;
+        }
+        .card-flip-overlay.show { display: flex; }
+        @keyframes lbFadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .card-scene {
+            perspective: 1000px;
+            cursor: default;
+            onclick: "event.stopPropagation()";
+        }
+        .card-flip {
+            width: 320px;
+            height: 440px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.65s cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+        .card-flip.flipped { transform: rotateY(180deg); }
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 16px;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            overflow: hidden;
+        }
+
+        /* ── CARD FRONT ── */
+        .card-front {
+            background: #fff;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.35);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .cf-photo {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid #a0b8d0;
+            margin-top: 32px;
+            flex-shrink: 0;
+            background: #d8e6f0;
+        }
+        .cf-photo img { width: 100%; height: 100%; object-fit: cover; }
+        .cf-name {
+            font-weight: bold;
+            font-size: 1.2em;
+            color: #1a3050;
+            margin-top: 16px;
+        }
+        .cf-church {
+            color: #2a5a8a;
+            font-size: 0.88em;
+            font-style: italic;
+            margin-top: 4px;
+        }
+        .cf-note-indicator {
+            margin-top: 12px;
+            font-size: 0.75em;
+            color: #7a9cc6;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .cf-note-icon {
+            width: 16px;
+            height: 16px;
+            fill: none;
+            stroke: #2a5a8a;
+            stroke-width: 1.8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        .cf-flip-hint {
+            color: #a0b8d0;
+            font-size: 0.75em;
+            margin-top: auto;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .cf-flip-hint .arrow { font-size: 1.1em; }
+
+        /* ── CARD BACK ── */
+        .card-back {
+            transform: rotateY(180deg);
+            background: linear-gradient(160deg, #f0f4fa, #dde6f0);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.35);
+            display: flex;
+            flex-direction: column;
+        }
+        .cb-header {
+            background: #1a3050;
+            color: #fff;
+            padding: 14px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+        }
+        .cb-header-name { font-weight: bold; font-size: 1em; }
+        .cb-header-church { font-size: 0.75em; opacity: 0.7; }
+        .cb-edit-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.15);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+            flex-shrink: 0;
+        }
+        .cb-edit-btn:hover { background: rgba(255,255,255,0.3); }
+        .cb-edit-btn svg {
+            width: 16px;
+            height: 16px;
+            fill: none;
+            stroke: #fff;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        .cb-body-wrap {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+        .cb-body {
+            height: 100%;
+            overflow-y: auto;
+            padding: 16px 20px 10px;
+        }
+        .cb-body::-webkit-scrollbar { width: 5px; }
+        .cb-body::-webkit-scrollbar-thumb { background: #a0b8d0; border-radius: 3px; }
+        .cb-fade {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 40px;
+            background: linear-gradient(to bottom, rgba(221,230,240,0), rgba(221,230,240,1));
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        .cb-fade.hidden { opacity: 0; }
+        .cb-section {
+            margin-bottom: 14px;
+        }
+        .cb-label {
+            font-size: 0.68em;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            color: #2a5a8a;
+            margin-bottom: 3px;
+            font-weight: bold;
+        }
+        .cb-value {
+            color: #1a3050;
+            font-size: 0.86em;
+            line-height: 1.45;
+        }
+        .cb-divider {
+            border: none;
+            border-top: 1px solid #a0b8d0;
+            margin: 4px 0 14px;
+        }
+        .cb-footer {
+            padding: 10px 20px 14px;
+            text-align: center;
+            flex-shrink: 0;
+            border-top: 1px solid #c0d0e0;
+        }
+        .cb-flip-hint {
+            color: #7a9cc6;
+            font-size: 0.72em;
+            cursor: pointer;
+        }
+        .card-flip-hint {
+            color: rgba(255,255,255,0.45);
+            font-size: 0.78em;
+            margin-top: 16px;
+            text-align: center;
+            cursor: default;
+        }
+
+        /* ── Notes Edit Panel ── */
+        .notes-edit-panel {
+            display: none;
+            max-width: 900px;
+            margin: 30px auto 0;
+            background: #fff;
+            border: 1px solid #a0b8d0;
+            border-radius: 12px;
+            padding: 24px;
+        }
+        .notes-edit-panel h2 {
+            color: #2a5a8a;
+            font-size: 1.15em;
+            margin-bottom: 14px;
+        }
+        .edit-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 14px;
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+        .edit-field {
+            flex: 1;
+            min-width: 200px;
+        }
+        .edit-field label {
+            display: block;
+            font-size: 0.78em;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: #2a5a8a;
+            margin-bottom: 4px;
+            font-weight: bold;
+        }
+        .edit-field input, .edit-field textarea, .edit-field select {
+            width: 100%;
+            padding: 8px 10px;
+            font-family: inherit;
+            font-size: 0.9em;
+            border: 1px solid #a0b8d0;
+            border-radius: 6px;
+            background: #f8fafb;
+            color: #1a2a40;
+        }
+        .edit-field textarea { min-height: 60px; resize: vertical; }
+        .edit-field input:focus, .edit-field textarea:focus, .edit-field select:focus {
+            outline: none;
+            border-color: #2a5a8a;
+            box-shadow: 0 0 4px rgba(42,90,138,0.3);
+        }
+
+        .church-select-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        .church-select-row select { flex: 1; }
+        .btn-add-church {
+            white-space: nowrap;
+            padding: 8px 12px;
+            font-family: inherit;
+            font-size: 0.82em;
+            background: #2a5a8a;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .btn-add-church:hover { background: #3a6a9a; }
+
+        .sections-list {
+            border: 1px solid #c0d0e0;
+            border-radius: 8px;
+            padding: 12px;
+            background: #f8fafb;
+            margin-bottom: 14px;
+        }
+        .section-entry {
+            background: #fff;
+            border: 1px solid #c0d0e0;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 12px;
+            position: relative;
+        }
+        .section-entry:last-child { margin-bottom: 0; }
+        .section-top-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        .section-label-input {
+            flex: 1;
+            max-width: 200px;
+            padding: 6px 10px;
+            font-family: inherit;
+            font-size: 0.85em;
+            border: 1px solid #a0b8d0;
+            border-radius: 4px;
+            background: #f8fafb;
+            font-weight: bold;
+            color: #2a5a8a;
+        }
+        .section-label-input:focus {
+            outline: none;
+            border-color: #2a5a8a;
+            box-shadow: 0 0 4px rgba(42,90,138,0.3);
+        }
+        .section-value-textarea {
+            width: 100%;
+            min-height: 70px;
+            padding: 10px 12px;
+            font-family: inherit;
+            font-size: 0.9em;
+            line-height: 1.5;
+            border: 1px solid #a0b8d0;
+            border-radius: 6px;
+            background: #f8fafb;
+            resize: vertical;
+            color: #1a3050;
+        }
+        .section-value-textarea:focus {
+            outline: none;
+            border-color: #2a5a8a;
+            box-shadow: 0 0 4px rgba(42,90,138,0.3);
+            background: #fff;
+        }
+        .btn-remove-section {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #d8d8d8;
+            color: #666;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+            line-height: 28px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+        .btn-remove-section:hover { background: #c8c8c8; }
+        .btn-add-section {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 6px 14px;
+            font-family: inherit;
+            font-size: 0.82em;
+            background: #e8f0fa;
+            color: #2a5a8a;
+            border: 1px dashed #a0b8d0;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 6px;
+        }
+        .btn-add-section:hover { background: #dce8f4; }
+
+        .edit-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 18px;
+        }
+        .edit-actions button {
+            font-family: inherit;
+            font-size: 0.9em;
+            padding: 9px 22px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .btn-save-notes { background: #2a5a8a; color: #fff; border: 1px solid #2a5a8a; }
+        .btn-save-notes:hover { background: #3a6a9a; }
+        .btn-cancel-notes { background: #e8f0fa; color: #2a5a8a; border: 1px solid #a0b8d0; }
+
+        /* ── New Church Modal ── */
+        .new-church-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.4);
+            z-index: 200;
+            justify-content: center;
+            align-items: center;
+        }
+        .new-church-modal-overlay.show { display: flex; }
+        .new-church-modal {
+            background: #fff;
+            border-radius: 12px;
+            padding: 24px;
+            width: 90%;
+            max-width: 340px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+        }
+        .new-church-modal h3 {
+            color: #1a3050;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+        .new-church-modal input {
+            width: 100%;
+            padding: 8px 12px;
+            font-size: 1em;
+            font-family: inherit;
+            border: 1px solid #a0b8d0;
+            border-radius: 6px;
+            margin-bottom: 14px;
+            color: #1a2a40;
+        }
+        .new-church-modal input:focus {
+            outline: none;
+            border-color: #2a5a8a;
+            box-shadow: 0 0 4px rgba(42,90,138,0.3);
+        }
+        .new-church-modal .btn-row {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+        .new-church-modal button {
+            font-family: inherit;
+            font-size: 0.9em;
+            padding: 7px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .new-church-modal .btn-mm-cancel { background: #e8f0fa; color: #2a5a8a; border: 1px solid #a0b8d0; }
+        .new-church-modal .btn-mm-save { background: #2a5a8a; color: #fff; border: 1px solid #2a5a8a; }
+
+        /* ── Edit mode styles ── */
+        .delete-btn {
+            display: none;
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #c44;
+            color: #fff;
+            border: none;
+            font-size: 14px;
+            line-height: 24px;
+            text-align: center;
+            cursor: pointer;
+            padding: 0;
+            z-index: 2;
+        }
+        .delete-btn:hover { background: #a33; }
+        body.edit-mode .delete-btn { display: block; }
+        body.edit-mode .person-name { cursor: pointer; }
+        body.edit-mode .person-name:hover { text-decoration: underline; color: #2a5a8a; }
+        body.edit-mode .btn-add { display: inline-block; }
+        .edit-name-input {
+            font-family: inherit;
+            font-size: 0.85em;
+            width: 120px;
+            padding: 3px 6px;
+            border: 1px solid #2a5a8a;
+            border-radius: 4px;
+            text-align: center;
+            background: #fff;
+            color: #1a2a40;
+        }
+        .edit-name-input:focus {
+            outline: none;
+            box-shadow: 0 0 4px rgba(42,90,138,0.4);
+        }
+
+        /* ── Modal shared styles ── */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.4);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-overlay.show { display: flex; }
+        .modal {
+            background: #fff;
+            border-radius: 12px;
+            padding: 30px;
+            width: 90%;
+            max-width: 380px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+        }
+        .modal h3 {
+            color: #1a3050;
+            margin-bottom: 16px;
+            font-size: 1.2em;
+        }
+        .modal label {
+            display: block;
+            font-size: 0.9em;
+            color: #2a5a8a;
+            margin-bottom: 4px;
+        }
+        .modal input[type="text"] {
+            width: 100%;
+            padding: 8px 12px;
+            font-size: 1em;
+            font-family: inherit;
+            border: 1px solid #a0b8d0;
+            border-radius: 6px;
+            margin-bottom: 14px;
+            color: #1a2a40;
+        }
+        .modal input[type="text"]:focus {
+            outline: none;
+            border-color: #2a5a8a;
+            box-shadow: 0 0 4px rgba(42,90,138,0.3);
+        }
+        .modal .btn-row {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 6px;
+        }
+        .modal button {
+            font-family: inherit;
+            font-size: 0.9em;
+            padding: 8px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .modal .btn-cancel {
+            background: #e8f0fa;
+            color: #2a5a8a;
+            border: 1px solid #a0b8d0;
+        }
+        .modal .btn-save {
+            background: #3a6b3a;
+            color: #fff;
+            border: 1px solid #3a6b3a;
+        }
+        .modal .btn-save:hover { background: #4a8a4a; }
+
+        /* ── Photo Editor Modal ── */
+        .photo-editor-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 150;
+            justify-content: center;
+            align-items: center;
+        }
+        .photo-editor-overlay.show { display: flex; }
+        .photo-editor {
+            background: #fff;
+            border-radius: 16px;
+            padding: 28px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+        .photo-editor h3 {
+            color: #1a3050;
+            margin-bottom: 6px;
+            font-size: 1.15em;
+        }
+        .photo-editor .hint {
+            color: #4a6a8a;
+            font-size: 0.82em;
+            margin-bottom: 18px;
+        }
+        .editor-preview {
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 4px solid #a0b8d0;
+            background: #d8e6f0;
+            margin: 0 auto 18px;
+            position: relative;
+            cursor: grab;
+            touch-action: none;
+        }
+        .editor-preview:active { cursor: grabbing; }
+        .editor-preview img {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform-origin: center center;
+            pointer-events: none;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+        .zoom-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+        .zoom-controls label {
+            font-size: 0.85em;
+            color: #2a5a8a;
+            white-space: nowrap;
+        }
+        .zoom-controls input[type="range"] {
+            width: 160px;
+            accent-color: #2a5a8a;
+        }
+        .zoom-controls .zoom-val {
+            font-size: 0.8em;
+            color: #4a6a8a;
+            min-width: 36px;
+        }
+        .editor-btns {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        .editor-btns button {
+            font-family: inherit;
+            font-size: 0.9em;
+            padding: 8px 22px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .editor-btns .btn-editor-cancel {
+            background: #e8f0fa;
+            color: #2a5a8a;
+            border: 1px solid #a0b8d0;
+        }
+        .editor-btns .btn-editor-reset {
+            background: #fff;
+            color: #8a5a5a;
+            border: 1px solid #a0b8d0;
+        }
+        .editor-btns .btn-editor-save {
+            background: #3a6b3a;
+            color: #fff;
+            border: 1px solid #3a6b3a;
+        }
+        .editor-btns .btn-editor-save:hover { background: #4a8a4a; }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a3050;
+            color: #fff;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            z-index: 200;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+        .toast.show { opacity: 1; }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 3px double #2a5a8a;
+            color: #4a6a8a;
+            font-size: 0.85em;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 20px;
+            color: #4a6a8a;
+            font-style: italic;
+            display: none;
+        }
+
+        .how-to {
+            background: #fff;
+            border: 1px solid #a0b8d0;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin-bottom: 30px;
+            font-size: 0.9em;
+            color: #2a5a8a;
+            line-height: 1.6;
+        }
+        .how-to summary {
+            cursor: pointer;
+            font-weight: bold;
+            color: #2a5a8a;
+        }
+        .how-to p { margin-top: 10px; }
+        .how-to code {
+            background: #e8f0fa;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.95em;
+        }
+
+        @media print {
+            body { background: #fff; padding: 20px; }
+            .banner-wrap, .search-bar, .how-to, .toolbar, .toast, .modal-overlay, .photo-editor-overlay, .card-flip-overlay, .banner-editor-overlay, .notes-edit-panel, .new-church-modal-overlay { display: none !important; }
+            .person-card:hover { background: none; }
+            .card-grid { grid-template-columns: repeat(4, 1fr); }
+            .delete-btn { display: none !important; }
+        }
+
+        @media (max-width: 768px) {
+            .banner-wrap { height: 180px; }
+            .card-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
+            .photo-frame { width: 90px; height: 90px; border-width: 2px; }
+            .person-name { font-size: 0.85em; }
+            .photo-editor { padding: 20px; }
+            .editor-preview { width: 180px; height: 180px; }
+            .edit-row { flex-direction: column; gap: 8px; }
+            .edit-field { min-width: 0; }
+            .edit-actions { flex-direction: column; }
+            .edit-actions button { width: 100%; text-align: center; }
+            .notes-edit-panel { padding: 16px; }
+        }
+
+        @media (max-width: 500px) {
+            .banner-wrap { height: 150px; }
+            .card-grid { grid-template-columns: repeat(2, 1fr); }
+            .photo-frame { width: 80px; height: 80px; border-width: 2px; margin: 0 auto 6px; }
+            .person-name { font-size: 0.8em; }
+            .card-flip { width: 88vw; max-width: 320px; height: 78vh; max-height: 480px; }
+            .cf-photo { width: 140px; height: 140px; margin-top: 20px; }
+            .cf-name { font-size: 1.05em; margin-top: 12px; }
+            .cf-church { font-size: 0.8em; }
+            .cb-header { padding: 12px 16px; }
+            .cb-body { padding: 12px 16px 8px; }
+            .cb-footer { padding: 8px 16px 12px; }
+            .card-flip-overlay { align-items: flex-start; padding-top: 5vh; }
+            .card-flip-hint { font-size: 0.7em; margin-top: 10px; }
+            .banner-edit-btn { padding: 6px 10px; font-size: 0.72em; bottom: 8px; right: 8px; }
+            .editor-preview-wrap { width: 94vw; }
+            .editor-zoom-row input[type="range"] { width: 140px; }
+            .editor-actions { flex-direction: column; width: 80vw; }
+            .editor-actions button { width: 100%; text-align: center; }
+            .section-label-input { max-width: none; }
+            .section-top-row { flex-wrap: wrap; }
+        }
+
+        @media (hover: none) {
+            .person-card, .photo-frame, .banner-edit-btn, .editor-preview-wrap, button, .cb-edit-btn {
+                touch-action: manipulation;
+            }
+        }
+
+        /* ── PIN Lock Screen ── */
+        .pin-lock {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, #1a3050 0%, #2a5a8a 100%);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            transition: opacity 0.4s, visibility 0.4s;
+        }
+        .pin-lock.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        .pin-lock-icon {
+            width: 60px; height: 60px;
+            stroke: #a0b8d0;
+            fill: none;
+            stroke-width: 1.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        .pin-lock h1 {
+            color: #fff;
+            font-family: 'Georgia', 'Times New Roman', serif;
+            font-size: 1.8em;
+            letter-spacing: 2px;
+        }
+        .pin-lock p {
+            color: rgba(255,255,255,0.5);
+            font-style: italic;
+            font-size: 0.9em;
+        }
+        .pin-input-row {
+            display: flex;
+            gap: 10px;
+        }
+        .pin-digit {
+            width: 48px;
+            height: 56px;
+            text-align: center;
+            font-size: 1.6em;
+            font-family: 'Georgia', serif;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 10px;
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            outline: none;
+            transition: border-color 0.2s;
+            -webkit-text-security: disc;
+        }
+        .pin-digit:focus {
+            border-color: #a0b8d0;
+            background: rgba(255,255,255,0.15);
+        }
+        .pin-digit.error {
+            border-color: #e07070;
+            animation: pinShake 0.4s ease;
+        }
+        @keyframes pinShake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-6px); }
+            40%, 80% { transform: translateX(6px); }
+        }
+        .pin-error-msg {
+            color: #e07070;
+            font-size: 0.85em;
+            height: 1.2em;
+        }
+
+        /* ── Edit Password Modal ── */
+        .edit-password-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 200;
+            justify-content: center;
+            align-items: center;
+        }
+        .edit-password-overlay.show { display: flex; }
+        .edit-password-modal {
+            background: #fff;
+            border-radius: 12px;
+            padding: 28px;
+            text-align: center;
+            max-width: 320px;
+            width: 90%;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+        }
+        .edit-password-modal h3 {
+            color: #1a3050;
+            margin-bottom: 6px;
+            font-size: 1.1em;
+        }
+        .edit-password-modal p {
+            color: #4a6a8a;
+            font-size: 0.82em;
+            margin-bottom: 16px;
+        }
+        .edit-password-modal input {
+            width: 100%;
+            padding: 10px 14px;
+            font-size: 1em;
+            font-family: inherit;
+            border: 1px solid #a0b8d0;
+            border-radius: 6px;
+            text-align: center;
+            margin-bottom: 14px;
+            color: #1a2a40;
+        }
+        .edit-password-modal input:focus {
+            outline: none;
+            border-color: #2a5a8a;
+            box-shadow: 0 0 4px rgba(42,90,138,0.3);
+        }
+        .edit-password-modal input.error {
+            border-color: #e07070;
+        }
+        .edit-pw-error {
+            color: #e07070;
+            font-size: 0.82em;
+            height: 1.2em;
+            margin-bottom: 8px;
+        }
+        .edit-pw-btns {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        .edit-pw-btns button {
+            font-family: inherit;
+            font-size: 0.9em;
+            padding: 8px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .btn-pw-cancel { background: #e8f0fa; color: #2a5a8a; border: 1px solid #a0b8d0; }
+        .btn-pw-submit { background: #2a5a8a; color: #fff; border: 1px solid #2a5a8a; }
+
+        /* ── Settings ── */
+        .settings-btn {
+            position: fixed;
+            top: 14px;
+            right: 14px;
+            z-index: 140;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: rgba(42,90,138,0.9);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            transition: transform 0.3s, background 0.2s;
+        }
+        .settings-btn:hover { background: rgba(42,90,138,1); }
+        .settings-btn.open { transform: rotate(90deg); }
+        .settings-btn svg {
+            width: 22px; height: 22px;
+            stroke: #fff;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        .settings-panel {
+            position: fixed;
+            top: 0; right: -320px; bottom: 0;
+            width: 300px;
+            max-width: 85vw;
+            background: #fff;
+            box-shadow: -4px 0 20px rgba(0,0,0,0.15);
+            z-index: 135;
+            transition: right 0.3s ease;
+            overflow-y: auto;
+            padding: 70px 24px 30px;
+        }
+        .settings-panel.open { right: 0; }
+        .settings-backdrop {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.3);
+            z-index: 130;
+        }
+        .settings-backdrop.open { display: block; }
+        .settings-section {
+            margin-bottom: 24px;
+        }
+        .settings-section h3 {
+            font-size: 0.82em;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            color: #7a9cc6;
+            margin-bottom: 12px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid #e8f0fa;
+        }
+        .settings-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 0;
+        }
+        .settings-row label {
+            font-size: 0.92em;
+            color: #1a2a40;
+        }
+        .settings-toggle {
+            position: relative;
+            width: 48px;
+            height: 26px;
+            background: #c0d0e0;
+            border-radius: 13px;
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s;
+            padding: 0;
+        }
+        .settings-toggle.on { background: #2a5a8a; }
+        .settings-toggle::after {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 20px;
+            height: 20px;
+            background: #fff;
+            border-radius: 50%;
+            transition: left 0.2s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+        .settings-toggle.on::after { left: 25px; }
+        .settings-change-btn {
+            font-family: inherit;
+            font-size: 0.85em;
+            padding: 6px 14px;
+            background: #e8f0fa;
+            color: #2a5a8a;
+            border: 1px solid #a0b8d0;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .settings-change-btn:hover { background: #dce8f4; border-color: #2a5a8a; }
+        .settings-change-form {
+            display: none;
+            margin-top: 10px;
+            padding: 12px;
+            background: #f8fafb;
+            border-radius: 8px;
+            border: 1px solid #e0e8f0;
+        }
+        .settings-change-form.show { display: block; }
+        .settings-change-form label {
+            display: block;
+            font-size: 0.8em;
+            color: #4a6a8a;
+            margin-bottom: 4px;
+        }
+        .settings-change-form input {
+            width: 100%;
+            padding: 8px 10px;
+            font-size: 0.92em;
+            font-family: inherit;
+            border: 1px solid #a0b8d0;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            color: #1a2a40;
+        }
+        .settings-change-form input:focus {
+            outline: none;
+            border-color: #2a5a8a;
+            box-shadow: 0 0 4px rgba(42,90,138,0.3);
+        }
+        .settings-form-btns {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+        .settings-form-btns button {
+            font-family: inherit;
+            font-size: 0.82em;
+            padding: 5px 14px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn-sf-cancel { background: #e8f0fa; color: #4a6a8a; border: 1px solid #c0d0e0; }
+        .btn-sf-save { background: #2a5a8a; color: #fff; border: 1px solid #2a5a8a; }
+        .settings-msg {
+            font-size: 0.8em;
+            margin-top: 6px;
+            height: 1em;
+        }
+        .settings-msg.success { color: #3a6b3a; }
+        .settings-msg.error { color: #c04040; }
+
+        /* ── Pull to Refresh ── */
+        .pull-indicator {
+            position: fixed;
+            top: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #2a5a8a;
+            color: #fff;
+            padding: 8px 20px;
+            border-radius: 0 0 10px 10px;
+            font-size: 0.82em;
+            font-family: 'Georgia', serif;
+            transition: top 0.3s ease;
+            z-index: 150;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        .pull-indicator.show {
+            top: 0;
+        }
+    </style>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+</head>
+<body>
+    <!-- PIN Lock Screen -->
+    <div class="pin-lock" id="pinLock">
+        <svg class="pin-lock-icon" viewBox="0 0 24 24"><line x1="12" y1="2" x2="12" y2="22"/><line x1="5" y1="8" x2="19" y2="8"/></svg>
+        <h1>Church411</h1>
+        <p>Enter PIN to continue</p>
+        <div class="pin-input-row">
+            <input class="pin-digit" id="pin0" type="tel" maxlength="1" inputmode="numeric" autocomplete="off">
+            <input class="pin-digit" id="pin1" type="tel" maxlength="1" inputmode="numeric" autocomplete="off">
+            <input class="pin-digit" id="pin2" type="tel" maxlength="1" inputmode="numeric" autocomplete="off">
+            <input class="pin-digit" id="pin3" type="tel" maxlength="1" inputmode="numeric" autocomplete="off">
+        </div>
+        <div class="pin-error-msg" id="pinError"></div>
+    </div>
+
+    <!-- Edit Password Modal -->
+    <div class="edit-password-overlay" id="editPwOverlay">
+        <div class="edit-password-modal">
+            <h3>Edit Mode</h3>
+            <p>Enter the edit password to make changes</p>
+            <input type="password" id="editPwInput" placeholder="Password" autocomplete="off">
+            <div class="edit-pw-error" id="editPwError"></div>
+            <div class="edit-pw-btns">
+                <button class="btn-pw-cancel" onclick="closeEditPw()">Cancel</button>
+                <button class="btn-pw-submit" onclick="submitEditPw()">Enter</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Gear -->
+    <button class="settings-btn" id="settingsBtn" onclick="toggleSettings()">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    </button>
+    <div class="settings-backdrop" id="settingsBackdrop" onclick="toggleSettings()"></div>
+    <div class="settings-panel" id="settingsPanel">
+        <div class="settings-section">
+            <h3>Directory</h3>
+            <div class="settings-row">
+                <label>Edit Mode</label>
+                <button class="settings-toggle" id="editToggle" onclick="toggleEditFromSettings()"></button>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <h3>Security</h3>
+            <div class="settings-row">
+                <label>View PIN</label>
+                <button class="settings-change-btn" onclick="showChangeForm('pin')">Change</button>
+            </div>
+            <div class="settings-change-form" id="changePinForm">
+                <label>Current PIN</label>
+                <input type="tel" id="currentPin" maxlength="4" inputmode="numeric" autocomplete="off">
+                <label>New PIN (4 digits)</label>
+                <input type="tel" id="newPin" maxlength="4" inputmode="numeric" autocomplete="off">
+                <label>Confirm New PIN</label>
+                <input type="tel" id="confirmPin" maxlength="4" inputmode="numeric" autocomplete="off">
+                <div class="settings-msg" id="pinMsg"></div>
+                <div class="settings-form-btns">
+                    <button class="btn-sf-cancel" onclick="hideChangeForm('pin')">Cancel</button>
+                    <button class="btn-sf-save" onclick="saveNewPin()">Save</button>
+                </div>
+            </div>
+
+            <div class="settings-row" style="margin-top: 8px;">
+                <label>Edit Password</label>
+                <button class="settings-change-btn" onclick="showChangeForm('pw')">Change</button>
+            </div>
+            <div class="settings-change-form" id="changePwForm">
+                <label>Current Password</label>
+                <input type="password" id="currentPw" autocomplete="off">
+                <label>New Password</label>
+                <input type="password" id="newPw" autocomplete="off">
+                <label>Confirm New Password</label>
+                <input type="password" id="confirmPw" autocomplete="off">
+                <div class="settings-msg" id="pwMsg"></div>
+                <div class="settings-form-btns">
+                    <button class="btn-sf-cancel" onclick="hideChangeForm('pw')">Cancel</button>
+                    <button class="btn-sf-save" onclick="saveNewPw()">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pull to Refresh Indicator -->
+    <div class="pull-indicator" id="pullIndicator">Refreshing...</div>
+
+    <!-- Banner -->
+    <div class="banner-wrap" id="bannerWrap">
+        <img class="banner-img" id="bannerImg" src="" alt="Banner" style="display:none;">
+        <div class="banner-placeholder" id="bannerPlaceholder">
+            <svg viewBox="0 0 24 24">
+                <rect x="2" y="3" width="20" height="18" rx="2"/>
+                <circle cx="8.5" cy="10" r="2.5"/>
+                <polyline points="22 16 17 11 7 21"/>
+            </svg>
+            Add a banner photo
+        </div>
+        <button class="banner-edit-btn" id="bannerEditBtn" onclick="openBannerEditor()">
+            <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            <span id="bannerBtnLabel">Add Banner</span>
+        </button>
+    </div>
+
+    <!-- Banner Editor Overlay -->
+    <div class="banner-editor-overlay" id="bannerEditorOverlay">
+        <div class="editor-title">
+            Adjust Banner Photo
+            <small>Drag to reposition &bull; Scroll or use slider to zoom</small>
+        </div>
+        <div class="editor-preview-wrap" id="bannerEditorPreview">
+            <img class="editor-preview-img" id="bannerEditorImg" src="" alt="">
+        </div>
+        <div class="editor-zoom-row">
+            <span>Zoom</span>
+            <input type="range" id="bannerEditorZoom" min="100" max="300" value="100" step="5">
+            <span class="zoom-label" id="bannerEditorZoomLabel">100%</span>
+        </div>
+        <div class="editor-actions">
+            <button class="btn-editor-change" onclick="changeBannerPhoto()">Change Photo</button>
+            <button class="btn-editor-cancel" onclick="closeBannerEditor()">Cancel</button>
+            <button class="btn-editor-save" onclick="saveBanner()">Save</button>
+        </div>
+    </div>
+
+    <!-- Hidden file input -->
+    <input type="file" class="hidden-input" id="fileInput" accept="image/*" onchange="handleFileSelect(event)">
+    <input type="file" class="hidden-input" id="memberPhotoInput" accept="image/*" onchange="handleMemberPhotoUpload(event)">
+    <input type="file" class="hidden-input" id="editorPhotoInput" accept="image/*" onchange="handleEditorPhotoUpload(event)">
+    <input type="file" class="hidden-input" id="addMemberPhotoInput" accept="image/*" onchange="handleAddMemberPhoto(event)">
+
+    <div class="container">
+        <header>
+            <svg class="page-title-cross" viewBox="0 0 24 24"><line x1="12" y1="2" x2="12" y2="22"/><line x1="5" y1="8" x2="19" y2="8"/></svg>
+            <h1>Church Directory</h1>
+            <p>Personal Reference Guide &mdash; Photo Edition</p>
+        </header>
+
+        <div class="stats" id="stats"></div>
+
+        <div class="toolbar">
+            <button class="btn-add" onclick="showAddModal()">+ Add Member</button>
+        </div>
+
+        <details class="how-to">
+            <summary>How to add or replace photos</summary>
+            <p>This page loads photos from the <code>Photos</code> folder next to this HTML file. Each photo is named by the person's full name (e.g., <code>Photos/Ruth Barrett.jpg</code>).</p>
+            <p><strong>Supported formats:</strong> JPG, PNG, JPEG, WebP, and HEIC. The page automatically tries each format, so you can use whichever you have.</p>
+            <p><strong>To add a missing photo:</strong> Save an image into the <code>Photos</code> folder and name it exactly as the person appears here (e.g., <code>Renee Taylor.jpg</code> or <code>Renee Taylor.png</code>). Refresh the page and it will appear.</p>
+            <p><strong>To replace a photo:</strong> Simply overwrite the file in <code>Photos</code> with a new image using the same filename, then refresh.</p>
+            <p><strong>To adjust a photo:</strong> Enter Edit Mode, then click any photo to open the adjuster. Drag to reposition and use the slider to zoom in or out. Your adjustments are saved automatically.</p>
+            <p><strong>Tip:</strong> Square images (same width and height) will look best in the circular frames. Any size will work, but squares won't get cropped unevenly.</p>
+        </details>
+
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Search by name..." oninput="filterNames()">
+        </div>
+
+        <div id="directory"></div>
+
+        <div class="no-results" id="noResults">No matching names found.</div>
+
+        <footer>
+            <p>For personal use only &mdash; Updated March 2026</p>
+        </footer>
+    </div>
+
+    <!-- Add Member Modal -->
+    <div class="modal-overlay" id="addModal">
+        <div class="modal">
+            <h3>Add New Member</h3>
+            <div class="photo-upload-area">
+                <div class="photo-upload-circle" id="addMemberPhotoCircle" onclick="document.getElementById('addMemberPhotoInput').click()">
+                    <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    <span class="upload-label">Add photo</span>
+                </div>
+                <div class="photo-upload-hint">Optional — click to add a photo</div>
+            </div>
+            <label for="addFirst">First Name(s)</label>
+            <input type="text" id="addFirst" placeholder="e.g. John Michael">
+            <label for="addLast">Last Name</label>
+            <input type="text" id="addLast" placeholder="e.g. Smith">
+            <div class="btn-row">
+                <button class="btn-cancel" onclick="hideAddModal()">Cancel</button>
+                <button class="btn-save" onclick="addMember()">Add</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Photo Editor Modal -->
+    <div class="photo-editor-overlay" id="photoEditorOverlay">
+        <div class="photo-editor">
+            <h3 id="editorName"></h3>
+            <p class="hint">Drag to reposition &bull; scroll or use slider to zoom</p>
+            <div class="editor-preview" id="editorPreview">
+                <img id="editorImg" src="" alt="">
+            </div>
+            <div class="zoom-controls">
+                <label>Zoom</label>
+                <input type="range" id="editorZoom" min="100" max="300" value="100" step="5" oninput="onEditorZoom(this.value)">
+                <span class="zoom-val" id="editorZoomVal">100%</span>
+            </div>
+            <div style="text-align:center;">
+                <button class="btn-upload-photo" onclick="uploadInEditor()">
+                    <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    Upload New Photo
+                </button>
+            </div>
+            <div class="editor-btns">
+                <button class="btn-editor-cancel" onclick="closePhotoEditor()">Cancel</button>
+                <button class="btn-editor-reset" onclick="resetPhotoAdj()">Reset</button>
+                <button class="btn-editor-save" onclick="savePhotoAdj()">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card Flip Overlay -->
+    <div class="card-flip-overlay" id="cardFlipOverlay" onclick="closeCardFlip(event)">
+        <div class="card-scene" onclick="event.stopPropagation()">
+            <div class="card-flip" id="cardFlip" onclick="flipCard()">
+                <!-- FRONT -->
+                <div class="card-face card-front">
+                    <div class="cf-photo"><img id="cfImg" src="" alt=""></div>
+                    <div class="cf-name" id="cfName"></div>
+                    <div class="cf-church" id="cfChurch"></div>
+                    <div class="cf-note-indicator" id="cfNoteInd" style="display:none">
+                        <svg class="cf-note-icon" viewBox="0 0 24 24"><path d="M4 4h10l6 6v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><polyline points="14 4 14 10 20 10"/><line x1="8" y1="14" x2="16" y2="14"/><line x1="8" y1="18" x2="13" y2="18"/></svg> Has notes
+                    </div>
+                    <div class="cf-flip-hint"><span class="arrow">&#x21bb;</span> Tap to see notes</div>
+                </div>
+
+                <!-- BACK -->
+                <div class="card-face card-back">
+                    <div class="cb-header">
+                        <div>
+                            <div class="cb-header-name" id="cbName"></div>
+                            <div class="cb-header-church" id="cbChurch"></div>
+                        </div>
+                        <button class="cb-edit-btn" id="cbEditBtn" title="Edit notes" onclick="event.stopPropagation(); editFromCard();">
+                            <svg viewBox="0 0 24 24"><path d="M17 3a2.83 2.83 0 0 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+                        </button>
+                    </div>
+                    <div class="cb-body-wrap">
+                        <div class="cb-body" id="cbBody"></div>
+                        <div class="cb-fade" id="cbFade"></div>
+                    </div>
+                    <div class="cb-footer">
+                        <div class="cb-flip-hint"><span class="arrow">&#x21bb;</span> Tap to flip back</div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-flip-hint">Click outside card or press any key to close</div>
+        </div>
+    </div>
+
+    <!-- Notes Edit Panel -->
+    <div class="notes-edit-panel" id="notesEditPanel">
+        <h2 id="editTitle">Edit Notes</h2>
+
+        <div class="edit-row">
+            <div class="edit-field">
+                <label>Church</label>
+                <div class="church-select-row">
+                    <select id="editChurch"></select>
+                    <button class="btn-add-church" onclick="showNewChurchModal()">+ New</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="edit-field" style="margin-bottom: 14px;">
+            <label>Note Sections</label>
+            <div class="sections-list" id="sectionsList"></div>
+            <button class="btn-add-section" onclick="addSectionEntry()">+ Add section</button>
+        </div>
+
+        <div class="edit-actions">
+            <button class="btn-cancel-notes" onclick="cancelNotesEdit()">Cancel</button>
+            <button class="btn-save-notes" onclick="saveNotesEdit()">Save Notes</button>
+        </div>
+    </div>
+
+    <!-- New Church Modal -->
+    <div class="new-church-modal-overlay" id="newChurchModal">
+        <div class="new-church-modal">
+            <h3>Add New Church</h3>
+            <input type="text" id="newChurchInput" placeholder="e.g. First Baptist Church">
+            <div class="btn-row">
+                <button class="btn-mm-cancel" onclick="hideNewChurchModal()">Cancel</button>
+                <button class="btn-mm-save" onclick="addNewChurch()">Add</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // ════════════════════════════════════════
+        // WEB AUDIO API - SOUND EFFECTS
+        // ════════════════════════════════════════
+        let audioCtx = null;
+        function getAudioCtx() {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            return audioCtx;
+        }
+
+        // Select/open sound - ascending C-E-G sparkle chime
+        function playSelectSound() {
+            const ctx = getAudioCtx();
+            const now = ctx.currentTime;
+            const notes = [523, 659, 784]; // C5, E5, G5
+            notes.forEach((freq, i) => {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.value = freq;
+                gain.gain.setValueAtTime(0, now + i * 0.08);
+                gain.gain.linearRampToValueAtTime(0.15, now + i * 0.08 + 0.03);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.08 + 0.3);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(now + i * 0.08);
+                osc.stop(now + i * 0.08 + 0.35);
+            });
+        }
+
+        // Flip sound - soft whoosh/sweep
+        function playFlipSound() {
+            const ctx = getAudioCtx();
+            const now = ctx.currentTime;
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            const filter = ctx.createBiquadFilter();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(300, now);
+            osc.frequency.exponentialRampToValueAtTime(800, now + 0.15);
+            osc.frequency.exponentialRampToValueAtTime(400, now + 0.3);
+            filter.type = 'bandpass';
+            filter.frequency.value = 600;
+            filter.Q.value = 1.5;
+            gain.gain.setValueAtTime(0, now);
+            gain.gain.linearRampToValueAtTime(0.12, now + 0.05);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+            osc.connect(filter);
+            filter.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now);
+            osc.stop(now + 0.4);
+        }
+
+        // Save sound - D5→A5 two-tone ding
+        function playSaveSound() {
+            const ctx = getAudioCtx();
+            const now = ctx.currentTime;
+            const tones = [
+                { freq: 587, time: 0, dur: 0.2 },
+                { freq: 880, time: 0.12, dur: 0.35 }
+            ];
+            tones.forEach(t => {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.value = t.freq;
+                gain.gain.setValueAtTime(0, now + t.time);
+                gain.gain.linearRampToValueAtTime(0.18, now + t.time + 0.02);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + t.time + t.dur);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(now + t.time);
+                osc.stop(now + t.time + t.dur + 0.05);
+            });
+        }
+
+        // ════════════════════════════════════════
+        // BANNER STATE
+        // ════════════════════════════════════════
+        let bannerState = {
+            src: '',
+            adj: { zoom: 100, x: 0, y: 0 }
+        };
+        let tempBannerAdj = { zoom: 100, x: 0, y: 0 };
+        let bannerDragging = false;
+        let bannerDragStartX = 0, bannerDragStartY = 0;
+        let bannerDragStartAdjX = 0, bannerDragStartAdjY = 0;
+
+        // ════════════════════════════════════════
+        // DIRECTORY STATE
+        // ════════════════════════════════════════
+        const photoFormats = ['jpg', 'png', 'jpeg', 'webp', 'heic'];
+        const originalMembers = [
+            "Ruth Barrett", "Heidi Belanger", "Sheila Morgan Bozeman", "Steve Bozeman",
+            "Elvia Bradshaw", "Tommy Burkhammer Jr.", "Kirby Calhoun", "Jimmy Carnley",
+            "Patrick Carter", "Yessica Corona", "Charles Wayne Elliott", "Katie Fisher",
+            "Brenda Fox", "Alejandro Leyva Garcia", "Heather Garcia", "Daisy Greene",
+            "Donnie Stewart Grimes", "Nancy Smiley Grimes", "Steven Gwaltney",
+            "Regina Cassady Harden", "Krystal Harrison", "Ryan Harrison", "Robert Hines",
+            "Keondre Montez Hull", "Marcus Jackson", "Sharon Jackson", "Jason Jarman",
+            "Stephanie Lynn Jarman", "Linda Kelley", "Regina Gabbard King", "Shelia Kingery",
+            "Amber Rush Kurbec", "Keitha Reeves Lay", "Stephanie Lay", "Diane Johnson Loyed",
+            "Scott Marshman", "Cheri Rogers Martin", "Seth McDonald", "Clay Milburn",
+            "Jalyn Milburn", "Jeannie Minehart Milne", "Daniel Mitchell", "Manuel Munoz",
+            "Ash Pocopanni Murcko", "Greg Neff", "Ed Osborne", "Sharon Osborne",
+            "Nathan Peterson", "Amanda Pierce", "Taylor Pocopanni", "William Purvis",
+            "Molly Rains", "Fred Ramsey", "Earlynne M. Reimer", "Clara Riggleman",
+            "Melissa Romine", "Shane Benjamin Rothman", "Cathy Sanders", "Jewel Emmons Scott",
+            "Tomi Seymore", "Chris Jones Smith", "Renee Taylor", "Jeffery Terry Sr.",
+            "Lisa Wilcox", "Pamela Yardley"
+        ];
+
+        let members = [];
+        let editMode = false;
+        let photoAdj = {};
+        let churches = [];
+        let notes = {}; // { "Full Name": { church: "", sections: [{label, value}] } }
+        let uploadedPhotos = {}; // { "Full Name": "data:image/..." }
+        let currentCardPerson = null;
+        let editingCardPerson = null;
+
+        // ════════════════════════════════════════
+        // FIREBASE SETUP
+        // ════════════════════════════════════════
+        const firebaseConfig = {
+            apiKey: "AIzaSyDo0vYIWfbfUdGrGa5etR8xucaDUnyiu00",
+            authDomain: "church411.firebaseapp.com",
+            databaseURL: "https://church411-default-rtdb.firebaseio.com",
+            projectId: "church411",
+            storageBucket: "church411.firebasestorage.app",
+            messagingSenderId: "164842844988",
+            appId: "1:164842844988:web:1b9485d3271bc3bd66e439"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        let firebaseReady = false;
+        let suppressFirebaseListener = false;
+
+        // ════════════════════════════════════════
+        // ACCESS CONTROL
+        // ════════════════════════════════════════
+        let VIEW_PIN = localStorage.getItem('church411_pin') || '1234';
+        let EDIT_PASSWORD = localStorage.getItem('church411_editpw') || 'admin';
+        let isUnlocked = false;
+        let isEditAuthorized = false;
+
+        // PIN Lock
+        (function initPinLock() {
+            const digits = [0,1,2,3].map(i => document.getElementById('pin' + i));
+
+            digits.forEach((d, i) => {
+                d.addEventListener('input', function() {
+                    this.value = this.value.replace(/[^0-9]/g, '');
+                    if (this.value && i < 3) digits[i + 1].focus();
+                    if (i === 3 && this.value) checkPin();
+                });
+                d.addEventListener('keydown', function(e) {
+                    if (e.key === 'Backspace' && !this.value && i > 0) {
+                        digits[i - 1].focus();
+                        digits[i - 1].value = '';
+                    }
+                    if (e.key === 'Enter') checkPin();
+                });
+            });
+
+            // Auto-focus first digit
+            setTimeout(function() { digits[0].focus(); }, 300);
+
+            function checkPin() {
+                const entered = digits.map(d => d.value).join('');
+                if (entered.length < 4) return;
+                if (entered === VIEW_PIN) {
+                    isUnlocked = true;
+                    document.getElementById('pinLock').classList.add('hidden');
+                } else {
+                    document.getElementById('pinError').textContent = 'Incorrect PIN';
+                    digits.forEach(d => {
+                        d.classList.add('error');
+                        d.value = '';
+                    });
+                    digits[0].focus();
+                    setTimeout(function() {
+                        digits.forEach(d => d.classList.remove('error'));
+                        document.getElementById('pinError').textContent = '';
+                    }, 1500);
+                }
+            }
+        })();
+
+        // Edit Password
+        function promptEditPassword() {
+            document.getElementById('editPwInput').value = '';
+            document.getElementById('editPwError').textContent = '';
+            document.getElementById('editPwOverlay').classList.add('show');
+            setTimeout(function() { document.getElementById('editPwInput').focus(); }, 100);
+        }
+
+        function closeEditPw() {
+            document.getElementById('editPwOverlay').classList.remove('show');
+        }
+
+        function submitEditPw() {
+            const val = document.getElementById('editPwInput').value;
+            if (val === EDIT_PASSWORD) {
+                isEditAuthorized = true;
+                closeEditPw();
+                doToggleEditMode();
+            } else {
+                document.getElementById('editPwError').textContent = 'Incorrect password';
+                document.getElementById('editPwInput').classList.add('error');
+                document.getElementById('editPwInput').value = '';
+                setTimeout(function() {
+                    document.getElementById('editPwInput').classList.remove('error');
+                    document.getElementById('editPwError').textContent = '';
+                }, 1500);
+            }
+        }
+
+        document.getElementById('editPwInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') submitEditPw();
+        });
+
+        document.getElementById('editPwOverlay').addEventListener('click', function(e) {
+            if (e.target === this) closeEditPw();
+        });
+
+        // ════════════════════════════════════════
+        // SETTINGS PANEL
+        // ════════════════════════════════════════
+        function toggleSettings() {
+            const panel = document.getElementById('settingsPanel');
+            const backdrop = document.getElementById('settingsBackdrop');
+            const btn = document.getElementById('settingsBtn');
+            const isOpen = panel.classList.contains('open');
+            panel.classList.toggle('open');
+            backdrop.classList.toggle('open');
+            btn.classList.toggle('open');
+            if (!isOpen) {
+                // Sync edit toggle state
+                document.getElementById('editToggle').classList.toggle('on', editMode);
+            }
+        }
+
+        function toggleEditFromSettings() {
+            if (!editMode && !isEditAuthorized) {
+                // Need password first
+                toggleSettings(); // close settings panel
+                promptEditPassword();
+                return;
+            }
+            doToggleEditMode();
+            document.getElementById('editToggle').classList.toggle('on', editMode);
+        }
+
+        function showChangeForm(type) {
+            if (type === 'pin') {
+                document.getElementById('changePinForm').classList.add('show');
+                document.getElementById('currentPin').value = '';
+                document.getElementById('newPin').value = '';
+                document.getElementById('confirmPin').value = '';
+                document.getElementById('pinMsg').textContent = '';
+                document.getElementById('pinMsg').className = 'settings-msg';
+            } else {
+                document.getElementById('changePwForm').classList.add('show');
+                document.getElementById('currentPw').value = '';
+                document.getElementById('newPw').value = '';
+                document.getElementById('confirmPw').value = '';
+                document.getElementById('pwMsg').textContent = '';
+                document.getElementById('pwMsg').className = 'settings-msg';
+            }
+        }
+
+        function hideChangeForm(type) {
+            if (type === 'pin') {
+                document.getElementById('changePinForm').classList.remove('show');
+            } else {
+                document.getElementById('changePwForm').classList.remove('show');
+            }
+        }
+
+        function saveNewPin() {
+            const curr = document.getElementById('currentPin').value;
+            const newVal = document.getElementById('newPin').value;
+            const conf = document.getElementById('confirmPin').value;
+            const msg = document.getElementById('pinMsg');
+
+            if (curr !== VIEW_PIN) {
+                msg.textContent = 'Current PIN is incorrect';
+                msg.className = 'settings-msg error';
+                return;
+            }
+            if (!/^\d{4}$/.test(newVal)) {
+                msg.textContent = 'PIN must be exactly 4 digits';
+                msg.className = 'settings-msg error';
+                return;
+            }
+            if (newVal !== conf) {
+                msg.textContent = 'PINs do not match';
+                msg.className = 'settings-msg error';
+                return;
+            }
+            VIEW_PIN = newVal;
+            localStorage.setItem('church411_pin', VIEW_PIN);
+            syncToFirebase('settings/pin', VIEW_PIN);
+            msg.textContent = 'PIN updated!';
+            msg.className = 'settings-msg success';
+            setTimeout(function() { hideChangeForm('pin'); }, 1200);
+            playSaveSound();
+        }
+
+        function saveNewPw() {
+            const curr = document.getElementById('currentPw').value;
+            const newVal = document.getElementById('newPw').value;
+            const conf = document.getElementById('confirmPw').value;
+            const msg = document.getElementById('pwMsg');
+
+            if (curr !== EDIT_PASSWORD) {
+                msg.textContent = 'Current password is incorrect';
+                msg.className = 'settings-msg error';
+                return;
+            }
+            if (newVal.length < 3) {
+                msg.textContent = 'Password must be at least 3 characters';
+                msg.className = 'settings-msg error';
+                return;
+            }
+            if (newVal !== conf) {
+                msg.textContent = 'Passwords do not match';
+                msg.className = 'settings-msg error';
+                return;
+            }
+            EDIT_PASSWORD = newVal;
+            localStorage.setItem('church411_editpw', EDIT_PASSWORD);
+            syncToFirebase('settings/editPassword', EDIT_PASSWORD);
+            msg.textContent = 'Password updated!';
+            msg.className = 'settings-msg success';
+            setTimeout(function() { hideChangeForm('pw'); }, 1200);
+            playSaveSound();
+        }
+
+        // Pull to Refresh
+        (function initPullToRefresh() {
+            let startY = 0;
+            let pulling = false;
+
+            document.addEventListener('touchstart', function(e) {
+                if (window.scrollY === 0) {
+                    startY = e.touches[0].clientY;
+                    pulling = true;
+                }
+            }, { passive: true });
+
+            document.addEventListener('touchmove', function(e) {
+                if (!pulling) return;
+                const diff = e.touches[0].clientY - startY;
+                if (diff > 80 && window.scrollY === 0) {
+                    document.getElementById('pullIndicator').classList.add('show');
+                }
+            }, { passive: true });
+
+            document.addEventListener('touchend', function() {
+                if (!pulling) return;
+                pulling = false;
+                const indicator = document.getElementById('pullIndicator');
+                if (indicator.classList.contains('show')) {
+                    setTimeout(function() {
+                        location.reload();
+                    }, 400);
+                }
+            });
+        })();
+
+        // ════════════════════════════════════════
+        // STORAGE FUNCTIONS (localStorage + Firebase)
+        // ════════════════════════════════════════
+
+        // -- Local load functions (fast initial load from cache) --
+        function loadMembers() {
+            const saved = localStorage.getItem('churchDirectoryMembers');
+            if (saved) { try { members = JSON.parse(saved); return; } catch(e) {} }
+            members = [...originalMembers];
+        }
+        function loadPhotoAdj() {
+            const saved = localStorage.getItem('churchDirectoryPhotoAdj');
+            if (saved) {
+                try {
+                    const data = JSON.parse(saved);
+                    let needsMigration = false;
+                    for (const key in data) {
+                        if (Math.abs(data[key].x) > 50 || Math.abs(data[key].y) > 50) {
+                            needsMigration = true;
+                            break;
+                        }
+                    }
+                    if (needsMigration) {
+                        photoAdj = {};
+                        localStorage.removeItem('churchDirectoryPhotoAdj');
+                    } else {
+                        photoAdj = data;
+                    }
+                    return;
+                } catch(e) {}
+            }
+            photoAdj = {};
+        }
+        function loadBanner() {
+            const saved = localStorage.getItem('churchDirectoryBanner');
+            if (saved) {
+                try {
+                    bannerState = JSON.parse(saved);
+                    if (bannerState.src) {
+                        const img = document.getElementById('bannerImg');
+                        img.src = bannerState.src;
+                        img.style.display = '';
+                        document.getElementById('bannerPlaceholder').style.display = 'none';
+                        document.getElementById('bannerBtnLabel').textContent = 'Edit Banner';
+                        applyBannerAdj(img, bannerState.adj);
+                    }
+                    return;
+                } catch(e) {}
+            }
+            bannerState = { src: '', adj: { zoom: 100, x: 0, y: 0 } };
+        }
+        function loadChurches() {
+            const saved = localStorage.getItem('churchDirectoryChurches');
+            if (saved) { try { churches = JSON.parse(saved); } catch(e) { churches = []; } }
+            else { churches = []; }
+            // Ensure default church is always available
+            if (churches.indexOf('Pace Assembly Ministries') === -1) {
+                churches.unshift('Pace Assembly Ministries');
+                localStorage.setItem('churchDirectoryChurches', JSON.stringify(churches));
+            }
+        }
+        function loadNotes() {
+            const saved = localStorage.getItem('churchDirectoryNotes');
+            if (saved) { try { notes = JSON.parse(saved); } catch(e) { notes = {}; } }
+            else { notes = {}; }
+            // Backfill: any member without a church gets Pace Assembly Ministries
+            let changed = false;
+            originalMembers.forEach(function(name) {
+                if (!notes[name]) {
+                    notes[name] = { church: 'Pace Assembly Ministries', sections: [] };
+                    changed = true;
+                } else if (!notes[name].church) {
+                    notes[name].church = 'Pace Assembly Ministries';
+                    changed = true;
+                }
+            });
+            if (changed) {
+                localStorage.setItem('churchDirectoryNotes', JSON.stringify(notes));
+            }
+        }
+        function loadUploadedPhotos() {
+            const saved = localStorage.getItem('churchDirectoryUploadedPhotos');
+            if (saved) { try { uploadedPhotos = JSON.parse(saved); return; } catch(e) {} }
+            uploadedPhotos = {};
+        }
+
+        // -- Save functions (write to localStorage AND Firebase) --
+        function saveMembers() {
+            localStorage.setItem('churchDirectoryMembers', JSON.stringify(members));
+            syncToFirebase('members', members);
+        }
+        function savePhotoAdjStore() {
+            localStorage.setItem('churchDirectoryPhotoAdj', JSON.stringify(photoAdj));
+            syncToFirebase('photoAdj', photoAdj);
+        }
+        function saveBannerStore() {
+            localStorage.setItem('churchDirectoryBanner', JSON.stringify(bannerState));
+            syncToFirebase('banner', bannerState);
+        }
+        function saveChurchesStore() {
+            localStorage.setItem('churchDirectoryChurches', JSON.stringify(churches));
+            syncToFirebase('churches', churches);
+        }
+        function saveNotesStore() {
+            localStorage.setItem('churchDirectoryNotes', JSON.stringify(notes));
+            syncToFirebase('notes', notes);
+        }
+        function saveUploadedPhotosStore(changedName) {
+            localStorage.setItem('churchDirectoryUploadedPhotos', JSON.stringify(uploadedPhotos));
+            // Sync individual photo to Firebase to avoid huge single writes
+            if (changedName && firebaseReady) {
+                const safeName = changedName.replace(/\./g, '_dot_').replace(/\$/g, '_dlr_').replace(/\[/g, '_lb_').replace(/\]/g, '_rb_').replace(/#/g, '_hash_').replace(/\//g, '_sl_');
+                suppressFirebaseListener = true;
+                const val = uploadedPhotos[changedName] || null;
+                db.ref('churchDirectory/uploadedPhotos/' + safeName).set(val).then(function() {
+                    setTimeout(function() { suppressFirebaseListener = false; }, 500);
+                }).catch(function(err) {
+                    console.warn('Firebase photo write error:', err);
+                    suppressFirebaseListener = false;
+                });
+            } else {
+                syncToFirebase('uploadedPhotos', uploadedPhotos);
+            }
+        }
+
+        // -- Firebase sync helpers --
+        function syncToFirebase(key, data) {
+            if (!firebaseReady) return;
+            suppressFirebaseListener = true;
+            db.ref('churchDirectory/' + key).set(data).then(function() {
+                setTimeout(function() { suppressFirebaseListener = false; }, 500);
+            }).catch(function(err) {
+                console.warn('Firebase write error:', err);
+                suppressFirebaseListener = false;
+            });
+        }
+
+        function initFirebaseListeners() {
+            firebaseReady = true;
+
+            db.ref('churchDirectory/members').on('value', function(snap) {
+                if (suppressFirebaseListener) return;
+                const val = snap.val();
+                if (val && Array.isArray(val)) {
+                    members = val;
+                    localStorage.setItem('churchDirectoryMembers', JSON.stringify(members));
+                    render();
+                }
+            });
+
+            db.ref('churchDirectory/photoAdj').on('value', function(snap) {
+                if (suppressFirebaseListener) return;
+                const val = snap.val();
+                if (val && typeof val === 'object') {
+                    photoAdj = val;
+                    localStorage.setItem('churchDirectoryPhotoAdj', JSON.stringify(photoAdj));
+                    render();
+                }
+            });
+
+            db.ref('churchDirectory/banner').on('value', function(snap) {
+                if (suppressFirebaseListener) return;
+                const val = snap.val();
+                if (val && typeof val === 'object') {
+                    bannerState = val;
+                    localStorage.setItem('churchDirectoryBanner', JSON.stringify(bannerState));
+                    if (bannerState.src) {
+                        const img = document.getElementById('bannerImg');
+                        img.src = bannerState.src;
+                        img.style.display = '';
+                        document.getElementById('bannerPlaceholder').style.display = 'none';
+                        document.getElementById('bannerBtnLabel').textContent = 'Edit Banner';
+                        applyBannerAdj(img, bannerState.adj);
+                    }
+                }
+            });
+
+            db.ref('churchDirectory/churches').on('value', function(snap) {
+                if (suppressFirebaseListener) return;
+                const val = snap.val();
+                if (val && Array.isArray(val)) {
+                    churches = val;
+                    localStorage.setItem('churchDirectoryChurches', JSON.stringify(churches));
+                }
+            });
+
+            db.ref('churchDirectory/notes').on('value', function(snap) {
+                if (suppressFirebaseListener) return;
+                const val = snap.val();
+                if (val && typeof val === 'object') {
+                    notes = val;
+                    localStorage.setItem('churchDirectoryNotes', JSON.stringify(notes));
+                    render();
+                }
+            });
+
+            db.ref('churchDirectory/uploadedPhotos').on('value', function(snap) {
+                if (suppressFirebaseListener) return;
+                const val = snap.val();
+                if (val && typeof val === 'object') {
+                    // Decode safe Firebase keys back to real names
+                    uploadedPhotos = {};
+                    for (var safeKey in val) {
+                        var realName = safeKey.replace(/_dot_/g, '.').replace(/_dlr_/g, '$').replace(/_lb_/g, '[').replace(/_rb_/g, ']').replace(/_hash_/g, '#').replace(/_sl_/g, '/');
+                        uploadedPhotos[realName] = val[safeKey];
+                    }
+                    localStorage.setItem('churchDirectoryUploadedPhotos', JSON.stringify(uploadedPhotos));
+                    render();
+                }
+            });
+
+            // Settings sync (PIN & password)
+            db.ref('churchDirectory/settings/pin').on('value', function(snap) {
+                if (suppressFirebaseListener) return;
+                const val = snap.val();
+                if (val) {
+                    VIEW_PIN = val;
+                    localStorage.setItem('church411_pin', val);
+                }
+            });
+            db.ref('churchDirectory/settings/editPassword').on('value', function(snap) {
+                if (suppressFirebaseListener) return;
+                const val = snap.val();
+                if (val) {
+                    EDIT_PASSWORD = val;
+                    localStorage.setItem('church411_editpw', val);
+                }
+            });
+
+            // Push current local data to Firebase if Firebase is empty
+            db.ref('churchDirectory').once('value', function(snap) {
+                const val = snap.val();
+                if (!val) {
+                    // First time: push all local data to Firebase
+                    var initData = {
+                        members: members,
+                        photoAdj: photoAdj,
+                        banner: bannerState,
+                        churches: churches,
+                        notes: notes
+                    };
+                    // Push uploaded photos with safe keys
+                    if (Object.keys(uploadedPhotos).length > 0) {
+                        initData.uploadedPhotos = {};
+                        for (var name in uploadedPhotos) {
+                            var safeName = name.replace(/\./g, '_dot_').replace(/\$/g, '_dlr_').replace(/\[/g, '_lb_').replace(/\]/g, '_rb_').replace(/#/g, '_hash_').replace(/\//g, '_sl_');
+                            initData.uploadedPhotos[safeName] = uploadedPhotos[name];
+                        }
+                    }
+                    db.ref('churchDirectory').set(initData);
+                }
+            });
+        }
+
+        // ════════════════════════════════════════
+        // BANNER FUNCTIONS
+        // ════════════════════════════════════════
+        function applyBannerAdj(img, adj) {
+            const scale = adj.zoom / 100;
+            img.style.transform = 'translate(' + adj.x + '%, ' + adj.y + '%) scale(' + scale + ')';
+        }
+
+        function openBannerEditor() {
+            if (!bannerState.src) {
+                document.getElementById('fileInput').click();
+                return;
+            }
+            tempBannerAdj = { ...bannerState.adj };
+            document.getElementById('bannerEditorImg').src = bannerState.src;
+            document.getElementById('bannerEditorZoom').value = tempBannerAdj.zoom;
+            document.getElementById('bannerEditorZoomLabel').textContent = tempBannerAdj.zoom + '%';
+            applyBannerAdj(document.getElementById('bannerEditorImg'), tempBannerAdj);
+            document.getElementById('bannerEditorOverlay').classList.add('show');
+        }
+
+        function closeBannerEditor() {
+            document.getElementById('bannerEditorOverlay').classList.remove('show');
+        }
+
+        function handleFileSelect(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                bannerState.src = ev.target.result;
+                tempBannerAdj = { zoom: 100, x: 0, y: 0 };
+                document.getElementById('bannerEditorImg').src = bannerState.src;
+                document.getElementById('bannerEditorZoom').value = 100;
+                document.getElementById('bannerEditorZoomLabel').textContent = '100%';
+                applyBannerAdj(document.getElementById('bannerEditorImg'), tempBannerAdj);
+                document.getElementById('bannerEditorOverlay').classList.add('show');
+            };
+            reader.readAsDataURL(file);
+            e.target.value = '';
+        }
+
+        function changeBannerPhoto() {
+            document.getElementById('fileInput').click();
+        }
+
+        function saveBanner() {
+            bannerState.adj = { ...tempBannerAdj };
+            const img = document.getElementById('bannerImg');
+            img.src = bannerState.src;
+            img.style.display = '';
+            applyBannerAdj(img, bannerState.adj);
+            document.getElementById('bannerPlaceholder').style.display = 'none';
+            document.getElementById('bannerBtnLabel').textContent = 'Edit Banner';
+            saveBannerStore();
+            closeBannerEditor();
+            playSaveSound();
+        }
+
+        document.getElementById('bannerEditorZoom').addEventListener('input', function() {
+            tempBannerAdj.zoom = parseInt(this.value);
+            document.getElementById('bannerEditorZoomLabel').textContent = tempBannerAdj.zoom + '%';
+            applyBannerAdj(document.getElementById('bannerEditorImg'), tempBannerAdj);
+        });
+
+        document.getElementById('bannerEditorPreview').addEventListener('wheel', function(e) {
+            e.preventDefault();
+            const delta = e.deltaY > 0 ? -5 : 5;
+            tempBannerAdj.zoom = Math.max(100, Math.min(300, tempBannerAdj.zoom + delta));
+            document.getElementById('bannerEditorZoom').value = tempBannerAdj.zoom;
+            document.getElementById('bannerEditorZoomLabel').textContent = tempBannerAdj.zoom + '%';
+            applyBannerAdj(document.getElementById('bannerEditorImg'), tempBannerAdj);
+        }, { passive: false });
+
+        const bannerPreview = document.getElementById('bannerEditorPreview');
+        bannerPreview.addEventListener('mousedown', function(e) {
+            e.preventDefault();
+            bannerDragging = true;
+            bannerDragStartX = e.clientX;
+            bannerDragStartY = e.clientY;
+            bannerDragStartAdjX = tempBannerAdj.x;
+            bannerDragStartAdjY = tempBannerAdj.y;
+        });
+
+        document.addEventListener('mousemove', function(e) {
+            if (!bannerDragging) return;
+            const rect = bannerPreview.getBoundingClientRect();
+            const dx = (e.clientX - bannerDragStartX) / rect.width * 100;
+            const dy = (e.clientY - bannerDragStartY) / rect.height * 100;
+            const scale = tempBannerAdj.zoom / 100;
+            const maxShift = (scale - 1) * 50;
+            tempBannerAdj.x = Math.max(-maxShift, Math.min(maxShift, bannerDragStartAdjX + dx));
+            tempBannerAdj.y = Math.max(-maxShift, Math.min(maxShift, bannerDragStartAdjY + dy));
+            applyBannerAdj(document.getElementById('bannerEditorImg'), tempBannerAdj);
+        });
+
+        document.addEventListener('mouseup', function() {
+            bannerDragging = false;
+        });
+
+        bannerPreview.addEventListener('touchstart', function(e) {
+            if (e.touches.length !== 1) return;
+            e.preventDefault();
+            bannerDragging = true;
+            bannerDragStartX = e.touches[0].clientX;
+            bannerDragStartY = e.touches[0].clientY;
+            bannerDragStartAdjX = tempBannerAdj.x;
+            bannerDragStartAdjY = tempBannerAdj.y;
+        }, { passive: false });
+
+        bannerPreview.addEventListener('touchmove', function(e) {
+            if (!bannerDragging || e.touches.length !== 1) return;
+            e.preventDefault();
+            const rect = bannerPreview.getBoundingClientRect();
+            const dx = (e.touches[0].clientX - bannerDragStartX) / rect.width * 100;
+            const dy = (e.touches[0].clientY - bannerDragStartY) / rect.height * 100;
+            const scale = tempBannerAdj.zoom / 100;
+            const maxShift = (scale - 1) * 50;
+            tempBannerAdj.x = Math.max(-maxShift, Math.min(maxShift, bannerDragStartAdjX + dx));
+            tempBannerAdj.y = Math.max(-maxShift, Math.min(maxShift, bannerDragStartAdjY + dy));
+            applyBannerAdj(document.getElementById('bannerEditorImg'), tempBannerAdj);
+        }, { passive: false });
+
+        bannerPreview.addEventListener('touchend', function() {
+            bannerDragging = false;
+        });
+
+        document.getElementById('bannerEditorOverlay').addEventListener('click', function(e) {
+            if (e.target === this) closeBannerEditor();
+        });
+
+        // ════════════════════════════════════════
+        // DIRECTORY FUNCTIONS
+        // ════════════════════════════════════════
+        function tryNextFormat(img) {
+            const src = img.getAttribute('src');
+            const baseName = src.replace(/\.[^.]+$/, '');
+            const tried = img.dataset.tried ? parseInt(img.dataset.tried) : 0;
+            const nextIdx = tried + 1;
+            if (nextIdx < photoFormats.length) {
+                img.dataset.tried = nextIdx;
+                img.src = baseName + '.' + photoFormats[nextIdx];
+            } else {
+                img.style.display = 'none';
+                const placeholder = img.nextElementSibling;
+                const memberName = img.dataset.member;
+                placeholder.outerHTML = '<div class="placeholder-upload" onclick="event.stopPropagation(); uploadForMember(\'' + memberName.replace(/'/g, "\\'") + '\')"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><span>Add photo</span></div>';
+            }
+        }
+
+        function parseName(fullName) {
+            const parts = fullName.trim().split(/\s+/);
+            if (parts.length === 1) return { first: '', last: parts[0] };
+            const suffixes = ['Jr.', 'Jr', 'Sr.', 'Sr', 'II', 'III', 'IV'];
+            if (parts.length > 2 && suffixes.includes(parts[parts.length - 1])) {
+                return { first: parts.slice(0, -2).join(' '), last: parts[parts.length - 2] + ' ' + parts[parts.length - 1] };
+            }
+            return { first: parts.slice(0, -1).join(' '), last: parts[parts.length - 1] };
+        }
+
+        function photoName(fullName) {
+            return fullName.replace(/\./g, '').replace(/,/g, '');
+        }
+
+        function applyPhotoAdj(img, fullName) {
+            const adj = photoAdj[fullName];
+            if (adj && (adj.zoom !== 100 || adj.x !== 0 || adj.y !== 0)) {
+                const s = adj.zoom / 100;
+                img.style.transform = 'scale(' + s + ') translate(' + adj.x + '%, ' + adj.y + '%)';
+            }
+        }
+
+        function render() {
+            const dir = document.getElementById('directory');
+            dir.innerHTML = '';
+
+            const sorted = [...members].map(m => ({ full: m, ...parseName(m) }));
+            sorted.sort((a, b) => {
+                const cmp = a.last.localeCompare(b.last, undefined, { sensitivity: 'base' });
+                return cmp !== 0 ? cmp : a.first.localeCompare(b.first, undefined, { sensitivity: 'base' });
+            });
+
+            const groups = {};
+            sorted.forEach(m => {
+                const letter = m.last.charAt(0).toUpperCase();
+                if (!groups[letter]) groups[letter] = [];
+                groups[letter].push(m);
+            });
+
+            Object.keys(groups).sort().forEach(letter => {
+                const groupDiv = document.createElement('div');
+                groupDiv.className = 'letter-group';
+                groupDiv.dataset.letter = letter;
+
+                const headerDiv = document.createElement('div');
+                headerDiv.className = 'letter-header';
+                headerDiv.textContent = letter;
+                groupDiv.appendChild(headerDiv);
+
+                const gridDiv = document.createElement('div');
+                gridDiv.className = 'card-grid';
+
+                groups[letter].forEach(m => {
+                    const card = document.createElement('div');
+                    card.className = 'person-card';
+                    const pName = photoName(m.full);
+                    const escapedName = m.full.replace(/'/g, "\\'");
+                    const personNotes = notes[m.full];
+                    const church = personNotes ? personNotes.church : '';
+
+                    const hasUpload = uploadedPhotos[m.full];
+                    const imgSrc = hasUpload ? uploadedPhotos[m.full] : 'Photos/' + pName + '.jpg';
+                    const onerrorAttr = hasUpload ? '' : ' onerror="tryNextFormat(this)" data-tried="0"';
+
+                    card.innerHTML =
+                        '<button class="delete-btn" title="Remove member" onclick="removeMember(\'' + escapedName + '\')">&times;</button>' +
+                        '<div class="photo-frame" onclick="onPhotoClick(\'' + escapedName + '\', this)">' +
+                            '<img src="' + imgSrc + '" alt="' + m.full + '"' + onerrorAttr + ' data-member="' + m.full.replace(/"/g, '&quot;') + '">' +
+                            '<svg class="placeholder" viewBox="0 0 100 100"><circle cx="50" cy="35" r="18" fill="#aaa"/><ellipse cx="50" cy="85" rx="30" ry="22" fill="#aaa"/></svg>' +
+                        '</div>' +
+                        '<div class="person-name" onclick="editName(this, \'' + escapedName + '\')">' +
+                            '<span class="last">' + m.last + '</span>' + (m.first ? ', ' + m.first : '') +
+                        '</div>';
+
+                    if (church) {
+                        const churchDiv = document.createElement('div');
+                        churchDiv.className = 'person-church';
+                        churchDiv.textContent = church;
+                        card.appendChild(churchDiv);
+                    }
+
+                    gridDiv.appendChild(card);
+
+                    setTimeout(() => {
+                        const img = card.querySelector('img[data-member]');
+                        if (img) applyPhotoAdj(img, m.full);
+                    }, 0);
+                });
+
+                groupDiv.appendChild(gridDiv);
+                dir.appendChild(groupDiv);
+            });
+
+            document.getElementById('stats').textContent = members.length + ' member' + (members.length !== 1 ? 's' : '');
+            filterNames();
+        }
+
+        function toggleEditMode() {
+            if (!editMode && !isEditAuthorized) {
+                promptEditPassword();
+                return;
+            }
+            doToggleEditMode();
+        }
+
+        function doToggleEditMode() {
+            editMode = !editMode;
+            document.body.classList.toggle('edit-mode', editMode);
+            document.getElementById('editToggle').classList.toggle('on', editMode);
+            if (!editMode) {
+                isEditAuthorized = false;
+            }
+        }
+
+        function removeMember(fullName) {
+            if (!confirm('Remove ' + fullName + ' from the directory?')) return;
+            members = members.filter(m => m !== fullName);
+            saveMembers();
+            render();
+            showToast(fullName + ' removed');
+        }
+
+        function editName(el, oldName) {
+            if (!editMode) return;
+            if (el.querySelector('input')) return;
+
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'edit-name-input';
+            input.value = oldName;
+            el.innerHTML = '';
+            el.appendChild(input);
+            input.focus();
+            input.select();
+
+            function commit() {
+                const newName = input.value.trim();
+                if (newName && newName !== oldName) {
+                    const idx = members.indexOf(oldName);
+                    if (idx !== -1) {
+                        members[idx] = newName;
+                        saveMembers();
+                        if (photoAdj[oldName]) {
+                            photoAdj[newName] = photoAdj[oldName];
+                            delete photoAdj[oldName];
+                            savePhotoAdjStore();
+                        }
+                        if (notes[oldName]) {
+                            notes[newName] = notes[oldName];
+                            delete notes[oldName];
+                            saveNotesStore();
+                        }
+                        if (uploadedPhotos[oldName]) {
+                            uploadedPhotos[newName] = uploadedPhotos[oldName];
+                            delete uploadedPhotos[oldName];
+                            saveUploadedPhotosStore(newName);
+                            // Also remove old key from Firebase
+                            if (firebaseReady) {
+                                const safeOld = oldName.replace(/\./g, '_dot_').replace(/\$/g, '_dlr_').replace(/\[/g, '_lb_').replace(/\]/g, '_rb_').replace(/#/g, '_hash_').replace(/\//g, '_sl_');
+                                db.ref('churchDirectory/uploadedPhotos/' + safeOld).remove();
+                            }
+                        }
+                        showToast('Renamed to ' + newName);
+                    }
+                }
+                render();
+            }
+
+            input.addEventListener('blur', commit);
+            input.addEventListener('keydown', e => {
+                if (e.key === 'Enter') { e.preventDefault(); input.blur(); }
+                if (e.key === 'Escape') { input.value = oldName; input.blur(); }
+            });
+        }
+
+        function showAddModal() {
+            document.getElementById('addFirst').value = '';
+            document.getElementById('addLast').value = '';
+            addMemberPhotoData = '';
+            const circle = document.getElementById('addMemberPhotoCircle');
+            circle.innerHTML = '<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><span class="upload-label">Add photo</span>';
+            circle.classList.remove('has-photo');
+            document.getElementById('addModal').classList.add('show');
+            setTimeout(() => document.getElementById('addFirst').focus(), 100);
+        }
+        function hideAddModal() {
+            document.getElementById('addModal').classList.remove('show');
+        }
+        function addMember() {
+            const first = document.getElementById('addFirst').value.trim();
+            const last = document.getElementById('addLast').value.trim();
+            if (!last) { alert('Last name is required.'); return; }
+            const fullName = first ? first + ' ' + last : last;
+            if (members.includes(fullName)) { alert(fullName + ' is already in the directory.'); return; }
+            members.push(fullName);
+            saveMembers();
+            if (addMemberPhotoData) {
+                uploadedPhotos[fullName] = addMemberPhotoData;
+                saveUploadedPhotosStore(fullName);
+                addMemberPhotoData = '';
+            }
+            hideAddModal();
+            render();
+            showToast(fullName + ' added');
+        }
+        document.getElementById('addModal').addEventListener('click', function(e) {
+            if (e.target === this) hideAddModal();
+        });
+        document.getElementById('addLast').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') { e.preventDefault(); addMember(); }
+        });
+
+
+        // ════════════════════════════════════════
+        // PHOTO EDITOR
+        // ════════════════════════════════════════
+        let editorState = { name: '', zoom: 100, x: 0, y: 0, dragging: false, startX: 0, startY: 0, origX: 0, origY: 0, imgSrc: '' };
+
+        function onPhotoClick(fullName, frameEl) {
+            const img = frameEl.querySelector('img');
+            if (!img || img.style.display === 'none') {
+                uploadForMember(fullName);
+                return;
+            }
+            if (editMode) {
+                openPhotoEditor(fullName, img);
+            } else {
+                openCardFlip(fullName, img);
+            }
+        }
+
+        function openPhotoEditor(fullName, img) {
+            const overlay = document.getElementById('photoEditorOverlay');
+            const editorImg = document.getElementById('editorImg');
+            const zoomSlider = document.getElementById('editorZoom');
+
+            const adj = photoAdj[fullName] || { zoom: 100, x: 0, y: 0 };
+            editorState.name = fullName;
+            editorState.zoom = adj.zoom;
+            editorState.x = adj.x;
+            editorState.y = adj.y;
+            editorState.imgSrc = img.src;
+
+            document.getElementById('editorName').textContent = fullName;
+            editorImg.src = img.src;
+            zoomSlider.value = adj.zoom;
+            document.getElementById('editorZoomVal').textContent = adj.zoom + '%';
+
+            updateEditorPreview();
+            overlay.classList.add('show');
+        }
+
+        function updateEditorPreview() {
+            const img = document.getElementById('editorImg');
+            const s = editorState.zoom / 100;
+            img.style.transform = 'scale(' + s + ') translate(' + editorState.x + '%, ' + editorState.y + '%)';
+        }
+
+        function onEditorZoom(val) {
+            editorState.zoom = parseInt(val);
+            document.getElementById('editorZoomVal').textContent = val + '%';
+            updateEditorPreview();
+        }
+
+        function closePhotoEditor() {
+            document.getElementById('photoEditorOverlay').classList.remove('show');
+        }
+
+        function resetPhotoAdj() {
+            editorState.zoom = 100;
+            editorState.x = 0;
+            editorState.y = 0;
+            document.getElementById('editorZoom').value = 100;
+            document.getElementById('editorZoomVal').textContent = '100%';
+            updateEditorPreview();
+        }
+
+        function savePhotoAdj() {
+            const name = editorState.name;
+            if (editorState.zoom === 100 && editorState.x === 0 && editorState.y === 0) {
+                delete photoAdj[name];
+            } else {
+                photoAdj[name] = { zoom: editorState.zoom, x: Math.round(editorState.x * 100) / 100, y: Math.round(editorState.y * 100) / 100 };
+            }
+            savePhotoAdjStore();
+            closePhotoEditor();
+            render();
+            playSaveSound();
+            showToast('Photo adjusted');
+        }
+
+        const preview = document.getElementById('editorPreview');
+        preview.addEventListener('mousedown', function(e) {
+            e.preventDefault();
+            editorState.dragging = true;
+            editorState.startX = e.clientX;
+            editorState.startY = e.clientY;
+            editorState.origX = editorState.x;
+            editorState.origY = editorState.y;
+        });
+
+        document.addEventListener('mousemove', function(e) {
+            if (!editorState.dragging) return;
+            const scale = editorState.zoom / 100;
+            const previewSize = document.getElementById('editorPreview').offsetWidth || 220;
+            const dx = (e.clientX - editorState.startX) / scale / previewSize * 100;
+            const dy = (e.clientY - editorState.startY) / scale / previewSize * 100;
+            editorState.x = editorState.origX + dx;
+            editorState.y = editorState.origY + dy;
+            updateEditorPreview();
+        });
+
+        document.addEventListener('mouseup', function() {
+            editorState.dragging = false;
+        });
+
+        preview.addEventListener('touchstart', function(e) {
+            if (e.touches.length !== 1) return;
+            e.preventDefault();
+            editorState.dragging = true;
+            editorState.startX = e.touches[0].clientX;
+            editorState.startY = e.touches[0].clientY;
+            editorState.origX = editorState.x;
+            editorState.origY = editorState.y;
+        }, { passive: false });
+
+        preview.addEventListener('touchmove', function(e) {
+            if (!editorState.dragging || e.touches.length !== 1) return;
+            e.preventDefault();
+            const scale = editorState.zoom / 100;
+            const previewSize = document.getElementById('editorPreview').offsetWidth || 220;
+            const dx = (e.touches[0].clientX - editorState.startX) / scale / previewSize * 100;
+            const dy = (e.touches[0].clientY - editorState.startY) / scale / previewSize * 100;
+            editorState.x = editorState.origX + dx;
+            editorState.y = editorState.origY + dy;
+            updateEditorPreview();
+        }, { passive: false });
+
+        preview.addEventListener('touchend', function() {
+            editorState.dragging = false;
+        });
+
+        preview.addEventListener('wheel', function(e) {
+            e.preventDefault();
+            const delta = e.deltaY > 0 ? -10 : 10;
+            const newZoom = Math.max(100, Math.min(300, editorState.zoom + delta));
+            editorState.zoom = newZoom;
+            document.getElementById('editorZoom').value = newZoom;
+            document.getElementById('editorZoomVal').textContent = newZoom + '%';
+            updateEditorPreview();
+        }, { passive: false });
+
+        document.getElementById('photoEditorOverlay').addEventListener('click', function(e) {
+            if (e.target === this) closePhotoEditor();
+        });
+
+        // ════════════════════════════════════════
+        // PHOTO UPLOAD
+        // ════════════════════════════════════════
+        let pendingUploadName = '';
+        let addMemberPhotoData = '';
+
+        function uploadForMember(fullName) {
+            pendingUploadName = fullName;
+            document.getElementById('memberPhotoInput').click();
+        }
+
+        function handleMemberPhotoUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                if (pendingUploadName) {
+                    uploadedPhotos[pendingUploadName] = ev.target.result;
+                    saveUploadedPhotosStore(pendingUploadName);
+                    render();
+                    showToast('Photo added for ' + pendingUploadName);
+                    playSaveSound();
+                    pendingUploadName = '';
+                }
+            };
+            reader.readAsDataURL(file);
+            e.target.value = '';
+        }
+
+        function uploadInEditor() {
+            pendingUploadName = editorState.name;
+            document.getElementById('editorPhotoInput').click();
+        }
+
+        function handleEditorPhotoUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                const name = editorState.name;
+                uploadedPhotos[name] = ev.target.result;
+                saveUploadedPhotosStore(name);
+                editorState.imgSrc = ev.target.result;
+                document.getElementById('editorImg').src = ev.target.result;
+                editorState.zoom = 100;
+                editorState.x = 0;
+                editorState.y = 0;
+                document.getElementById('editorZoom').value = 100;
+                document.getElementById('editorZoomVal').textContent = '100%';
+                updateEditorPreview();
+                showToast('Photo uploaded');
+            };
+            reader.readAsDataURL(file);
+            e.target.value = '';
+        }
+
+        function handleAddMemberPhoto(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                addMemberPhotoData = ev.target.result;
+                const circle = document.getElementById('addMemberPhotoCircle');
+                circle.innerHTML = '<img src="' + ev.target.result + '" alt="">';
+                circle.classList.add('has-photo');
+            };
+            reader.readAsDataURL(file);
+            e.target.value = '';
+        }
+
+        // ════════════════════════════════════════
+        // CARD FLIP
+        // ════════════════════════════════════════
+        function openCardFlip(fullName, srcImg) {
+            playSelectSound();
+            currentCardPerson = fullName;
+            const cfImg = document.getElementById('cfImg');
+            cfImg.src = srcImg.src;
+
+            const adj = photoAdj[fullName];
+            if (adj && (adj.zoom !== 100 || adj.x !== 0 || adj.y !== 0)) {
+                const s = adj.zoom / 100;
+                cfImg.style.transform = 'scale(' + s + ') translate(' + adj.x + '%, ' + adj.y + '%)';
+            } else {
+                cfImg.style.transform = '';
+            }
+
+            document.getElementById('cfName').textContent = fullName;
+            const personNotes = notes[fullName];
+            const church = personNotes ? personNotes.church : '';
+            document.getElementById('cfChurch').textContent = church;
+
+            const hasNotes = personNotes && personNotes.sections && personNotes.sections.length > 0;
+            document.getElementById('cfNoteInd').style.display = hasNotes ? 'flex' : 'none';
+
+            document.getElementById('cbName').textContent = fullName;
+            document.getElementById('cbChurch').textContent = church;
+
+            const body = document.getElementById('cbBody');
+            body.innerHTML = '';
+            if (!hasNotes) {
+                body.innerHTML = '<div style="text-align:center;color:#7a9cc6;padding:40px 10px;font-style:italic;">No notes yet.<br>Use Edit Mode to add notes.</div>';
+            } else {
+                personNotes.sections.forEach((s, i) => {
+                    if (i > 0) {
+                        const hr = document.createElement('hr');
+                        hr.className = 'cb-divider';
+                        body.appendChild(hr);
+                    }
+                    const sec = document.createElement('div');
+                    sec.className = 'cb-section';
+                    sec.innerHTML = '<div class="cb-label">' + s.label + '</div><div class="cb-value">' + s.value + '</div>';
+                    body.appendChild(sec);
+                });
+            }
+
+            document.getElementById('cardFlip').classList.remove('flipped');
+            document.getElementById('cardFlipOverlay').classList.add('show');
+            document.addEventListener('keydown', closeCardFlipKey);
+            setTimeout(updateFade, 50);
+        }
+
+        function closeCardFlip(e) {
+            if (e && e.target !== document.getElementById('cardFlipOverlay')) return;
+            document.getElementById('cardFlipOverlay').classList.remove('show');
+            document.removeEventListener('keydown', closeCardFlipKey);
+        }
+        function closeCardFlipKey() {
+            closeCardFlip({ target: document.getElementById('cardFlipOverlay') });
+        }
+
+        function flipCard() {
+            playFlipSound();
+            document.getElementById('cardFlip').classList.toggle('flipped');
+        }
+
+        function updateFade() {
+            const body = document.getElementById('cbBody');
+            const fade = document.getElementById('cbFade');
+            if (!body || !fade) return;
+            const atBottom = body.scrollHeight - body.scrollTop - body.clientHeight < 8;
+            const noScroll = body.scrollHeight <= body.clientHeight + 2;
+            fade.classList.toggle('hidden', atBottom || noScroll);
+        }
+        document.getElementById('cbBody').addEventListener('scroll', updateFade);
+
+        function editFromCard() {
+            if (!currentCardPerson) return;
+            const person = currentCardPerson;
+            if (!isEditAuthorized) {
+                // Need password first, then open notes
+                document.getElementById('editPwInput').value = '';
+                document.getElementById('editPwError').textContent = '';
+                document.getElementById('editPwOverlay').classList.add('show');
+                setTimeout(function() { document.getElementById('editPwInput').focus(); }, 100);
+                // Override submitEditPw temporarily
+                const origSubmit = submitEditPw;
+                submitEditPw = function() {
+                    const val = document.getElementById('editPwInput').value;
+                    if (val === EDIT_PASSWORD) {
+                        isEditAuthorized = true;
+                        closeEditPw();
+                        submitEditPw = origSubmit;
+                        document.getElementById('cardFlipOverlay').classList.remove('show');
+                        document.removeEventListener('keydown', closeCardFlipKey);
+                        if (!editMode) doToggleEditMode();
+                        setTimeout(function() { openNotesEdit(person); }, 250);
+                    } else {
+                        document.getElementById('editPwError').textContent = 'Incorrect password';
+                        document.getElementById('editPwInput').classList.add('error');
+                        document.getElementById('editPwInput').value = '';
+                        setTimeout(function() {
+                            document.getElementById('editPwInput').classList.remove('error');
+                            document.getElementById('editPwError').textContent = '';
+                        }, 1500);
+                    }
+                };
+                // Also update Enter key handler
+                document.getElementById('editPwInput').onkeydown = function(e) {
+                    if (e.key === 'Enter') submitEditPw();
+                };
+                return;
+            }
+            document.getElementById('cardFlipOverlay').classList.remove('show');
+            document.removeEventListener('keydown', closeCardFlipKey);
+            if (!editMode) doToggleEditMode();
+            setTimeout(function() {
+                openNotesEdit(person);
+            }, 250);
+        }
+
+        // ════════════════════════════════════════
+        // NOTES EDIT PANEL
+        // ════════════════════════════════════════
+        function openNotesEdit(fullName) {
+            editingCardPerson = fullName;
+            document.getElementById('editTitle').textContent = 'Edit Notes — ' + fullName;
+            const personNotes = notes[fullName] || { church: '', sections: [] };
+            populateChurchSelect(personNotes.church);
+            renderSectionEntries(personNotes.sections);
+            const panel = document.getElementById('notesEditPanel');
+            panel.style.display = 'block';
+            setTimeout(function() { panel.scrollIntoView({ behavior: 'smooth' }); }, 100);
+        }
+
+        function populateChurchSelect(selected) {
+            const sel = document.getElementById('editChurch');
+            sel.innerHTML = '<option value="">(none)</option>';
+            churches.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c;
+                opt.textContent = c;
+                if (c === selected) opt.selected = true;
+                sel.appendChild(opt);
+            });
+        }
+
+        function renderSectionEntries(sections) {
+            const list = document.getElementById('sectionsList');
+            list.innerHTML = '';
+            sections.forEach((s, i) => {
+                addSectionRow(list, s.label, s.value, i);
+            });
+            if (sections.length === 0) {
+                list.innerHTML = '<div style="text-align:center;color:#7a9cc6;font-size:0.85em;padding:10px;">No sections yet. Click "+ Add section" below.</div>';
+            }
+        }
+
+        function addSectionRow(container, label, value, idx) {
+            const placeholder = container.querySelector('div[style]');
+            if (placeholder && placeholder.textContent.includes('No sections')) placeholder.remove();
+
+            const row = document.createElement('div');
+            row.className = 'section-entry';
+            row.innerHTML =
+                '<div class="section-top-row">' +
+                    '<input class="section-label-input" value="' + (label || '').replace(/"/g, '&quot;') + '" placeholder="Section label (e.g. Family, Notes...)">' +
+                    '<button class="btn-remove-section" onclick="this.closest(\'.section-entry\').remove()" title="Remove section">&times;</button>' +
+                '</div>' +
+                '<textarea class="section-value-textarea" placeholder="Type your notes here...">' + (value || '').replace(/</g, '&lt;') + '</textarea>';
+            container.appendChild(row);
+        }
+
+        function addSectionEntry() {
+            const list = document.getElementById('sectionsList');
+            addSectionRow(list, '', '', -1);
+            const inputs = list.querySelectorAll('.section-label-input');
+            inputs[inputs.length - 1].focus();
+        }
+
+        function saveNotesEdit() {
+            if (!editingCardPerson) return;
+            const church = document.getElementById('editChurch').value;
+            const entries = document.querySelectorAll('#sectionsList .section-entry');
+            const sections = [];
+            entries.forEach(row => {
+                const label = row.querySelector('.section-label-input').value.trim();
+                const value = row.querySelector('.section-value-textarea').value.trim();
+                if (label || value) sections.push({ label: label || 'Notes', value: value });
+            });
+            notes[editingCardPerson] = { church: church, sections: sections };
+            saveNotesStore();
+            document.getElementById('notesEditPanel').style.display = 'none';
+            render();
+            playSaveSound();
+            showToast('Notes saved');
+        }
+
+        function cancelNotesEdit() {
+            document.getElementById('notesEditPanel').style.display = 'none';
+        }
+
+        function showNewChurchModal() {
+            document.getElementById('newChurchInput').value = '';
+            document.getElementById('newChurchModal').classList.add('show');
+            setTimeout(() => document.getElementById('newChurchInput').focus(), 100);
+        }
+        function hideNewChurchModal() {
+            document.getElementById('newChurchModal').classList.remove('show');
+        }
+        function addNewChurch() {
+            const name = document.getElementById('newChurchInput').value.trim();
+            if (!name) return;
+            if (!churches.includes(name)) {
+                churches.push(name);
+                saveChurchesStore();
+            }
+            populateChurchSelect(name);
+            document.getElementById('editChurch').value = name;
+            hideNewChurchModal();
+        }
+        document.getElementById('newChurchModal').addEventListener('click', function(e) {
+            if (e.target === this) hideNewChurchModal();
+        });
+        document.getElementById('newChurchInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') { e.preventDefault(); addNewChurch(); }
+        });
+
+        // ════════════════════════════════════════
+        // SEARCH & FILTER
+        // ════════════════════════════════════════
+        function filterNames() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const groups = document.querySelectorAll('.letter-group');
+            let anyVisible = false;
+
+            groups.forEach(group => {
+                const cards = group.querySelectorAll('.person-card');
+                let groupVisible = false;
+
+                cards.forEach(card => {
+                    const text = card.textContent.toLowerCase();
+                    if (text.includes(query)) {
+                        card.style.display = '';
+                        groupVisible = true;
+                        anyVisible = true;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+
+                group.style.display = groupVisible ? '' : 'none';
+            });
+
+            document.getElementById('noResults').style.display = anyVisible ? 'none' : 'block';
+        }
+
+        // ════════════════════════════════════════
+        // TOAST NOTIFICATION
+        // ════════════════════════════════════════
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 2200);
+        }
+
+        // ════════════════════════════════════════
+        // INIT
+        // ════════════════════════════════════════
+        // Step 1: Load from localStorage (instant)
+        loadMembers();
+        loadPhotoAdj();
+        loadBanner();
+        loadChurches();
+        loadNotes();
+        loadUploadedPhotos();
+        render();
+
+        // Step 2: Connect to Firebase (async, syncs in background)
+        initFirebaseListeners();
+    </script>
+</body>
+</html>
