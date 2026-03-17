@@ -2341,7 +2341,8 @@
         .card-flip-overlay.show { display: flex; }
         @media all and (display-mode: standalone) {
             .card-flip-overlay {
-                padding-top: calc(env(safe-area-inset-top, 0px) + 8vh);
+                align-items: center !important;
+                padding-top: env(safe-area-inset-top, 0px);
                 padding-bottom: env(safe-area-inset-bottom, 0px);
             }
         }
