@@ -12541,39 +12541,10 @@
                 back += '</div>';
             }
 
-            // Milestone dates summary (all dates, not just celebrations)
-            var pDates = personNotes.dates;
-            if (pDates) {
-                var dateRows = '';
-                milestoneTypes.forEach(function(mt) {
-                    var keysToCheck = [mt.name];
-                    if (!mt.shared && isCouple(fullName)) keysToCheck.push(mt.name + ':spouse');
-                    keysToCheck.forEach(function(key) {
-                        var d = pDates[key];
-                        if (!d || !d.month || !d.day) return;
-                        var isSpouseKey = key.indexOf(':spouse') !== -1;
-                        var label = mt.name;
-                        if (isSpouseKey && isCouple(fullName)) {
-                            var cp = parseCoupleNames(fullName);
-                            if (cp) label = cp.spouseB + "'s " + mt.name.toLowerCase();
-                        }
-                        var dateStr = MONTH_NAMES[d.month - 1] + ' ' + d.day;
-                        if (d.year) dateStr += ', ' + d.year;
-                        dateRows += '<div class="browse-cf-date-row">';
-                        dateRows += '<span class="bcd-emoji">' + mt.emoji + '</span>';
-                        dateRows += '<span class="bcd-label">' + escapeHTML(label) + ':</span> ' + dateStr;
-                        dateRows += '</div>';
-                    });
-                });
-                if (dateRows) {
-                    back += '<div class="browse-cf-dates">' + dateRows + '</div>';
-                }
-            }
-
             var notesHTML = buildBrowseNotesHTML(sections);
             if (notesHTML) {
                 back += '<div class="browse-cf-back-notes">' + notesHTML + '</div>';
-            } else if (celebs.length === 0 && !pDates) {
+            } else if (celebs.length === 0) {
                 back += '<div class="browse-cf-no-notes">No notes yet</div>';
             }
 
