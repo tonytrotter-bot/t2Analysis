@@ -1993,7 +1993,9 @@
         /* ── New Member Spotlight Overlay ── */
         .new-member-spotlight {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.82);
+            background: rgba(0,0,0,0.92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             z-index: 9999; display: none;
             flex-direction: column; align-items: center; justify-content: flex-start;
             padding: 40px 16px 24px;
@@ -2355,7 +2357,7 @@
         }
         .card-flip {
             width: 260px;
-            height: 380px;
+            height: 420px;
             position: relative;
             transform-style: preserve-3d;
             transition: transform 0.65s cubic-bezier(0.4, 0.0, 0.2, 1);
@@ -3457,6 +3459,27 @@
             .banner-wrap[data-logo-mode="badge"] .banner-logo { width: 55%; height: 52%; }
             .banner-wrap[data-logo-mode="overlay"] .banner-logo { width: 40%; height: 50%; }
             .banner-wrap[data-logo-mode="glass"] .banner-logo { width: 60%; height: 68%; }
+        }
+
+        /* Desktop: larger flip cards */
+        @media (min-width: 900px) {
+            .card-flip { width: 340px; height: 520px; }
+            .cf-photo { width: 160px; height: 160px; }
+            .cf-name { font-size: 1.25em; margin-top: 16px; }
+            .cf-church { font-size: 0.85em; }
+            .cb-header { padding: 14px 18px; }
+            .cb-header-name { font-size: 1.1em; }
+            .cb-body { font-size: 0.88em; }
+            .cb-edit-btn { width: 36px; height: 36px; }
+            .cb-edit-btn svg { width: 18px; height: 18px; }
+            .bookmark-ribbon { width: 34px; height: 34px; }
+            .bookmark-ribbon svg { width: 17px; height: 17px; }
+        }
+        /* Extra large desktops */
+        @media (min-width: 1200px) {
+            .card-flip { width: 380px; height: 560px; }
+            .cf-photo { width: 180px; height: 180px; }
+            .cf-name { font-size: 1.35em; }
         }
 
         @media (max-width: 768px) {
