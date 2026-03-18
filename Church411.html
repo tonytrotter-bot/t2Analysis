@@ -10079,8 +10079,9 @@
                 if (newName && newName !== oldName) {
                     const idx = members.indexOf(oldName);
                     if (idx !== -1) {
-                        performRename(oldName, newName);
+                        performRename(oldName, newName).then(function() { render(); });
                         showToast('Renamed to ' + newName);
+                        return; // render will happen after photo migration
                     }
                 }
                 render();
@@ -10094,6 +10095,7 @@
         }
 
         function performRename(oldName, newName) {
+            var photoPromises = [];
             // 1. Update members array
             var idx = members.indexOf(oldName);
             if (idx !== -1) members[idx] = newName;
@@ -10109,13 +10111,23 @@
                 removePhotoAdjFromFirebase(oldName);
             }
 
-            // 3. Migrate notes
+            // 3. Migrate notes and update firstName/lastName to match new name
             if (notes[oldName]) {
                 notes[newName] = notes[oldName];
                 delete notes[oldName];
-                saveNotesFor(newName);
-                removeNotesFromFirebase(oldName);
             }
+            if (!notes[newName]) notes[newName] = {};
+            // Re-parse first/last from the new full name
+            var nameParts = newName.trim().split(/\s+/);
+            if (nameParts.length >= 2) {
+                notes[newName].firstName = nameParts.slice(0, -1).join(' ');
+                notes[newName].lastName = nameParts[nameParts.length - 1];
+            } else {
+                notes[newName].firstName = newName;
+                notes[newName].lastName = '';
+            }
+            saveNotesFor(newName);
+            removeNotesFromFirebase(oldName);
 
             // 4. Migrate memberTitles (BUG FIX — was missing!)
             if (memberTitles[oldName]) {
@@ -10133,49 +10145,59 @@
                 removeBookmarkFromFirebase(oldName);
             }
 
-            // 6. Migrate uploadedPhotos (read actual data BEFORE renaming to avoid race)
+            // 6. Migrate uploadedPhotos — preserve memory cache so render() works immediately
             if (uploadedPhotos[oldName]) {
+                // Carry in-memory photo data to new name so render doesn't wait for IDB
+                var oldMemPhoto = _photoMemCache[oldName] || null;
                 uploadedPhotos[newName] = '_indexed_';
                 delete uploadedPhotos[oldName];
                 delete _photoMemCache[oldName];
+                if (oldMemPhoto && isValidPhotoData(oldMemPhoto)) {
+                    _photoMemCache[newName] = oldMemPhoto;
+                }
                 var safeOldPhoto = encodeFBKey(oldName);
                 var safeNewPhoto = encodeFBKey(newName);
-                getCachedPhoto(oldName).then(function(data) {
+                photoPromises.push(getCachedPhoto(oldName).then(function(data) {
                     if (data && isValidPhotoData(data)) {
-                        // Write to IDB under new name
                         cachePhoto(newName, data);
                         removeCachedPhoto(oldName);
-                        // Sync actual photo data to Firebase under new name
+                        _photoMemCache[newName] = data;
                         markSaved('uploadedPhotos/' + safeNewPhoto);
                         syncToFirebase('uploadedPhotos/' + safeNewPhoto, data);
+                    } else if (!_photoMemCache[newName]) {
+                        removeCachedPhoto(oldName);
                     }
-                    // Remove old Firebase entry AFTER new is synced
                     markSaved('uploadedPhotos/' + safeOldPhoto);
                     db.ref('churchDirectory/uploadedPhotos/' + safeOldPhoto).remove();
-                });
+                }));
                 // Update key index in localStorage
                 var photoKeys = {};
                 for (var k in uploadedPhotos) { photoKeys[k] = true; }
                 try { localStorage.setItem('churchDirectoryUploadedPhotos_keys', JSON.stringify(photoKeys)); } catch(e) {}
             }
 
-            // 7. Migrate spousePhotos (same pattern — read data first)
+            // 7. Migrate spousePhotos — same memory cache preservation
             if (spousePhotos[oldName]) {
+                var oldMemSpouse = _photoMemCache['spouse:' + oldName] || null;
                 spousePhotos[newName] = '_indexed_';
                 delete spousePhotos[oldName];
                 delete _photoMemCache['spouse:' + oldName];
+                if (oldMemSpouse && isValidPhotoData(oldMemSpouse)) {
+                    _photoMemCache['spouse:' + newName] = oldMemSpouse;
+                }
                 var safeOldSp = encodeFBKey(oldName);
                 var safeNewSp = encodeFBKey(newName);
-                getCachedPhoto('spouse:' + oldName).then(function(data) {
+                photoPromises.push(getCachedPhoto('spouse:' + oldName).then(function(data) {
                     if (data && isValidPhotoData(data)) {
                         cachePhoto('spouse:' + newName, data);
                         removeCachedPhoto('spouse:' + oldName);
+                        _photoMemCache['spouse:' + newName] = data;
                         markSaved('spousePhotos/' + safeNewSp);
                         syncToFirebase('spousePhotos/' + safeNewSp, data);
                     }
                     markSaved('spousePhotos/' + safeOldSp);
                     db.ref('churchDirectory/spousePhotos/' + safeOldSp).remove();
-                });
+                }));
             }
             // 8. Migrate spousePhotoAdj
             if (spousePhotoAdj[oldName]) {
@@ -10186,6 +10208,8 @@
                     db.ref('churchDirectory/spousePhotoAdj/' + encodeFBKey(oldName)).remove();
                 }
             }
+            // Return promise that resolves when all photo migrations are done
+            return photoPromises.length > 0 ? Promise.all(photoPromises) : Promise.resolve();
         }
 
         function showAddModal() {
@@ -11533,12 +11557,13 @@
 
             // Handle rename if name changed
             var nameChanged = newFullName !== oldName;
+            var renamePromise = null;
             if (nameChanged) {
                 if (members.includes(newFullName)) {
                     alert(newFullName + ' already exists in the directory.');
                     return;
                 }
-                performRename(oldName, newFullName);
+                renamePromise = performRename(oldName, newFullName);
                 editingCardPerson = newFullName;
             }
 
@@ -11590,8 +11615,11 @@
             }
             document.getElementById('notesEditPanel').style.display = 'none';
             pendingRemoteRender = false; // clear any queued echo renders
-            if (nameChanged) {
-                render(); // full render needed after rename
+            if (nameChanged && renamePromise) {
+                // Wait for photo migration to complete before rendering
+                renamePromise.then(function() { render(); });
+            } else if (nameChanged) {
+                render();
             } else {
                 updateCardInPlace(editingCardPerson);
             }
