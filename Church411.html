@@ -2001,26 +2001,103 @@
             padding: 40px 16px 24px;
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
+            /* Default theme (dark) text colors */
+            --spot-text: #fff;
+            --spot-text-sub: rgba(255,255,255,0.7);
+            --spot-text-dim: rgba(255,255,255,0.55);
+            --spot-card-bg: rgba(255,255,255,0.12);
+            --spot-card-border: rgba(255,255,255,0.18);
+            --spot-divider: rgba(255,255,255,0.15);
+            --spot-btn-bg: rgba(255,255,255,0.15);
+            --spot-btn-border: rgba(255,255,255,0.3);
+            --spot-photo-border: rgba(232,180,60,0.7);
+            --spot-photo-shadow: rgba(232,180,60,0.35);
+            --spot-photo-bg: linear-gradient(135deg, #d0dce8, #e8eef4);
+            --spot-initials: #4a7aa8;
+            --spot-gold-text: #e8b43c;
+            --spot-gold-bg: rgba(232,180,60,0.15);
+            --spot-gold-border: rgba(232,180,60,0.3);
+            --spot-blue-text: #5ca8e0;
+            --spot-blue-bg: rgba(92,168,224,0.12);
+            --spot-blue-border: rgba(92,168,224,0.25);
+            --spot-purple-text: #b48cde;
+            --spot-purple-bg: rgba(180,140,222,0.12);
+            --spot-purple-border: rgba(180,140,222,0.25);
+            --spot-celeb-text: #e8a030;
+            --spot-celeb-bg: rgba(232,160,48,0.12);
+            --spot-celeb-border: rgba(232,160,48,0.25);
+            --spot-answered-bg: rgba(72,187,120,0.08);
+            --spot-answered-border: rgba(72,187,120,0.2);
+            --spot-answered-text: rgba(72,187,120,0.9);
+            --spot-prayer-meta: rgba(180,140,222,0.8);
         }
         .new-member-spotlight.show { display: flex; }
+        /* ── Spotlight Theme: Frosty Ice Blue ── */
+        .new-member-spotlight.spot-theme-frost {
+            background: rgba(200,218,240,0.88);
+            backdrop-filter: blur(18px) saturate(1.4);
+            -webkit-backdrop-filter: blur(18px) saturate(1.4);
+            --spot-text: #1a3050; --spot-text-sub: rgba(26,48,80,0.6); --spot-text-dim: rgba(26,48,80,0.5);
+            --spot-card-bg: rgba(255,255,255,0.55); --spot-card-border: rgba(255,255,255,0.7);
+            --spot-divider: rgba(26,48,80,0.15);
+            --spot-btn-bg: rgba(255,255,255,0.6); --spot-btn-border: rgba(26,48,80,0.2);
+            --spot-photo-border: #a0b8d0; --spot-photo-shadow: rgba(26,48,80,0.1);
+            --spot-photo-bg: linear-gradient(135deg, #d0dce8, #e8eef4); --spot-initials: #4a7aa8;
+            --spot-gold-text: #b07a10; --spot-gold-bg: rgba(176,122,16,0.1); --spot-gold-border: rgba(176,122,16,0.25);
+            --spot-blue-text: #2a6a9a; --spot-blue-bg: rgba(42,106,154,0.1); --spot-blue-border: rgba(42,106,154,0.2);
+            --spot-purple-text: #6a4a9a; --spot-purple-bg: rgba(106,74,154,0.1); --spot-purple-border: rgba(106,74,154,0.2);
+            --spot-celeb-text: #9a6a10; --spot-celeb-bg: rgba(154,106,16,0.08); --spot-celeb-border: rgba(154,106,16,0.2);
+            --spot-answered-bg: rgba(34,120,60,0.08); --spot-answered-border: rgba(34,120,60,0.2);
+            --spot-answered-text: #1a7a3a; --spot-prayer-meta: rgba(106,74,154,0.7);
+        }
+        /* ── Spotlight Theme: Deep Navy Frost ── */
+        .new-member-spotlight.spot-theme-navy {
+            background: rgba(18,38,65,0.90);
+            backdrop-filter: blur(16px) saturate(1.2);
+            -webkit-backdrop-filter: blur(16px) saturate(1.2);
+            --spot-text: #d8e8f8; --spot-text-sub: rgba(216,232,248,0.6); --spot-text-dim: rgba(160,184,208,0.6);
+            --spot-card-bg: rgba(160,184,208,0.12); --spot-card-border: rgba(160,184,208,0.2);
+            --spot-divider: rgba(160,184,208,0.2);
+            --spot-btn-bg: rgba(160,184,208,0.15); --spot-btn-border: rgba(160,184,208,0.3);
+            --spot-photo-border: rgba(160,184,208,0.5); --spot-photo-shadow: rgba(100,140,180,0.2);
+            --spot-photo-bg: linear-gradient(135deg, #2a4a6a, #3a5a7a); --spot-initials: #8ab0d0;
+        }
+        /* ── Spotlight Theme: Frosted Glass / Icy White ── */
+        .new-member-spotlight.spot-theme-glass {
+            background: rgba(235,242,250,0.82);
+            backdrop-filter: blur(20px) saturate(1.6);
+            -webkit-backdrop-filter: blur(20px) saturate(1.6);
+            --spot-text: #1a3050; --spot-text-sub: rgba(26,48,80,0.55); --spot-text-dim: rgba(26,48,80,0.45);
+            --spot-card-bg: rgba(255,255,255,0.7); --spot-card-border: rgba(255,255,255,0.9);
+            --spot-divider: rgba(26,48,80,0.1);
+            --spot-btn-bg: rgba(255,255,255,0.7); --spot-btn-border: rgba(26,48,80,0.15);
+            --spot-photo-border: rgba(160,184,208,0.6); --spot-photo-shadow: rgba(26,48,80,0.08);
+            --spot-photo-bg: linear-gradient(135deg, #d0dce8, #e8eef4); --spot-initials: #4a7aa8;
+            --spot-gold-text: #9a6a10; --spot-gold-bg: rgba(154,106,16,0.08); --spot-gold-border: rgba(154,106,16,0.2);
+            --spot-blue-text: #2a6a9a; --spot-blue-bg: rgba(42,106,154,0.08); --spot-blue-border: rgba(42,106,154,0.18);
+            --spot-purple-text: #6a4a9a; --spot-purple-bg: rgba(106,74,154,0.08); --spot-purple-border: rgba(106,74,154,0.18);
+            --spot-celeb-text: #9a6a10; --spot-celeb-bg: rgba(154,106,16,0.06); --spot-celeb-border: rgba(154,106,16,0.15);
+            --spot-answered-bg: rgba(34,120,60,0.06); --spot-answered-border: rgba(34,120,60,0.15);
+            --spot-answered-text: #1a7a3a; --spot-prayer-meta: rgba(106,74,154,0.6);
+        }
         .new-member-spotlight-header {
             text-align: center; margin-bottom: 24px;
             animation: spotlightFadeIn 0.6s ease-out;
         }
         .new-member-spotlight-header h2 {
-            color: #fff; font-size: 1.4em; margin: 0 0 4px;
-            text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+            color: var(--spot-text); font-size: 1.4em; margin: 0 0 4px;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.15);
         }
         .new-member-spotlight-header p {
-            color: rgba(255,255,255,0.7); font-size: 0.85em; margin: 0;
+            color: var(--spot-text-sub); font-size: 0.85em; margin: 0;
         }
         .spotlight-cards {
             display: flex; flex-wrap: wrap; gap: 16px;
             justify-content: center; max-width: 600px; width: 100%;
         }
         .spotlight-card {
-            background: rgba(255,255,255,0.12);
-            border: 1px solid rgba(255,255,255,0.18);
+            background: var(--spot-card-bg);
+            border: 1px solid var(--spot-card-border);
             border-radius: 16px; padding: 20px 16px;
             text-align: center; width: 140px;
             backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
@@ -2035,9 +2112,9 @@
         .spotlight-card-photo {
             width: 72px; height: 72px; border-radius: 50%;
             margin: 0 auto 10px; overflow: hidden;
-            border: 3px solid rgba(232,180,60,0.7);
-            box-shadow: 0 0 16px rgba(232,180,60,0.35);
-            background: linear-gradient(135deg, #d0dce8, #e8eef4);
+            border: 3px solid var(--spot-photo-border);
+            box-shadow: 0 0 16px var(--spot-photo-shadow);
+            background: var(--spot-photo-bg);
         }
         .spotlight-card-photo img {
             width: 100%; height: 100%; object-fit: cover;
@@ -2045,20 +2122,20 @@
         .spotlight-card-photo .spotlight-initials {
             display: flex; align-items: center; justify-content: center;
             width: 100%; height: 100%;
-            font-size: 1.5em; font-weight: 700; color: #4a7aa8;
+            font-size: 1.5em; font-weight: 700; color: var(--spot-initials);
         }
         .spotlight-card-name {
-            color: #fff; font-size: 0.88em; font-weight: 600;
+            color: var(--spot-text); font-size: 0.88em; font-weight: 600;
             line-height: 1.2; margin-bottom: 4px;
         }
         .spotlight-card-date {
-            color: rgba(255,255,255,0.55); font-size: 0.7em;
+            color: var(--spot-text-dim); font-size: 0.7em;
         }
         .spotlight-dismiss {
             margin-top: 28px;
-            background: rgba(255,255,255,0.15);
-            border: 1px solid rgba(255,255,255,0.3);
-            color: #fff; padding: 10px 32px;
+            background: var(--spot-btn-bg);
+            border: 1px solid var(--spot-btn-border);
+            color: var(--spot-text); padding: 10px 32px;
             border-radius: 24px; font-size: 0.9em;
             cursor: pointer; transition: background 0.2s;
             animation: spotlightFadeIn 0.6s ease-out 1s both;
@@ -4171,50 +4248,57 @@
         .spotlight-changes { display: flex; flex-wrap: wrap; gap: 3px; justify-content: center; margin-top: 6px; }
         .spotlight-change-tag {
             font-size: 0.58em; font-weight: 600; padding: 2px 6px; border-radius: 6px;
-            color: #5ca8e0; background: rgba(92,168,224,0.12); border: 1px solid rgba(92,168,224,0.2);
+            color: var(--spot-blue-text); background: var(--spot-blue-bg); border: 1px solid var(--spot-blue-border);
             white-space: nowrap;
         }
+        /* Spotlight section divider labels */
+        .spot-divider-line { flex: 1; height: 1px; background: var(--spot-divider); }
+        .spot-label-base { font-size: 0.7em; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 3px 12px; border-radius: 10px; }
+        .spot-label-gold { color: var(--spot-gold-text); background: var(--spot-gold-bg); border: 1px solid var(--spot-gold-border); }
+        .spot-label-blue { color: var(--spot-blue-text); background: var(--spot-blue-bg); border: 1px solid var(--spot-blue-border); }
+        .spot-label-purple { color: var(--spot-purple-text); background: var(--spot-purple-bg); border: 1px solid var(--spot-purple-border); }
+        .spot-label-celeb { color: var(--spot-celeb-text); background: var(--spot-celeb-bg); border: 1px solid var(--spot-celeb-border); }
         /* Spotlight: Prayer section */
         .spotlight-prayer-list { max-width: 560px; width: 100%; margin: 0 auto; }
         .spotlight-prayer-item {
             display: flex; gap: 10px; align-items: flex-start;
-            background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
+            background: var(--spot-card-bg); border: 1px solid var(--spot-card-border);
             border-radius: 12px; padding: 12px 14px; margin-bottom: 8px;
             animation: spotlightCardIn 0.5s ease-out both;
         }
         .spotlight-prayer-item.spotlight-prayer-answered {
-            background: rgba(72,187,120,0.08); border-color: rgba(72,187,120,0.2);
+            background: var(--spot-answered-bg); border-color: var(--spot-answered-border);
         }
         .spotlight-prayer-emoji { font-size: 1.3em; flex-shrink: 0; margin-top: 2px; }
         .spotlight-prayer-body { flex: 1; min-width: 0; }
-        .spotlight-prayer-name { color: #fff; font-size: 0.85em; font-weight: 600; }
-        .spotlight-prayer-date { color: rgba(255,255,255,0.45); font-size: 0.8em; font-weight: 400; margin-left: 6px; }
-        .spotlight-prayer-text { color: rgba(255,255,255,0.7); font-size: 0.78em; margin-top: 3px; line-height: 1.35; }
-        .spotlight-prayer-meta { color: rgba(180,140,222,0.8); font-size: 0.7em; margin-top: 4px; font-style: italic; }
+        .spotlight-prayer-name { color: var(--spot-text); font-size: 0.85em; font-weight: 600; }
+        .spotlight-prayer-date { color: var(--spot-text-dim); font-size: 0.8em; font-weight: 400; margin-left: 6px; }
+        .spotlight-prayer-text { color: var(--spot-text-sub); font-size: 0.78em; margin-top: 3px; line-height: 1.35; }
+        .spotlight-prayer-meta { color: var(--spot-prayer-meta); font-size: 0.7em; margin-top: 4px; font-style: italic; }
         .spotlight-prayer-answered-label {
-            color: rgba(72,187,120,0.9); font-size: 0.75em; font-weight: 700;
+            color: var(--spot-answered-text); font-size: 0.75em; font-weight: 700;
             text-align: center; margin: 14px 0 8px; letter-spacing: 0.5px;
         }
         /* Spotlight: Celebration section */
         .spotlight-celeb-list { max-width: 560px; width: 100%; margin: 0 auto; }
         .spotlight-celeb-row {
             display: flex; gap: 10px; align-items: center;
-            background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
+            background: var(--spot-card-bg); border: 1px solid var(--spot-card-border);
             border-radius: 12px; padding: 10px 14px; margin-bottom: 6px;
             animation: spotlightCardIn 0.5s ease-out both;
         }
         .spotlight-celeb-emoji { font-size: 1.4em; flex-shrink: 0; }
         .spotlight-celeb-body { flex: 1; min-width: 0; }
-        .spotlight-celeb-name { color: #fff; font-size: 0.85em; font-weight: 600; }
+        .spotlight-celeb-name { color: var(--spot-text); font-size: 0.85em; font-weight: 600; }
         .spotlight-celeb-type { font-size: 0.8em; font-weight: 400; margin-left: 6px; }
-        .spotlight-celeb-date { color: rgba(255,255,255,0.5); font-size: 0.72em; margin-top: 2px; }
+        .spotlight-celeb-date { color: var(--spot-text-dim); font-size: 0.72em; margin-top: 2px; }
         .spotlight-celeb-week-label {
-            color: rgba(232,180,60,0.9); font-size: 0.72em; font-weight: 700;
+            color: var(--spot-celeb-text); font-size: 0.72em; font-weight: 700;
             text-transform: uppercase; letter-spacing: 1px;
             text-align: center; margin: 10px 0 6px;
         }
         .spotlight-celeb-week-label.spotlight-celeb-next {
-            color: rgba(255,255,255,0.4); margin-top: 16px;
+            color: var(--spot-text-dim); margin-top: 16px;
         }
     </style>
     <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
@@ -4477,6 +4561,16 @@
                     <option value="both" selected>Both — spotlight + badges</option>
                 </select>
                 <div style="font-size:0.7em;color:#7a9cc6;margin-top:4px;font-style:italic;">Notify about new members and significant updates (photos, links, title, name changes)</div>
+            </div>
+            <div style="margin-top:12px;">
+                <label style="font-size:0.82em;color:#5a7a9a;font-weight:600;display:block;margin-bottom:6px;">Spotlight Theme</label>
+                <select id="spotlightThemeSelect" onchange="updateSpotlightTheme(this.value)" style="padding:6px 10px;border-radius:8px;border:1px solid #b0c4de;font-size:0.82em;background:#fff;color:#2a5a8a;width:100%;">
+                    <option value="dark">Dark — deep black overlay</option>
+                    <option value="frost">Frosty Blue — icy blue frost</option>
+                    <option value="navy">Deep Navy — dark blue frost</option>
+                    <option value="glass">Frosted Glass — icy white</option>
+                </select>
+                <div style="font-size:0.7em;color:#7a9cc6;margin-top:4px;font-style:italic;">Background style for the "What's New" spotlight overlay</div>
             </div>
         </div>
 
@@ -5163,6 +5257,7 @@
         var celebrationWindow = 'week'; // 'day', 'week', or 'month'
         var showDeceasedBirthdays = true; // show birthday celebrations for members with a Death date
         var newMemberAlertMode = 'both'; // 'off', 'badge', 'spotlight', 'both'
+        var spotlightTheme = 'dark'; // 'dark', 'frost', 'navy', 'glass'
 
         // ════════════════════════════════════════
         // FIREBASE SETUP
@@ -6463,6 +6558,30 @@
             render(); // refresh badges
         }
 
+        function loadSpotlightTheme() {
+            var saved = safeLocalGet('church411_spotlightTheme');
+            if (saved) spotlightTheme = saved;
+            var sel = document.getElementById('spotlightThemeSelect');
+            if (sel) sel.value = spotlightTheme;
+        }
+        function updateSpotlightTheme(val) {
+            spotlightTheme = val;
+            safeLocalSet('church411_spotlightTheme', val);
+            if (firebaseReady) {
+                markSaved('settings/spotlightTheme');
+                markSaved('settings');
+                syncToFirebase('settings/spotlightTheme', val);
+            }
+        }
+        function applySpotlightTheme() {
+            var el = document.getElementById('newMemberSpotlight');
+            if (!el) return;
+            el.classList.remove('spot-theme-frost', 'spot-theme-navy', 'spot-theme-glass');
+            if (spotlightTheme !== 'dark') {
+                el.classList.add('spot-theme-' + spotlightTheme);
+            }
+        }
+
         // Get/set lastVisitTimestamp (per-device, per-user in localStorage)
         function _lastVisitKey() {
             return 'church411_lastVisit_' + (currentUserId || 'default');
@@ -6909,6 +7028,7 @@
                 }
             });
 
+            applySpotlightTheme();
             document.getElementById('newMemberSpotlight').classList.add('show');
         }
 
@@ -9455,6 +9575,16 @@
                     var sel = document.getElementById('newMemberAlertMode');
                     if (sel) sel.value = newMemberAlertMode;
                     remoteRender();
+                }
+            });
+            db.ref('churchDirectory/settings/spotlightTheme').on('value', function(snap) {
+                if (recentlySaved('settings/spotlightTheme')) return;
+                var val = snap.val();
+                if (val && ['dark','frost','navy','glass'].indexOf(val) !== -1) {
+                    spotlightTheme = val;
+                    safeLocalSet('church411_spotlightTheme', val);
+                    var sel = document.getElementById('spotlightThemeSelect');
+                    if (sel) sel.value = spotlightTheme;
                 }
             });
 
@@ -13795,6 +13925,7 @@
         loadCelebrationWindow();
         loadShowDeceasedBirthdays();
         loadNewMemberAlertMode();
+        loadSpotlightTheme();
         loadUploadedPhotos();
         loadPrayers();
         loadBrowseSettings();
@@ -14064,33 +14195,33 @@
         </div>
         <div id="spotlightNewSection" style="display:none;">
             <div style="display:flex;align-items:center;gap:10px;max-width:560px;margin:16px auto 10px;padding:0 8px;">
-                <div style="flex:1;height:1px;background:rgba(255,255,255,0.15);"></div>
-                <span style="font-size:0.7em;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 12px;border-radius:10px;color:#e8b43c;background:rgba(232,180,60,0.15);border:1px solid rgba(232,180,60,0.3);">NEW</span>
-                <div style="flex:1;height:1px;background:rgba(255,255,255,0.15);"></div>
+                <div class="spot-divider-line"></div>
+                <span class="spot-label-base spot-label-gold">NEW</span>
+                <div class="spot-divider-line"></div>
             </div>
             <div class="spotlight-cards" id="spotlightCards"></div>
         </div>
         <div id="spotlightUpdatedSection" style="display:none;">
             <div style="display:flex;align-items:center;gap:10px;max-width:560px;margin:16px auto 10px;padding:0 8px;">
-                <div style="flex:1;height:1px;background:rgba(255,255,255,0.15);"></div>
-                <span style="font-size:0.7em;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 12px;border-radius:10px;color:#5ca8e0;background:rgba(92,168,224,0.12);border:1px solid rgba(92,168,224,0.25);">UPDATED</span>
-                <div style="flex:1;height:1px;background:rgba(255,255,255,0.15);"></div>
+                <div class="spot-divider-line"></div>
+                <span class="spot-label-base spot-label-blue">UPDATED</span>
+                <div class="spot-divider-line"></div>
             </div>
             <div class="spotlight-cards" id="spotlightUpdatedCards"></div>
         </div>
         <div id="spotlightPrayerSection" style="display:none;">
             <div style="display:flex;align-items:center;gap:10px;max-width:560px;margin:16px auto 10px;padding:0 8px;">
-                <div style="flex:1;height:1px;background:rgba(255,255,255,0.15);"></div>
-                <span style="font-size:0.7em;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 12px;border-radius:10px;color:#b48cde;background:rgba(180,140,222,0.12);border:1px solid rgba(180,140,222,0.25);">PRAYERS</span>
-                <div style="flex:1;height:1px;background:rgba(255,255,255,0.15);"></div>
+                <div class="spot-divider-line"></div>
+                <span class="spot-label-base spot-label-purple">PRAYERS</span>
+                <div class="spot-divider-line"></div>
             </div>
             <div class="spotlight-prayer-list" id="spotlightPrayerCards"></div>
         </div>
         <div id="spotlightCelebrationSection" style="display:none;">
             <div style="display:flex;align-items:center;gap:10px;max-width:560px;margin:16px auto 10px;padding:0 8px;">
-                <div style="flex:1;height:1px;background:rgba(255,255,255,0.15);"></div>
-                <span style="font-size:0.7em;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 12px;border-radius:10px;color:#e8a030;background:rgba(232,160,48,0.12);border:1px solid rgba(232,160,48,0.25);">CELEBRATIONS</span>
-                <div style="flex:1;height:1px;background:rgba(255,255,255,0.15);"></div>
+                <div class="spot-divider-line"></div>
+                <span class="spot-label-base spot-label-celeb">CELEBRATIONS</span>
+                <div class="spot-divider-line"></div>
             </div>
             <div class="spotlight-celeb-list" id="spotlightCelebrationCards"></div>
         </div>
