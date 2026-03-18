@@ -6285,7 +6285,16 @@
             return 'church411_lastVisit_' + (currentUserId || 'default');
         }
         function getLastVisitTimestamp() {
-            return parseInt(localStorage.getItem(_lastVisitKey()) || '0', 10);
+            var val = localStorage.getItem(_lastVisitKey());
+            if (!val) {
+                // Migrate from old shared key if it exists
+                var oldVal = localStorage.getItem('church411_lastVisit');
+                if (oldVal) {
+                    localStorage.setItem(_lastVisitKey(), oldVal);
+                    return parseInt(oldVal, 10);
+                }
+            }
+            return parseInt(val || '0', 10);
         }
         function updateLastVisitTimestamp() {
             localStorage.setItem(_lastVisitKey(), Date.now().toString());
@@ -6418,7 +6427,8 @@
             var newMembers = getNewMembersSince(lastVisit);
 
             // If no new members found but Firebase may still be syncing, retry (login only)
-            if (newMembers.length === 0 && !isLiveCheck && _newMemberCheckRetries < 3) {
+            // 5 retries × 2s = 10s window to allow cold PWA launch sync on iOS
+            if (newMembers.length === 0 && !isLiveCheck && _newMemberCheckRetries < 5) {
                 _newMemberCheckRetries++;
                 setTimeout(function() { checkNewMembersOnLogin(); }, 2000);
                 return;
@@ -8761,6 +8771,11 @@
                 clearTimeout(_fbNotesInitialTimer);
                 _fbNotesInitialTimer = setTimeout(function() {
                     _fbNotesInitialSyncDone = true;
+                    // After initial sync burst settles, do one final new-member check
+                    // This catches members that arrived during the burst window
+                    if (isUnlocked && newMemberAlertMode !== 'off') {
+                        setTimeout(function() { checkNewMembersOnLogin(true); }, 500);
+                    }
                 }, 3000);
             }
             db.ref('churchDirectory/notes').on('child_added', function(snap) {
