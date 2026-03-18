@@ -1961,7 +1961,7 @@
         /* ── Celebration Indicators ── */
         .celeb-icons {
             position: absolute; top: 4px; left: 4px;
-            display: flex; flex-direction: column; gap: 2px;
+            display: flex; flex-direction: column; gap: 6px;
             z-index: 3; pointer-events: none;
         }
         .celeb-icons span {
@@ -3700,6 +3700,15 @@
             -webkit-overflow-scrolling: auto;
             overscroll-behavior: none;
             padding-bottom: env(safe-area-inset-bottom, 0px);
+        }
+        .pin-lock::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: env(safe-area-inset-bottom, 0px);
+            background: #2a5a8a;
+            transform: translateY(100%);
+            z-index: 10000;
         }
         .pin-lock.hidden {
             opacity: 0;
@@ -6670,6 +6679,8 @@
         function buildLinkStripHTML(links, cssPrefix) {
             if (!links || links.length === 0) return '';
             var iconClass = cssPrefix + '-link-icon';
+            // Check if any recognized platform exists
+            var hasPlatform = links.some(function(url) { return !!detectPlatform(url); });
             var html = '<div class="' + cssPrefix + '-link-strip">';
             links.forEach(function(url) {
                 var href = url;
@@ -6680,7 +6691,10 @@
                 } else {
                     var displayDomain = url.replace(/^https?:\/\//i, '').replace(/\/$/, '').split('/')[0];
                     if (displayDomain.length > 20) displayDomain = displayDomain.substring(0, 18) + '\u2026';
-                    html += '<a class="' + iconClass + ' generic" href="' + escapeHTML(href) + '" target="_blank" rel="noopener noreferrer" title="' + escapeHTML(url) + '" onclick="event.stopPropagation()">\uD83D\uDD17</a>';
+                    // Show chain icon only when mixed with recognized platforms; otherwise just show URL
+                    if (hasPlatform) {
+                        html += '<a class="' + iconClass + ' generic" href="' + escapeHTML(href) + '" target="_blank" rel="noopener noreferrer" title="' + escapeHTML(url) + '" onclick="event.stopPropagation()">\uD83D\uDD17</a>';
+                    }
                     html += '<a class="cb-link-generic-url" href="' + escapeHTML(href) + '" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">' + escapeHTML(displayDomain) + '</a>';
                 }
             });
