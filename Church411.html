@@ -4034,6 +4034,123 @@
         .pull-indicator.show {
             top: 0;
         }
+
+        /* ═══ UPDATED member badge (blue) ═══ */
+        .updated-member-badge {
+            position: absolute; top: -4px; right: -4px;
+            background: linear-gradient(135deg, #5ca8e0, #3a8cd4);
+            color: #fff; font-size: 0.5em; font-weight: 800;
+            padding: 2px 5px; border-radius: 8px;
+            z-index: 4; letter-spacing: 0.3px;
+            box-shadow: 0 2px 6px rgba(92,168,224,0.45);
+            animation: updatedBadgePulse 2.5s ease-in-out infinite;
+        }
+        @keyframes updatedBadgePulse {
+            0%, 100% { box-shadow: 0 2px 6px rgba(92,168,224,0.45); }
+            50% { box-shadow: 0 2px 12px rgba(92,168,224,0.7); }
+        }
+        .card-item.updated-member-glow {
+            box-shadow: 0 0 0 2px rgba(92,168,224,0.35), 0 4px 12px rgba(92,168,224,0.15);
+        }
+
+        /* ═══ Social / Link icon strip on card backs ═══ */
+        .cb-link-strip {
+            display: flex; flex-wrap: wrap; gap: 6px;
+            align-items: center; padding: 2px 0;
+        }
+        .cb-link-icon {
+            width: 30px; height: 30px; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s;
+            text-decoration: none; position: relative;
+            font-size: 0.75em; font-weight: 700;
+        }
+        .cb-link-icon:hover { transform: scale(1.12); box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+        .cb-link-icon svg.sm-icon { width: 16px; height: 16px; }
+        .cb-link-icon.facebook { background: rgba(66,103,178,0.15); color: #4267B2; }
+        .cb-link-icon.instagram { background: linear-gradient(135deg, rgba(225,48,108,0.15), rgba(252,175,69,0.1)); color: #E1306C; }
+        .cb-link-icon.youtube { background: rgba(255,0,0,0.12); color: #FF0000; }
+        .cb-link-icon.x { background: rgba(0,0,0,0.1); color: #000; }
+        .cb-link-icon.tiktok { background: #010101; color: #fff; }
+        .cb-link-icon.linkedin { background: rgba(10,102,194,0.12); color: #0A66C2; }
+        .cb-link-icon.spotify { background: rgba(29,185,84,0.12); color: #1DB954; }
+        .cb-link-icon.telegram { background: rgba(38,166,222,0.12); color: #26A6DE; }
+        .cb-link-icon.rumble { background: rgba(133,195,37,0.18); color: #85C325; }
+        .cb-link-icon.truthsocial { background: rgba(74,87,169,0.2); color: #4A57A9; }
+        .cb-link-icon.podcast { background: rgba(155,89,182,0.12); color: #9B59B6; }
+        .cb-link-icon.generic { background: rgba(42,90,138,0.1); color: #2a5a8a; }
+        .cb-link-generic-url {
+            font-size: 0.72em; color: #2a7ac0; margin-left: 2px;
+            max-width: 120px; overflow: hidden; text-overflow: ellipsis;
+            white-space: nowrap; text-decoration: none;
+        }
+        .cb-link-generic-url:hover { text-decoration: underline; }
+
+        /* Browse mode link icons (smaller) */
+        .browse-link-strip {
+            display: flex; flex-wrap: wrap; gap: 4px;
+            align-items: center; padding: 6px 0 2px;
+            justify-content: center;
+        }
+        .browse-link-icon {
+            width: 26px; height: 26px; border-radius: 6px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; cursor: pointer;
+            transition: transform 0.15s; text-decoration: none;
+            font-size: 0.65em; font-weight: 700;
+        }
+        .browse-link-icon:hover { transform: scale(1.15); }
+        .browse-link-icon svg.sm-icon { width: 14px; height: 14px; }
+        .browse-link-icon.facebook { background: rgba(66,103,178,0.15); color: #4267B2; }
+        .browse-link-icon.instagram { background: linear-gradient(135deg, rgba(225,48,108,0.15), rgba(252,175,69,0.1)); color: #E1306C; }
+        .browse-link-icon.youtube { background: rgba(255,0,0,0.12); color: #FF0000; }
+        .browse-link-icon.x { background: rgba(0,0,0,0.1); color: #000; }
+        .browse-link-icon.tiktok { background: #010101; color: #fff; }
+        .browse-link-icon.linkedin { background: rgba(10,102,194,0.12); color: #0A66C2; }
+        .browse-link-icon.spotify { background: rgba(29,185,84,0.12); color: #1DB954; }
+        .browse-link-icon.telegram { background: rgba(38,166,222,0.12); color: #26A6DE; }
+        .browse-link-icon.rumble { background: rgba(133,195,37,0.18); color: #85C325; }
+        .browse-link-icon.truthsocial { background: rgba(74,87,169,0.2); color: #4A57A9; }
+        .browse-link-icon.podcast { background: rgba(155,89,182,0.12); color: #9B59B6; }
+        .browse-link-icon.generic { background: rgba(42,90,138,0.1); color: #2a5a8a; }
+
+        /* Multi-URL edit form */
+        .edit-links-container { margin-bottom: 10px; }
+        .edit-link-row {
+            display: flex; align-items: center; gap: 6px; margin-bottom: 6px;
+        }
+        .edit-link-row input {
+            flex: 1; padding: 8px 10px; border: 1.5px solid #c8d8e8;
+            border-radius: 8px; font-size: 0.9em; background: #fff;
+        }
+        .edit-link-platform-icon {
+            width: 26px; height: 26px; border-radius: 6px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; font-size: 0.7em;
+        }
+        .edit-link-remove {
+            width: 26px; height: 26px; border-radius: 50%;
+            border: none; background: rgba(200,80,80,0.12); color: #c85050;
+            cursor: pointer; font-size: 1.1em; display: flex;
+            align-items: center; justify-content: center; flex-shrink: 0;
+        }
+        .edit-link-remove:hover { background: rgba(200,80,80,0.25); }
+        .edit-link-add {
+            background: rgba(42,122,192,0.1); color: #2a7ac0;
+            border: 1.5px dashed #a0c8e8; border-radius: 8px;
+            padding: 6px 12px; font-size: 0.82em; cursor: pointer;
+            width: 100%; text-align: center;
+        }
+        .edit-link-add:hover { background: rgba(42,122,192,0.18); }
+
+        /* Spotlight change tags */
+        .spotlight-changes { display: flex; flex-wrap: wrap; gap: 3px; justify-content: center; margin-top: 6px; }
+        .spotlight-change-tag {
+            font-size: 0.58em; font-weight: 600; padding: 2px 6px; border-radius: 6px;
+            color: #5ca8e0; background: rgba(92,168,224,0.12); border: 1px solid rgba(92,168,224,0.2);
+            white-space: nowrap;
+        }
     </style>
     <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
@@ -4287,14 +4404,14 @@
                 <div style="font-size:0.7em;color:#7a9cc6;margin-top:3px;padding-left:26px;font-style:italic;">When enabled, birthdays display as "In loving memory" for members with a Death date</div>
             </div>
             <div style="margin-top:12px;">
-                <label style="font-size:0.82em;color:#5a7a9a;font-weight:600;display:block;margin-bottom:6px;">New Member Alerts</label>
+                <label style="font-size:0.82em;color:#5a7a9a;font-weight:600;display:block;margin-bottom:6px;">Member Alerts</label>
                 <select id="newMemberAlertMode" onchange="updateNewMemberAlertMode(this.value)" style="padding:6px 10px;border-radius:8px;border:1px solid #b0c4de;font-size:0.82em;background:#fff;color:#2a5a8a;width:100%;">
                     <option value="off">Off</option>
-                    <option value="badge">Badge Only — gold "NEW" badge on cards</option>
-                    <option value="spotlight">Spotlight — overlay on login</option>
+                    <option value="badge">Badge Only — NEW/UPDATED badges on cards</option>
+                    <option value="spotlight">Spotlight — "What's New" overlay on login</option>
                     <option value="both" selected>Both — spotlight + badges</option>
                 </select>
-                <div style="font-size:0.7em;color:#7a9cc6;margin-top:4px;font-style:italic;">How to notify users about recently added members</div>
+                <div style="font-size:0.7em;color:#7a9cc6;margin-top:4px;font-style:italic;">Notify about new members and significant updates (photos, links, title, name changes)</div>
             </div>
         </div>
 
@@ -4691,9 +4808,10 @@
             </div>
         </div>
         <div class="edit-field" style="margin-bottom:10px;">
-            <label>Website / Link</label>
-            <input type="url" id="editWebURL" placeholder="e.g. https://example.com, podcast link">
-            <div style="font-size:0.7em;color:#7a9cc6;margin-top:3px;font-style:italic;">Clickable link shown on the card. Podcast, blog, ministry site, etc.</div>
+            <label>Links</label>
+            <div id="editLinksContainer" class="edit-links-container"></div>
+            <button type="button" class="edit-link-add" onclick="addEditLinkRow('')">+ Add Link</button>
+            <div style="font-size:0.7em;color:#7a9cc6;margin-top:3px;font-style:italic;">Social media, podcast, blog, ministry site, etc. Platform icons auto-detected.</div>
         </div>
 
         <div class="edit-row">
@@ -6308,6 +6426,112 @@
             }
         }
 
+        // ═══════════════════════════════════════════════════
+        // SOCIAL PLATFORM DETECTION & LINK RENDERING
+        // ═══════════════════════════════════════════════════
+        var SOCIAL_PLATFORMS = [
+            { key: 'facebook',    name: 'Facebook',     domains: ['facebook.com','fb.com','fb.me'],                icon: '<svg class="sm-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>' },
+            { key: 'instagram',   name: 'Instagram',    domains: ['instagram.com','instagr.am'],                   icon: '<svg class="sm-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>' },
+            { key: 'youtube',     name: 'YouTube',      domains: ['youtube.com','youtu.be'],                       icon: '<svg class="sm-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>' },
+            { key: 'x',           name: 'X',            domains: ['x.com','twitter.com'],                          icon: '<span style="font-family:serif;font-weight:900;font-size:14px;">\uD835\uDD4F</span>' },
+            { key: 'tiktok',      name: 'TikTok',       domains: ['tiktok.com'],                                   icon: '<svg class="sm-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.3 0 .59.04.86.11V9.01a6.27 6.27 0 00-.86-.06 6.28 6.28 0 00-6.28 6.28 6.28 6.28 0 006.28 6.28 6.28 6.28 0 006.28-6.28V8.69a8.16 8.16 0 004.74 1.52v-3.4a4.85 4.85 0 01-.92-.12z"/></svg>' },
+            { key: 'linkedin',    name: 'LinkedIn',     domains: ['linkedin.com'],                                 icon: '<span style="font-weight:800;font-size:12px;">in</span>' },
+            { key: 'spotify',     name: 'Spotify',      domains: ['spotify.com','open.spotify.com'],                icon: '<svg class="sm-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>' },
+            { key: 'telegram',    name: 'Telegram',     domains: ['t.me','telegram.me','telegram.org'],             icon: '<svg class="sm-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0012 0a12 12 0 00-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 01.171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>' },
+            { key: 'rumble',      name: 'Rumble',       domains: ['rumble.com'],                                   icon: '<svg class="sm-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M4.4 2C3.07 2 2 3.07 2 4.4v15.2C2 20.93 3.07 22 4.4 22h15.2c1.33 0 2.4-1.07 2.4-2.4V4.4C22 3.07 20.93 2 19.6 2H4.4zm3.1 5.5l8.5 4.5-8.5 4.5V7.5z"/></svg>' },
+            { key: 'truthsocial', name: 'Truth Social', domains: ['truthsocial.com'],                              icon: '<svg class="sm-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M3 3v5h5V5h3v14h-3v3h8v-3h-3V5h3v3h5V3z"/></svg>' },
+            { key: 'podcast',     name: 'Podcast',      domains: ['podcasts.apple.com','anchor.fm','podbean.com'], icon: '<span style="font-size:14px;">\uD83C\uDFA7</span>' }
+        ];
+
+        function detectPlatform(url) {
+            if (!url) return null;
+            try {
+                var hostname = url.replace(/^https?:\/\//i, '').split('/')[0].toLowerCase();
+                for (var i = 0; i < SOCIAL_PLATFORMS.length; i++) {
+                    var p = SOCIAL_PLATFORMS[i];
+                    for (var d = 0; d < p.domains.length; d++) {
+                        if (hostname === p.domains[d] || hostname.endsWith('.' + p.domains[d])) {
+                            return p;
+                        }
+                    }
+                }
+            } catch(e) {}
+            return null;
+        }
+
+        // Get member links array (migrates legacy webURL if needed)
+        function getMemberLinks(fullName) {
+            var n = notes[fullName];
+            if (!n) return [];
+            if (n.links && n.links.length > 0) return n.links;
+            if (n.webURL) return [n.webURL];
+            return [];
+        }
+
+        // Render icon-only link strip HTML for card backs
+        function buildLinkStripHTML(links, cssPrefix) {
+            if (!links || links.length === 0) return '';
+            var iconClass = cssPrefix + '-link-icon';
+            var html = '<div class="' + cssPrefix + '-link-strip">';
+            links.forEach(function(url) {
+                var href = url;
+                if (!/^https?:\/\//i.test(href)) href = 'https://' + href;
+                var platform = detectPlatform(url);
+                if (platform) {
+                    html += '<a class="' + iconClass + ' ' + platform.key + '" href="' + escapeHTML(href) + '" target="_blank" rel="noopener noreferrer" title="' + escapeHTML(platform.name) + '" onclick="event.stopPropagation()">' + platform.icon + '</a>';
+                } else {
+                    var displayDomain = url.replace(/^https?:\/\//i, '').replace(/\/$/, '').split('/')[0];
+                    if (displayDomain.length > 20) displayDomain = displayDomain.substring(0, 18) + '\u2026';
+                    html += '<a class="' + iconClass + ' generic" href="' + escapeHTML(href) + '" target="_blank" rel="noopener noreferrer" title="' + escapeHTML(url) + '" onclick="event.stopPropagation()">\uD83D\uDD17</a>';
+                    html += '<a class="cb-link-generic-url" href="' + escapeHTML(href) + '" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">' + escapeHTML(displayDomain) + '</a>';
+                }
+            });
+            html += '</div>';
+            return html;
+        }
+
+        // ═══════════════════════════════════════════════════
+        // EXPANDED NOTIFICATION HELPERS
+        // ═══════════════════════════════════════════════════
+        // Stamp an update flag on a member's notes (triggers UPDATED notification)
+        function stampMemberUpdate(fullName, flag) {
+            if (!notes[fullName]) notes[fullName] = {};
+            var n = notes[fullName];
+            n.updatedAt = Date.now();
+            if (!n.updateFlags) n.updateFlags = [];
+            if (n.updateFlags.indexOf(flag) === -1) n.updateFlags.push(flag);
+        }
+
+        // Check if a member was updated since a timestamp
+        function isMemberUpdated(fullName) {
+            if (newMemberAlertMode === 'off') return false;
+            if (newMemberAlertMode === 'spotlight') return false;
+            var lastVisit = getLastVisitTimestamp();
+            if (!lastVisit) return false;
+            var n = notes[fullName];
+            if (!n || !n.updatedAt) return false;
+            // Don't show UPDATED badge if they're already showing NEW
+            if (n.addedAt && n.addedAt > lastVisit) return false;
+            return n.updatedAt > lastVisit;
+        }
+
+        // Get members updated since a timestamp (for spotlight)
+        function getUpdatedMembersSince(sinceTimestamp) {
+            if (!sinceTimestamp || sinceTimestamp <= 0) return [];
+            var updated = [];
+            members.forEach(function(m) {
+                var n = notes[m];
+                if (!n || !n.updatedAt) return;
+                // Skip if they're already "new" — don't double-count
+                if (n.addedAt && n.addedAt > sinceTimestamp) return;
+                if (n.updatedAt > sinceTimestamp) {
+                    updated.push({ name: m, updatedAt: n.updatedAt, flags: n.updateFlags || [] });
+                }
+            });
+            updated.sort(function(a, b) { return b.updatedAt - a.updatedAt; });
+            return updated;
+        }
+
         // Get members added since a given timestamp
         function getNewMembersSince(sinceTimestamp) {
             if (!sinceTimestamp || sinceTimestamp <= 0) return [];
@@ -6334,67 +6558,107 @@
         }
 
         // ── Spotlight overlay ──
-        function showNewMemberSpotlight(newMembers) {
-            if (!newMembers || newMembers.length === 0) return;
-            var container = document.getElementById('spotlightCards');
+        function _buildSpotlightCardHTML(name, dateLabel, changeTags) {
+            var photoSrc = '';
+            if (uploadedPhotos[name]) {
+                photoSrc = uploadedPhotos[name];
+                if (photoSrc === '_indexed_') photoSrc = '';
+            }
+            var parts = name.split(' ');
+            var initials = parts.length >= 2
+                ? (parts[0][0] || '') + (parts[parts.length - 1][0] || '')
+                : (name[0] || '').toUpperCase();
+            initials = escapeHTML(initials.toUpperCase());
+            var cardClass = changeTags ? 'spotlight-card spotlight-card-updated' : 'spotlight-card';
+            var borderStyle = changeTags ? 'border-color:rgba(92,168,224,0.3);' : '';
+            var photoBorder = changeTags ? 'border:3px solid rgba(92,168,224,0.5);' : 'border:3px solid rgba(232,180,60,0.7);';
+            var html = '<div class="' + cardClass + '" style="' + borderStyle + '">';
+            html += '<div class="spotlight-card-photo" data-name="' + escapeHTML(name) + '" style="' + photoBorder + '">';
+            if (photoSrc) {
+                html += '<img src="' + photoSrc + '" alt="">';
+            } else {
+                html += '<div class="spotlight-initials">' + initials + '</div>';
+            }
+            html += '</div>';
+            html += '<div class="spotlight-card-name">' + escapeHTML(name) + '</div>';
+            if (dateLabel) html += '<div class="spotlight-card-date">' + dateLabel + '</div>';
+            if (changeTags && changeTags.length > 0) {
+                html += '<div class="spotlight-changes">';
+                var FLAG_LABELS = { photo: '\uD83D\uDCF7 Photo', spousePhoto: '\uD83D\uDCF7 Spouse', renamed: '\u270F\uFE0F Name', links: '\uD83D\uDD17 Links', title: '\uD83C\uDFF7\uFE0F Title' };
+                changeTags.forEach(function(f) {
+                    html += '<span class="spotlight-change-tag">' + (FLAG_LABELS[f] || f) + '</span>';
+                });
+                html += '</div>';
+            }
+            html += '</div>';
+            return html;
+        }
+
+        function showNewMemberSpotlight(newMembers, updatedMembers) {
+            var hasNew = newMembers && newMembers.length > 0;
+            var hasUpdated = updatedMembers && updatedMembers.length > 0;
+            if (!hasNew && !hasUpdated) return;
+
+            var MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+            var titleEl = document.getElementById('spotlightTitle');
             var subtext = document.getElementById('spotlightSubtext');
-            if (!container) return;
 
-            var count = newMembers.length;
-            subtext.textContent = count === 1
-                ? '1 new member since your last visit'
-                : count + ' new members since your last visit';
+            // Title and subtext
+            if (hasNew && hasUpdated) {
+                titleEl.textContent = '\u2728 What\u2019s New';
+                subtext.textContent = 'Changes since your last visit';
+            } else if (hasNew) {
+                titleEl.textContent = '\u2728 New Members';
+                var c = newMembers.length;
+                subtext.textContent = c === 1 ? '1 new member since your last visit' : c + ' new members since your last visit';
+            } else {
+                titleEl.textContent = '\u2728 Updates';
+                var u = updatedMembers.length;
+                subtext.textContent = u === 1 ? '1 member updated since your last visit' : u + ' members updated since your last visit';
+            }
 
-            var html = '';
-            newMembers.forEach(function(nm) {
-                var photoSrc = '';
-                var initials = '';
-                // Try to get photo
-                if (uploadedPhotos[nm.name]) {
-                    photoSrc = uploadedPhotos[nm.name];
-                    if (photoSrc === '_indexed_') photoSrc = ''; // will need IDB fetch
-                }
+            // NEW section
+            var newSection = document.getElementById('spotlightNewSection');
+            var newContainer = document.getElementById('spotlightCards');
+            if (hasNew) {
+                var newHTML = '';
+                newMembers.forEach(function(nm) {
+                    var d = nm.addedAt ? new Date(nm.addedAt) : null;
+                    var dateStr = d ? 'Added ' + MONTHS[d.getMonth()] + ' ' + d.getDate() : '';
+                    newHTML += _buildSpotlightCardHTML(nm.name, dateStr, null);
+                });
+                newContainer.innerHTML = newHTML;
+                newSection.style.display = 'block';
+            } else {
+                newSection.style.display = 'none';
+                newContainer.innerHTML = '';
+            }
 
-                // Build initials fallback
-                var parts = nm.name.split(' ');
-                if (parts.length >= 2) {
-                    initials = (parts[0][0] || '') + (parts[parts.length - 1][0] || '');
-                } else {
-                    initials = (nm.name[0] || '').toUpperCase();
-                }
-                initials = escapeHTML(initials.toUpperCase());
+            // UPDATED section
+            var updSection = document.getElementById('spotlightUpdatedSection');
+            var updContainer = document.getElementById('spotlightUpdatedCards');
+            if (hasUpdated) {
+                var updHTML = '';
+                updatedMembers.forEach(function(um) {
+                    var d = um.updatedAt ? new Date(um.updatedAt) : null;
+                    var dateStr = d ? 'Updated ' + MONTHS[d.getMonth()] + ' ' + d.getDate() : '';
+                    updHTML += _buildSpotlightCardHTML(um.name, dateStr, um.flags);
+                });
+                updContainer.innerHTML = updHTML;
+                updSection.style.display = 'block';
+            } else {
+                updSection.style.display = 'none';
+                updContainer.innerHTML = '';
+            }
 
-                var dateStr = '';
-                if (nm.addedAt) {
-                    var d = new Date(nm.addedAt);
-                    var MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-                    dateStr = 'Added ' + MONTHS[d.getMonth()] + ' ' + d.getDate();
-                }
-
-                html += '<div class="spotlight-card">';
-                html += '<div class="spotlight-card-photo" data-name="' + escapeHTML(nm.name) + '">';
-                if (photoSrc && photoSrc !== '_indexed_') {
-                    html += '<img src="' + photoSrc + '" alt="">';
-                } else {
-                    html += '<div class="spotlight-initials">' + initials + '</div>';
-                }
-                html += '</div>';
-                html += '<div class="spotlight-card-name">' + escapeHTML(nm.name) + '</div>';
-                if (dateStr) html += '<div class="spotlight-card-date">' + dateStr + '</div>';
-                html += '</div>';
-            });
-
-            container.innerHTML = html;
-
-            // Try to load IndexedDB photos for cards that need them
-            newMembers.forEach(function(nm) {
+            // Try to load IndexedDB photos for all cards
+            var allNames = (newMembers || []).concat(updatedMembers || []);
+            allNames.forEach(function(nm) {
                 if (uploadedPhotos[nm.name] === '_indexed_') {
                     getCachedPhoto(nm.name).then(function(data) {
                         if (data) {
-                            var photoEl = container.querySelector('[data-name="' + CSS.escape(nm.name) + '"]');
-                            if (photoEl) {
-                                photoEl.innerHTML = '<img src="' + data + '" alt="">';
-                            }
+                            var els = document.querySelectorAll('#newMemberSpotlight [data-name="' + CSS.escape(nm.name) + '"]');
+                            els.forEach(function(el) { el.innerHTML = '<img src="' + data + '" alt="">'; });
                         }
                     });
                 }
@@ -6405,7 +6669,14 @@
 
         function dismissSpotlight() {
             document.getElementById('newMemberSpotlight').classList.remove('show');
-            // Update last visit now that they've seen the spotlight
+            // Clear updateFlags for members now that user has seen them
+            members.forEach(function(m) {
+                var n = notes[m];
+                if (n && n.updateFlags && n.updateFlags.length > 0) {
+                    n.updateFlags = [];
+                    // Don't clear updatedAt — keep for badge display until lastVisit updates
+                }
+            });
             updateLastVisitTimestamp();
         }
 
@@ -6425,17 +6696,19 @@
                 return;
             }
             var newMembers = getNewMembersSince(lastVisit);
+            var updatedMembers = getUpdatedMembersSince(lastVisit);
+            var totalChanges = newMembers.length + updatedMembers.length;
 
-            // If no new members found but Firebase may still be syncing, retry (login only)
+            // If nothing found but Firebase may still be syncing, retry (login only)
             // 5 retries × 2s = 10s window to allow cold PWA launch sync on iOS
-            if (newMembers.length === 0 && !isLiveCheck && _newMemberCheckRetries < 5) {
+            if (totalChanges === 0 && !isLiveCheck && _newMemberCheckRetries < 5) {
                 _newMemberCheckRetries++;
                 setTimeout(function() { checkNewMembersOnLogin(); }, 2000);
                 return;
             }
             _newMemberCheckRetries = 0; // reset for next login
 
-            if (newMembers.length === 0) {
+            if (totalChanges === 0) {
                 if (!isLiveCheck) updateLastVisitTimestamp();
                 return;
             }
@@ -6446,17 +6719,18 @@
             // For live checks (mid-session), only show toast + badges — not a full spotlight
             if (isLiveCheck) {
                 if (_spotlightShownThisSession) {
-                    // Already showed spotlight this session, just refresh badges
                     if (showBadges) render();
                     return;
                 }
                 if (showSpotlight) {
                     _spotlightShownThisSession = true;
-                    showNewMemberSpotlight(newMembers);
+                    showNewMemberSpotlight(newMembers, updatedMembers);
                 } else if (showBadges) {
                     render();
-                    var count = newMembers.length;
-                    showToast(count + ' new member' + (count > 1 ? 's' : '') + ' added!', 3500);
+                    var msg = '';
+                    if (newMembers.length > 0) msg += newMembers.length + ' new';
+                    if (updatedMembers.length > 0) msg += (msg ? ', ' : '') + updatedMembers.length + ' updated';
+                    showToast(msg + ' member' + (totalChanges > 1 ? 's' : '') + '!', 3500);
                 }
                 return;
             }
@@ -6464,28 +6738,27 @@
             // Standard login check
             if (showSpotlight) {
                 _spotlightShownThisSession = true;
-                // Small delay to let the login animation finish
                 setTimeout(function() {
-                    showNewMemberSpotlight(newMembers);
+                    showNewMemberSpotlight(newMembers, updatedMembers);
                 }, 500);
             }
 
             if (showBadges) {
-                // Badges will be rendered in the card render loop via isMemberNew()
                 render();
             }
 
             // Spotlight mode: lastVisit updates on dismiss (in dismissSpotlight)
             // Badge-only mode: update lastVisit after a session delay so badges persist briefly
             if (!showSpotlight) {
-                // Update lastVisit after 60s so badges show for this session's first minute
                 setTimeout(function() { updateLastVisitTimestamp(); }, 60000);
             }
 
             // Show a toast if only badges (no spotlight)
             if (showBadges && !showSpotlight) {
-                var count = newMembers.length;
-                showToast(count + ' new member' + (count > 1 ? 's' : '') + ' since your last visit!', 3500);
+                var msg = '';
+                if (newMembers.length > 0) msg += newMembers.length + ' new';
+                if (updatedMembers.length > 0) msg += (msg ? ', ' : '') + updatedMembers.length + ' updated';
+                showToast(msg + ' since your last visit!', 3500);
             }
         }
 
@@ -8803,10 +9076,15 @@
                 var name = decodeFBKey(snap.key);
                 var val = snap.val();
                 if (name && val && typeof val === 'object') {
+                    var hadUpdatedAt = notes[name] && notes[name].updatedAt;
                     val.sections = normalizeSections(val.sections);
                     notes[name] = val;
                     saveNotesStore(); // deferred write
                     remoteRender();
+                    // Trigger live check if updatedAt changed (new update from another device)
+                    if (_fbNotesInitialSyncDone && val.updatedAt && val.updatedAt !== hadUpdatedAt && isUnlocked) {
+                        setTimeout(function() { checkNewMembersOnLogin(true); }, 500);
+                    }
                 }
             });
             db.ref('churchDirectory/notes').on('child_removed', function(snap) {
@@ -9787,12 +10065,18 @@
                     if (ringClass) frameClass += ' ' + ringClass;
 
                     var isNew = isMemberNew(m.full);
+                    var isUpdated = !isNew && isMemberUpdated(m.full);
                     if (isNew) card.classList.add('new-member-glow');
+                    if (isUpdated) card.classList.add('updated-member-glow');
+
+                    var badgeHTML = '';
+                    if (isNew) badgeHTML = '<span class="new-member-badge">NEW</span>';
+                    else if (isUpdated) badgeHTML = '<span class="updated-member-badge">UPDATED</span>';
 
                     card.innerHTML =
                         '<button class="delete-btn" title="Remove member" onclick="removeMember(\'' + escapedName + '\')">&times;</button>' +
                         '<button class="card-pray-icon" onclick="event.stopPropagation(); openPrayerForm(\'' + escapedName + '\')" title="Pray for ' + escapeHTML(m.first || m.last) + '">🙏</button>' +
-                        (isNew ? '<span class="new-member-badge">NEW</span>' : '') +
+                        badgeHTML +
                         celebIconsHTML +
                         '<div class="' + frameClass + '" onclick="onPhotoClick(\'' + escapedName + '\', this)">' +
                             photoHTML +
@@ -10117,6 +10401,9 @@
                 delete notes[oldName];
             }
             if (!notes[newName]) notes[newName] = {};
+            // Track rename for notifications
+            notes[newName].previousName = oldName;
+            stampMemberUpdate(newName, 'renamed');
             // Re-parse first/last from the new full name
             var nameParts = newName.trim().split(/\s+/);
             if (nameParts.length >= 2) {
@@ -10566,6 +10853,8 @@
                     var name = editorState.name;
                     spousePhotos[name] = compressed;
                     saveSpousePhoto(name);
+                    stampMemberUpdate(name, 'spousePhoto');
+                    saveNotesFor(name);
                     // Reset spouse B adjustments
                     editorState.spouseZoom = 100;
                     editorState.spouseX = 0;
@@ -10781,6 +11070,8 @@
                     resizeImage(ev.target.result, 1200, 0.7, function(compressed) {
                         uploadedPhotos[pendingUploadName] = compressed;
                         saveUploadedPhotosStore(pendingUploadName);
+                        stampMemberUpdate(pendingUploadName, 'photo');
+                        saveNotesFor(pendingUploadName);
                         render();
                         showToast('Photo added for ' + pendingUploadName);
                         playSaveSound();
@@ -10811,6 +11102,8 @@
                     const name = editorState.name;
                     uploadedPhotos[name] = compressed;
                     saveUploadedPhotosStore(name);
+                    stampMemberUpdate(name, 'photo');
+                    saveNotesFor(name);
                     editorState.imgSrc = compressed;
                     document.getElementById('editorImg').src = compressed;
                     editorState.zoom = 100;
@@ -11019,9 +11312,9 @@
             }
 
             var middleName = personNotes ? personNotes.middleName || '' : '';
-            var webURL = personNotes ? personNotes.webURL || '' : '';
+            var memberLinks = getMemberLinks(fullName);
             const cardSections = normalizeSections(personNotes ? personNotes.sections : null);
-            const hasNotes = cardSections.length > 0 || !!webURL || !!middleName;
+            const hasNotes = cardSections.length > 0 || memberLinks.length > 0 || !!middleName;
             document.getElementById('cfNoteInd').style.display = hasNotes ? 'flex' : 'none';
 
             var displayName = fullName;
@@ -11117,24 +11410,14 @@
                     sec.innerHTML = '<div class="cb-label">' + escapeHTML(s.label) + '</div><div class="cb-value">' + escapeHTMLWithBreaks(s.value) + '</div>';
                     body.appendChild(sec);
                 });
-                // Show clickable URL link
-                if (webURL) {
+                // Show social/link icons strip
+                if (memberLinks.length > 0) {
                     var urlHr = document.createElement('hr');
                     urlHr.className = 'cb-divider';
                     body.appendChild(urlHr);
                     var urlSec = document.createElement('div');
                     urlSec.className = 'cb-section';
-                    var safeURL = escapeHTML(webURL);
-                    // Ensure URL has protocol for proper linking
-                    var linkHref = webURL;
-                    if (!/^https?:\/\//i.test(linkHref)) linkHref = 'https://' + linkHref;
-                    // Display a clean label (strip protocol for readability)
-                    var displayURL = webURL.replace(/^https?:\/\//i, '').replace(/\/$/, '');
-                    if (displayURL.length > 35) displayURL = displayURL.substring(0, 33) + '…';
-                    urlSec.innerHTML = '<div class="cb-label">🔗 Website</div>' +
-                        '<div class="cb-value"><a href="' + escapeHTML(linkHref) + '" target="_blank" rel="noopener noreferrer" ' +
-                        'style="color:#2a7ac0;text-decoration:none;word-break:break-all;" ' +
-                        'onclick="event.stopPropagation()">' + escapeHTML(displayURL) + '</a></div>';
+                    urlSec.innerHTML = '<div class="cb-label">\uD83D\uDD17 Links</div>' + buildLinkStripHTML(memberLinks, 'cb');
                     body.appendChild(urlSec);
                 }
             }
@@ -11305,7 +11588,7 @@
             renderEditTitleQuickPicks();
             document.getElementById('editNickname').value = personNotes.nickname || '';
             document.getElementById('editMiddleName').value = personNotes.middleName || '';
-            document.getElementById('editWebURL').value = personNotes.webURL || '';
+            populateEditLinks(fullName);
             populateChurchSelect(personNotes.church);
             renderMilestoneDateFields(fullName, personNotes);
             renderSectionEntries(sections);
@@ -11313,6 +11596,74 @@
             const panel = document.getElementById('notesEditPanel');
             panel.style.display = 'block';
             setTimeout(function() { panel.scrollIntoView({ behavior: 'smooth' }); }, 100);
+        }
+
+        // ── Multi-URL edit form helpers ──
+        function populateEditLinks(fullName) {
+            var container = document.getElementById('editLinksContainer');
+            container.innerHTML = '';
+            var links = getMemberLinks(fullName);
+            if (links.length === 0) {
+                addEditLinkRow('');
+            } else {
+                links.forEach(function(url) { addEditLinkRow(url); });
+            }
+        }
+        function addEditLinkRow(url) {
+            var container = document.getElementById('editLinksContainer');
+            var row = document.createElement('div');
+            row.className = 'edit-link-row';
+            var iconDiv = document.createElement('div');
+            iconDiv.className = 'edit-link-platform-icon';
+            var platform = detectPlatform(url);
+            if (platform) {
+                iconDiv.className += ' cb-link-icon ' + platform.key;
+                iconDiv.style.cssText = '';
+                iconDiv.innerHTML = platform.icon;
+            } else if (url) {
+                iconDiv.innerHTML = '\uD83D\uDD17';
+            } else {
+                iconDiv.innerHTML = '<span style="color:#ccc;">\uD83D\uDD17</span>';
+            }
+            row.appendChild(iconDiv);
+            var input = document.createElement('input');
+            input.type = 'url';
+            input.value = url;
+            input.placeholder = 'https://example.com';
+            input.addEventListener('input', function() {
+                var p = detectPlatform(this.value);
+                if (p) {
+                    iconDiv.className = 'edit-link-platform-icon cb-link-icon ' + p.key;
+                    iconDiv.innerHTML = p.icon;
+                } else if (this.value.trim()) {
+                    iconDiv.className = 'edit-link-platform-icon';
+                    iconDiv.innerHTML = '\uD83D\uDD17';
+                } else {
+                    iconDiv.className = 'edit-link-platform-icon';
+                    iconDiv.innerHTML = '<span style="color:#ccc;">\uD83D\uDD17</span>';
+                }
+            });
+            row.appendChild(input);
+            var removeBtn = document.createElement('button');
+            removeBtn.type = 'button';
+            removeBtn.className = 'edit-link-remove';
+            removeBtn.innerHTML = '&times;';
+            removeBtn.onclick = function() {
+                row.remove();
+                if (container.children.length === 0) addEditLinkRow('');
+            };
+            row.appendChild(removeBtn);
+            container.appendChild(row);
+            if (!url) input.focus();
+        }
+        function collectEditLinks() {
+            var links = [];
+            var rows = document.querySelectorAll('#editLinksContainer .edit-link-row');
+            rows.forEach(function(row) {
+                var val = row.querySelector('input').value.trim();
+                if (val) links.push(val);
+            });
+            return links;
         }
 
         function renderEditTitleQuickPicks() {
@@ -11534,7 +11885,7 @@
             const church = document.getElementById('editChurch').value;
             const nickname = document.getElementById('editNickname').value.trim();
             const middleName = document.getElementById('editMiddleName').value.trim();
-            const webURL = document.getElementById('editWebURL').value.trim();
+            const editedLinks = collectEditLinks();
             const entries = document.querySelectorAll('#sectionsList .section-entry');
             const sections = [];
             entries.forEach(row => {
@@ -11600,13 +11951,22 @@
             n.church = church;
             n.nickname = nickname;
             n.middleName = middleName;
-            n.webURL = webURL;
+            // Multi-URL: save links array, keep webURL for backward compat
+            var oldLinks = JSON.stringify(n.links || (n.webURL ? [n.webURL] : []));
+            n.links = editedLinks;
+            n.webURL = editedLinks.length > 0 ? editedLinks[0] : '';
+            if (JSON.stringify(editedLinks) !== oldLinks && editedLinks.length > 0) {
+                stampMemberUpdate(editingCardPerson, 'links');
+            }
+            // Track title changes for notifications
+            var oldTitle = memberTitles[editingCardPerson] || '';
             n.sections = sections;
             n.firstName = firstName;
             n.lastName = lastName;
             if (Object.keys(editDates).length > 0) { n.dates = editDates; } else { delete n.dates; }
             saveNotesFor(editingCardPerson);
             if (title) {
+                if (title !== oldTitle) stampMemberUpdate(editingCardPerson, 'title');
                 memberTitles[editingCardPerson] = title;
                 saveMemberTitleFor(editingCardPerson);
             } else if (memberTitles[editingCardPerson]) {
@@ -12619,14 +12979,10 @@
                 back += '<div class="browse-cf-no-notes">No notes yet</div>';
             }
 
-            // Clickable URL
-            var webURL = personNotes.webURL || '';
-            if (webURL) {
-                var linkHref = webURL;
-                if (!/^https?:\/\//i.test(linkHref)) linkHref = 'https://' + linkHref;
-                var displayURL = webURL.replace(/^https?:\/\//i, '').replace(/\/$/, '');
-                if (displayURL.length > 30) displayURL = displayURL.substring(0, 28) + '\u2026';
-                back += '<div class="browse-cf-url">\uD83D\uDD17 <a href="' + escapeHTML(linkHref) + '" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">' + escapeHTML(displayURL) + '</a></div>';
+            // Social/link icon strip
+            var browseLinks = getMemberLinks(fullName);
+            if (browseLinks.length > 0) {
+                back += buildLinkStripHTML(browseLinks, 'browse');
             }
             // Spacer pushes actions to bottom of card
             back += '<div style="flex:1;"></div>';
@@ -13450,13 +13806,28 @@
     <!-- Prayer print container (hidden, used for printing) -->
     <div class="prayer-print-container" id="prayerPrintContainer" style="display:none;"></div>
 
-    <!-- ═══ New Member Spotlight Overlay ═══ -->
+    <!-- ═══ What's New Spotlight Overlay ═══ -->
     <div class="new-member-spotlight" id="newMemberSpotlight" onclick="if(event.target===this)dismissSpotlight()">
         <div class="new-member-spotlight-header">
-            <h2>✨ New Members</h2>
-            <p id="spotlightSubtext">New members since your last visit</p>
+            <h2 id="spotlightTitle">✨ What's New</h2>
+            <p id="spotlightSubtext">Changes since your last visit</p>
         </div>
-        <div class="spotlight-cards" id="spotlightCards"></div>
+        <div id="spotlightNewSection" style="display:none;">
+            <div style="display:flex;align-items:center;gap:10px;max-width:560px;margin:16px auto 10px;padding:0 8px;">
+                <div style="flex:1;height:1px;background:rgba(255,255,255,0.15);"></div>
+                <span style="font-size:0.7em;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 12px;border-radius:10px;color:#e8b43c;background:rgba(232,180,60,0.15);border:1px solid rgba(232,180,60,0.3);">NEW</span>
+                <div style="flex:1;height:1px;background:rgba(255,255,255,0.15);"></div>
+            </div>
+            <div class="spotlight-cards" id="spotlightCards"></div>
+        </div>
+        <div id="spotlightUpdatedSection" style="display:none;">
+            <div style="display:flex;align-items:center;gap:10px;max-width:560px;margin:16px auto 10px;padding:0 8px;">
+                <div style="flex:1;height:1px;background:rgba(255,255,255,0.15);"></div>
+                <span style="font-size:0.7em;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 12px;border-radius:10px;color:#5ca8e0;background:rgba(92,168,224,0.12);border:1px solid rgba(92,168,224,0.25);">UPDATED</span>
+                <div style="flex:1;height:1px;background:rgba(255,255,255,0.15);"></div>
+            </div>
+            <div class="spotlight-cards" id="spotlightUpdatedCards"></div>
+        </div>
         <button class="spotlight-dismiss" onclick="dismissSpotlight()">Got it!</button>
     </div>
 
