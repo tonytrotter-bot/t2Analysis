@@ -6889,6 +6889,10 @@
         }
 
         function showNewMemberSpotlight(newMembers, updatedMembers, prayers, celebrations) {
+            // Prevent duplicate presentation if already visible
+            var spotEl = document.getElementById('newMemberSpotlight');
+            if (spotEl && spotEl.classList.contains('show')) return;
+
             var hasNew = newMembers && newMembers.length > 0;
             var hasUpdated = updatedMembers && updatedMembers.length > 0;
             var hasPrayers = prayers && (prayers.newShared.length > 0 || prayers.recentAnswered.length > 0);
@@ -7133,8 +7137,8 @@
                 return;
             }
 
-            // Standard login check
-            if (showSpotlight) {
+            // Standard login check — guard against duplicate presentation
+            if (showSpotlight && !_spotlightShownThisSession) {
                 _spotlightShownThisSession = true;
                 setTimeout(function() {
                     showNewMemberSpotlight(newMembers, updatedMembers, prayers, celebrations);
