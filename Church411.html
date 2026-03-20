@@ -2037,6 +2037,13 @@
             --spot-prayer-meta: rgba(180,140,222,0.8);
         }
         .new-member-spotlight.show { display: flex; }
+        /* Desktop: inner wrapper is a simple pass-through, outer overlay scrolls */
+        .spotlight-scroll-inner {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
         /* Freeze background scroll when spotlight is open */
         body.spotlight-open {
             overflow: hidden !important;
@@ -2045,21 +2052,31 @@
             height: 100% !important;
             touch-action: none;
         }
-        /* Mobile: remove backdrop-filter, use 0.90 opacity for all themes */
+        /* Mobile: fully opaque solid bg, no backdrop-filter, no overlay scroll */
         @media (max-width: 899px) {
             .new-member-spotlight {
-                background: rgba(0,0,0,0.90) !important;
+                background: #0d0d0d !important;
                 backdrop-filter: none !important;
                 -webkit-backdrop-filter: none !important;
+                overflow-y: hidden !important;
             }
             .new-member-spotlight.spot-theme-frost {
-                background: rgba(200,218,240,0.90) !important;
+                background: #c8daf0 !important;
             }
             .new-member-spotlight.spot-theme-navy {
-                background: rgba(18,38,65,0.90) !important;
+                background: #142845 !important;
             }
             .new-member-spotlight.spot-theme-glass {
-                background: rgba(235,242,250,0.90) !important;
+                background: #e4ecf6 !important;
+            }
+            .spotlight-scroll-inner {
+                flex: 1;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
             }
         }
         /* ── Spotlight Theme: Frosty Ice Blue ── */
@@ -14252,7 +14269,8 @@
     <div class="prayer-print-container" id="prayerPrintContainer" style="display:none;"></div>
 
     <!-- ═══ What's New Spotlight Overlay ═══ -->
-    <div class="new-member-spotlight" id="newMemberSpotlight" onclick="if(event.target===this)dismissSpotlight()">
+    <div class="new-member-spotlight" id="newMemberSpotlight" onclick="if(event.target===this||event.target.classList.contains('spotlight-scroll-inner'))dismissSpotlight()">
+        <div class="spotlight-scroll-inner">
         <div class="new-member-spotlight-header">
             <h2 id="spotlightTitle">✨ What's New</h2>
             <p id="spotlightSubtext">Changes since your last visit</p>
@@ -14290,6 +14308,7 @@
             <div class="spotlight-celeb-list" id="spotlightCelebrationCards"></div>
         </div>
         <button class="spotlight-dismiss" onclick="dismissSpotlight()">Got it!</button>
+        </div>
     </div>
 
 </body>
