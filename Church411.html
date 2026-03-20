@@ -2013,6 +2013,7 @@
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
             overscroll-behavior: none;
+            touch-action: none;
             /* Default theme (dark) text colors */
             --spot-text: #fff;
             --spot-text-sub: rgba(255,255,255,0.7);
@@ -2050,6 +2051,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            touch-action: pan-y;
         }
         /* Freeze background scroll when spotlight is open */
         body.spotlight-open {
@@ -2070,6 +2072,7 @@
                 overflow-y: auto;
                 -webkit-overflow-scrolling: touch;
                 overscroll-behavior: none;
+                touch-action: pan-y;
                 width: 100%;
                 display: flex;
                 flex-direction: column;
@@ -7202,7 +7205,18 @@
             // Guard the inner scroll wrapper against scrollTop=0
             var _inner = document.querySelector('.spotlight-scroll-inner');
             if (_inner) { _inner.scrollTop = 1; _guardScrollTop(_inner); }
-            document.getElementById('newMemberSpotlight').classList.add('show');
+            // Block touch pass-through on the overlay itself
+            var _spotEl = document.getElementById('newMemberSpotlight');
+            if (!_spotEl._touchBlocked) {
+                _spotEl._touchBlocked = true;
+                _spotEl.addEventListener('touchmove', function(e) {
+                    // Allow scrolling inside the inner wrapper, block everything else
+                    if (!e.target.closest('.spotlight-scroll-inner')) {
+                        e.preventDefault();
+                    }
+                }, { passive: false });
+            }
+            _spotEl.classList.add('show');
         }
 
         function dismissSpotlight() {
