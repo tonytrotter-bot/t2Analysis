@@ -4365,6 +4365,19 @@
             border-radius: 12px; padding: 10px 14px; margin-bottom: 6px;
             animation: spotlightCardIn 0.5s ease-out both;
         }
+        .spotlight-celeb-photo {
+            width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0;
+            overflow: hidden; background: rgba(255,255,255,0.08);
+            border: 2px solid rgba(232,180,60,0.5);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .spotlight-celeb-photo img {
+            width: 100%; height: 100%; object-fit: cover; display: block;
+        }
+        .spotlight-celeb-initials {
+            font-size: 0.55em; font-weight: 700; color: var(--spot-text-dim);
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
         .spotlight-celeb-emoji { font-size: 1.4em; flex-shrink: 0; }
         .spotlight-celeb-body { flex: 1; min-width: 0; }
         .spotlight-celeb-name { color: var(--spot-text); font-size: 0.85em; font-weight: 600; }
@@ -7204,7 +7217,20 @@
                         var memoryLabel = entry.deceased ? ' \u00B7 In loving memory' : '';
                         var rowClass = 'spotlight-celeb-row spotlight-tappable';
                         var escapedFN = escapeHTML(entry.fullName).replace(/'/g, "\\'");
+                        // Build small photo circle for celebration row
+                        var celebPhotoHTML = '';
+                        var celebInitials = '';
+                        var fnParts = entry.displayName.split(' ');
+                        celebInitials = fnParts.length >= 2
+                            ? (fnParts[0][0] || '') + (fnParts[fnParts.length - 1][0] || '')
+                            : (entry.displayName[0] || '');
+                        celebInitials = escapeHTML(celebInitials.toUpperCase());
+                        celebPhotoHTML = '<div class="spotlight-celeb-photo" data-name="' + escapeHTML(entry.fullName) + '">';
+                        celebPhotoHTML += '<div class="spotlight-celeb-initials">' + celebInitials + '</div>';
+                        celebPhotoHTML += '</div>';
+
                         var html = '<div class="' + rowClass + '" style="cursor:pointer;" onclick="spotlightGoToMember(\'' + escapedFN + '\')">';
+                        html += celebPhotoHTML;
                         html += '<span class="spotlight-celeb-emoji" style="color:' + entry.color + '">' + entry.emoji + '</span>';
                         html += '<div class="spotlight-celeb-body">';
                         html += '<div class="spotlight-celeb-name">' + escapeHTML(entry.displayName) + '<span class="spotlight-celeb-type" style="color:' + entry.color + '">' + entry.type + ageLabel + memoryLabel + '</span></div>';
@@ -7227,17 +7253,39 @@
                 }
             }
 
-            // Try to load IndexedDB photos for all cards
-            var allNames = (newMembers || []).concat(updatedMembers || []);
-            allNames.forEach(function(nm) {
-                if (uploadedPhotos[nm.name] === '_indexed_') {
-                    getCachedPhoto(nm.name).then(function(data) {
-                        if (data) {
-                            var els = document.querySelectorAll('#newMemberSpotlight [data-name="' + CSS.escape(nm.name) + '"]');
-                            els.forEach(function(el) { el.innerHTML = '<img src="' + data + '" alt="">'; });
-                        }
-                    });
-                }
+            // Resolve photos for ALL spotlight cards (new, updated, and celebrations)
+            // Uses the same 3-tier cache as grid cards: memory → uploadedPhotos → IndexedDB
+            var allSpotlightNames = [];
+            (newMembers || []).forEach(function(nm) { allSpotlightNames.push(nm.name); });
+            (updatedMembers || []).forEach(function(um) { allSpotlightNames.push(um.name); });
+            if (hasCelebrations) {
+                (celebrations.thisWeek || []).concat(celebrations.nextWeek || []).forEach(function(entry) {
+                    if (allSpotlightNames.indexOf(entry.fullName) === -1) allSpotlightNames.push(entry.fullName);
+                });
+            }
+            allSpotlightNames.forEach(function(name) {
+                if (!uploadedPhotos[name]) return; // no photo at all
+                resolveLazyPhoto(name, function(data) {
+                    if (data) {
+                        var els = document.querySelectorAll('#newMemberSpotlight [data-name="' + CSS.escape(name) + '"]');
+                        els.forEach(function(el) { el.innerHTML = '<img src="' + data + '" alt="">'; });
+                    } else if (firebaseReady) {
+                        // Fallback: fetch directly from Firebase if local caches are stale/empty
+                        var fbKey = encodeFBKey(name);
+                        db.ref('churchDirectory/uploadedPhotos/' + fbKey).once('value', function(snap) {
+                            var fbData = snap.val();
+                            if (fbData && isValidPhotoData(fbData)) {
+                                // Update local caches so it's fresh next time
+                                cachePhoto(name, fbData);
+                                _photoMemCache[name] = fbData;
+                                _photoCacheOrder.push(name);
+                                _evictPhotoCache();
+                                var els = document.querySelectorAll('#newMemberSpotlight [data-name="' + CSS.escape(name) + '"]');
+                                els.forEach(function(el) { el.innerHTML = '<img src="' + fbData + '" alt="">'; });
+                            }
+                        });
+                    }
+                });
             });
 
             applySpotlightTheme();
