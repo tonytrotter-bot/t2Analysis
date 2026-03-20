@@ -2037,6 +2037,31 @@
             --spot-prayer-meta: rgba(180,140,222,0.8);
         }
         .new-member-spotlight.show { display: flex; }
+        /* Freeze background scroll when spotlight is open */
+        body.spotlight-open {
+            overflow: hidden !important;
+            position: fixed !important;
+            width: 100% !important;
+            height: 100% !important;
+            touch-action: none;
+        }
+        /* Mobile: remove backdrop-filter, use 0.90 opacity for all themes */
+        @media (max-width: 899px) {
+            .new-member-spotlight {
+                background: rgba(0,0,0,0.90) !important;
+                backdrop-filter: none !important;
+                -webkit-backdrop-filter: none !important;
+            }
+            .new-member-spotlight.spot-theme-frost {
+                background: rgba(200,218,240,0.90) !important;
+            }
+            .new-member-spotlight.spot-theme-navy {
+                background: rgba(18,38,65,0.90) !important;
+            }
+            .new-member-spotlight.spot-theme-glass {
+                background: rgba(235,242,250,0.90) !important;
+            }
+        }
         /* ── Spotlight Theme: Frosty Ice Blue ── */
         .new-member-spotlight.spot-theme-frost {
             background: rgba(200,218,240,0.88);
@@ -7061,11 +7086,18 @@
             });
 
             applySpotlightTheme();
+            // Freeze background scroll, preserve position
+            window._spotlightScrollY = window.scrollY;
+            document.body.classList.add('spotlight-open');
+            document.body.style.top = '-' + window._spotlightScrollY + 'px';
             document.getElementById('newMemberSpotlight').classList.add('show');
         }
 
         function dismissSpotlight() {
             document.getElementById('newMemberSpotlight').classList.remove('show');
+            document.body.classList.remove('spotlight-open');
+            document.body.style.top = '';
+            window.scrollTo(0, window._spotlightScrollY || 0);
             // Clear updateFlags for members now that user has seen them
             members.forEach(function(m) {
                 var n = notes[m];
