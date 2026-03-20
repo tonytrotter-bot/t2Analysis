@@ -2060,22 +2060,10 @@
             touch-action: none;
             overscroll-behavior: none !important;
         }
-        /* Mobile: 0.90 opacity, no backdrop-filter, no overlay scroll */
+        /* Mobile: inner scroll wrapper takes over scrolling */
         @media (max-width: 899px) {
             .new-member-spotlight {
-                background: rgba(0,0,0,0.90) !important;
-                backdrop-filter: none !important;
-                -webkit-backdrop-filter: none !important;
                 overflow-y: hidden !important;
-            }
-            .new-member-spotlight.spot-theme-frost {
-                background: rgba(200,218,240,0.90) !important;
-            }
-            .new-member-spotlight.spot-theme-navy {
-                background: rgba(18,38,65,0.90) !important;
-            }
-            .new-member-spotlight.spot-theme-glass {
-                background: rgba(235,242,250,0.90) !important;
             }
             .spotlight-scroll-inner {
                 flex: 1;
@@ -4647,6 +4635,16 @@
                 </select>
                 <div style="font-size:0.7em;color:#7a9cc6;margin-top:4px;font-style:italic;">Background style for the "What's New" spotlight overlay</div>
             </div>
+            <div style="margin-top:12px;">
+                <label style="font-size:0.82em;color:#5a7a9a;font-weight:600;display:block;margin-bottom:6px;">Badge Duration</label>
+                <select id="badgeDurationSelect" onchange="updateBadgeDuration(this.value)" style="padding:6px 10px;border-radius:8px;border:1px solid #b0c4de;font-size:0.82em;background:#fff;color:#2a5a8a;width:100%;">
+                    <option value="1">1 day</option>
+                    <option value="3">3 days</option>
+                    <option value="7" selected>1 week</option>
+                    <option value="14">2 weeks</option>
+                </select>
+                <div style="font-size:0.7em;color:#7a9cc6;margin-top:4px;font-style:italic;">How long NEW and UPDATED badges remain visible on member cards</div>
+            </div>
         </div>
 
         <div class="settings-section">
@@ -5097,34 +5095,43 @@
         function appScrollTo(x, y) { var s = getAppScroll(); if (s) s.scrollTop = Math.max(1, y); }
 
         // ── scrollTop=1 trick: never let any scrollable container reach true 0 ──
+        // Works globally via a single document scroll listener (capture phase)
+        var _guardedEls = new WeakSet();
         function _guardScrollTop(el) {
-            if (!el) return;
+            if (!el || _guardedEls.has(el)) return;
+            _guardedEls.add(el);
             el.addEventListener('scroll', function() {
                 if (el.scrollTop <= 0) el.scrollTop = 1;
             }, { passive: true });
-            // Initialize at 1
             if (el.scrollTop <= 0) el.scrollTop = 1;
         }
-
-        // ── Scroll dampening near the top: intercept touch to slow pull-down ──
-        var _dampTouch = { startY: 0, el: null, active: false };
-        document.addEventListener('touchstart', function(e) {
-            // Find the nearest scrollable ancestor
-            var el = e.target;
+        // Find the nearest scrollable ancestor from an element
+        function _findScrollable(target) {
+            var el = target;
             while (el && el !== document.body && el !== document.documentElement) {
                 if (el.scrollHeight > el.clientHeight) {
                     var ov = window.getComputedStyle(el).overflowY;
-                    if (ov === 'auto' || ov === 'scroll') {
-                        _dampTouch.el = el;
-                        _dampTouch.startY = e.touches[0].pageY;
-                        _dampTouch.active = (el.scrollTop <= 5);
-                        return;
-                    }
+                    if (ov === 'auto' || ov === 'scroll') return el;
                 }
                 el = el.parentElement;
             }
-            _dampTouch.el = null;
-            _dampTouch.active = false;
+            return null;
+        }
+
+        // ── Scroll dampening near the top + auto-guard on touch ──
+        var _dampTouch = { startY: 0, el: null, active: false };
+        document.addEventListener('touchstart', function(e) {
+            var el = _findScrollable(e.target);
+            if (el) {
+                // Auto-guard any scrollable element we touch
+                _guardScrollTop(el);
+                _dampTouch.el = el;
+                _dampTouch.startY = e.touches[0].pageY;
+                _dampTouch.active = (el.scrollTop <= 5);
+            } else {
+                _dampTouch.el = null;
+                _dampTouch.active = false;
+            }
         }, { passive: true });
 
         document.addEventListener('touchmove', function(e) {
@@ -5392,6 +5399,7 @@
         var showDeceasedBirthdays = true; // show birthday celebrations for members with a Death date
         var newMemberAlertMode = 'both'; // 'off', 'badge', 'spotlight', 'both'
         var spotlightTheme = 'dark'; // 'dark', 'frost', 'navy', 'glass'
+        var badgeDuration = 7; // days to show NEW/UPDATED badges (1, 3, 7, 14)
 
         // ════════════════════════════════════════
         // FIREBASE SETUP
@@ -6692,6 +6700,23 @@
             render(); // refresh badges
         }
 
+        function loadBadgeDuration() {
+            var saved = safeLocalGet('church411_badgeDuration');
+            if (saved) badgeDuration = parseInt(saved, 10) || 7;
+            var sel = document.getElementById('badgeDurationSelect');
+            if (sel) sel.value = badgeDuration;
+        }
+        function updateBadgeDuration(val) {
+            badgeDuration = parseInt(val, 10) || 7;
+            safeLocalSet('church411_badgeDuration', badgeDuration);
+            if (firebaseReady) {
+                markSaved('settings/badgeDuration');
+                markSaved('settings');
+                syncToFirebase('settings/badgeDuration', badgeDuration);
+            }
+            render(); // refresh badges
+        }
+
         function loadSpotlightTheme() {
             var saved = safeLocalGet('church411_spotlightTheme');
             if (saved) spotlightTheme = saved;
@@ -6829,13 +6854,12 @@
         function isMemberUpdated(fullName) {
             if (newMemberAlertMode === 'off') return false;
             if (newMemberAlertMode === 'spotlight') return false;
-            var lastVisit = getLastVisitTimestamp();
-            if (!lastVisit) return false;
             var n = notes[fullName];
             if (!n || !n.updatedAt) return false;
+            var cutoff = Date.now() - (badgeDuration * 86400000);
             // Don't show UPDATED badge if they're already showing NEW
-            if (n.addedAt && n.addedAt > lastVisit) return false;
-            return n.updatedAt > lastVisit;
+            if (n.addedAt && n.addedAt > cutoff) return false;
+            return n.updatedAt > cutoff;
         }
 
         // Get members updated since a timestamp (for spotlight)
@@ -6870,14 +6894,14 @@
             return newOnes;
         }
 
-        // Check if a member is "new" (added since last visit)
+        // Check if a member is "new" (added within badgeDuration days)
         function isMemberNew(fullName) {
             if (newMemberAlertMode === 'off') return false;
             if (newMemberAlertMode === 'spotlight') return false; // badges not shown in spotlight-only mode
-            var lastVisit = getLastVisitTimestamp();
-            if (!lastVisit) return false;
             var n = notes[fullName];
-            return n && n.addedAt && n.addedAt > lastVisit;
+            if (!n || !n.addedAt) return false;
+            var cutoff = Date.now() - (badgeDuration * 86400000);
+            return n.addedAt > cutoff;
         }
 
         // ── Spotlight: prayer & celebration helpers ──
@@ -9736,6 +9760,18 @@
                     safeLocalSet('church411_spotlightTheme', val);
                     var sel = document.getElementById('spotlightThemeSelect');
                     if (sel) sel.value = spotlightTheme;
+                }
+            });
+
+            db.ref('churchDirectory/settings/badgeDuration').on('value', function(snap) {
+                if (recentlySaved('settings/badgeDuration')) return;
+                var val = snap.val();
+                if (val && [1,3,7,14].indexOf(parseInt(val,10)) !== -1) {
+                    badgeDuration = parseInt(val, 10);
+                    safeLocalSet('church411_badgeDuration', badgeDuration);
+                    var sel = document.getElementById('badgeDurationSelect');
+                    if (sel) sel.value = badgeDuration;
+                    render();
                 }
             });
 
@@ -14077,6 +14113,7 @@
         loadShowDeceasedBirthdays();
         loadNewMemberAlertMode();
         loadSpotlightTheme();
+        loadBadgeDuration();
         // Guard all scrollable containers against scrollTop=0
         _guardScrollTop(getAppScroll());
         loadUploadedPhotos();
