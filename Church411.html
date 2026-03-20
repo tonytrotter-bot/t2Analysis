@@ -16,18 +16,24 @@
     <link rel="manifest" href="manifest.json">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { background: #1a3050; }
+        html { background: #1a3050; height: 100%; overflow: hidden; }
         body {
             font-family: 'Georgia', 'Times New Roman', serif;
             background: #eaf0f7;
             color: #1a2a40;
             padding: 0;
-            min-height: 100vh;
-            min-height: -webkit-fill-available;
+            height: 100%;
+            overflow: hidden;
+        }
+        #appScroll {
+            height: 100%;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior-y: none;
         }
         /* Standalone PWA: push content below notch/status bar */
         @media all and (display-mode: standalone) {
-            body {
+            #appScroll {
                 padding-top: env(safe-area-inset-top, 0px);
             }
         }
@@ -2054,22 +2060,22 @@
             touch-action: none;
             overscroll-behavior: none !important;
         }
-        /* Mobile: fully opaque solid bg, no backdrop-filter, no overlay scroll */
+        /* Mobile: 0.90 opacity, no backdrop-filter, no overlay scroll */
         @media (max-width: 899px) {
             .new-member-spotlight {
-                background: #0d0d0d !important;
+                background: rgba(0,0,0,0.90) !important;
                 backdrop-filter: none !important;
                 -webkit-backdrop-filter: none !important;
                 overflow-y: hidden !important;
             }
             .new-member-spotlight.spot-theme-frost {
-                background: #c8daf0 !important;
+                background: rgba(200,218,240,0.90) !important;
             }
             .new-member-spotlight.spot-theme-navy {
-                background: #142845 !important;
+                background: rgba(18,38,65,0.90) !important;
             }
             .new-member-spotlight.spot-theme-glass {
-                background: #e4ecf6 !important;
+                background: rgba(235,242,250,0.90) !important;
             }
             .spotlight-scroll-inner {
                 flex: 1;
@@ -4373,6 +4379,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
 </head>
 <body>
+<div id="appScroll">
     <!-- PIN Lock Screen -->
     <div class="pin-lock" id="pinLock">
         <svg class="pin-lock-icon" viewBox="0 0 24 24"><line x1="12" y1="2" x2="12" y2="22"/><line x1="5" y1="8" x2="19" y2="8"/></svg>
@@ -5082,6 +5089,65 @@
 
     <script>
         // ════════════════════════════════════════
+        // SCROLL WRAPPER — prevents iOS pull-to-refresh
+        // document never scrolls; #appScroll scrolls instead
+        // ════════════════════════════════════════
+        function getAppScroll() { return document.getElementById('appScroll'); }
+        function appScrollY() { var s = getAppScroll(); return s ? s.scrollTop : 0; }
+        function appScrollTo(x, y) { var s = getAppScroll(); if (s) s.scrollTop = Math.max(1, y); }
+
+        // ── scrollTop=1 trick: never let any scrollable container reach true 0 ──
+        function _guardScrollTop(el) {
+            if (!el) return;
+            el.addEventListener('scroll', function() {
+                if (el.scrollTop <= 0) el.scrollTop = 1;
+            }, { passive: true });
+            // Initialize at 1
+            if (el.scrollTop <= 0) el.scrollTop = 1;
+        }
+
+        // ── Scroll dampening near the top: intercept touch to slow pull-down ──
+        var _dampTouch = { startY: 0, el: null, active: false };
+        document.addEventListener('touchstart', function(e) {
+            // Find the nearest scrollable ancestor
+            var el = e.target;
+            while (el && el !== document.body && el !== document.documentElement) {
+                if (el.scrollHeight > el.clientHeight) {
+                    var ov = window.getComputedStyle(el).overflowY;
+                    if (ov === 'auto' || ov === 'scroll') {
+                        _dampTouch.el = el;
+                        _dampTouch.startY = e.touches[0].pageY;
+                        _dampTouch.active = (el.scrollTop <= 5);
+                        return;
+                    }
+                }
+                el = el.parentElement;
+            }
+            _dampTouch.el = null;
+            _dampTouch.active = false;
+        }, { passive: true });
+
+        document.addEventListener('touchmove', function(e) {
+            if (!_dampTouch.active || !_dampTouch.el) return;
+            var el = _dampTouch.el;
+            var pullDist = e.touches[0].pageY - _dampTouch.startY;
+            // Only intervene when pulling DOWN near the top
+            if (pullDist > 0 && el.scrollTop <= 5) {
+                e.preventDefault();
+                // Dampen: move at 20% speed and clamp to scrollTop=1
+                el.scrollTop = Math.max(1, el.scrollTop - (pullDist * 0.2));
+            }
+        }, { passive: false });
+
+        document.addEventListener('touchend', function() {
+            if (_dampTouch.el && _dampTouch.el.scrollTop <= 0) {
+                _dampTouch.el.scrollTop = 1;
+            }
+            _dampTouch.active = false;
+            _dampTouch.el = null;
+        }, { passive: true });
+
+        // ════════════════════════════════════════
         // WEB AUDIO API - SOUND EFFECTS
         // ════════════════════════════════════════
         let audioCtx = null;
@@ -5708,7 +5774,7 @@
                         setTimeout(function() {
                             document.getElementById('pinLock').classList.add('hidden');
                             document.body.classList.remove('pin-locked');
-                            window.scrollTo(0, 0);
+                            appScrollTo(0, 0);
                             updatePrayerBadge();
                             playAngelicChime();
                             if (currentUserLevel === 'admin') checkPendingResetRequests();
@@ -5809,7 +5875,7 @@
                     setTimeout(function() {
                         document.getElementById('pinLock').classList.add('hidden');
                         document.body.classList.remove('pin-locked');
-                        window.scrollTo(0, 0);
+                        appScrollTo(0, 0);
                         updatePrayerBadge();
                         playAngelicChime();
                         if (currentUserLevel === 'admin') checkPendingResetRequests();
@@ -7107,17 +7173,18 @@
 
             applySpotlightTheme();
             // Freeze background scroll, preserve position
-            window._spotlightScrollY = window.scrollY;
+            window._spotlightScrollY = appScrollY();
             document.body.classList.add('spotlight-open');
-            document.body.style.top = '-' + window._spotlightScrollY + 'px';
+            // Guard the inner scroll wrapper against scrollTop=0
+            var _inner = document.querySelector('.spotlight-scroll-inner');
+            if (_inner) { _inner.scrollTop = 1; _guardScrollTop(_inner); }
             document.getElementById('newMemberSpotlight').classList.add('show');
         }
 
         function dismissSpotlight() {
             document.getElementById('newMemberSpotlight').classList.remove('show');
             document.body.classList.remove('spotlight-open');
-            document.body.style.top = '';
-            window.scrollTo(0, window._spotlightScrollY || 0);
+            appScrollTo(0, window._spotlightScrollY || 0);
             // Clear updateFlags for members now that user has seen them
             members.forEach(function(m) {
                 var n = notes[m];
@@ -7994,7 +8061,7 @@
             let pulling = false;
 
             document.addEventListener('touchstart', function(e) {
-                if (window.scrollY === 0) {
+                if (appScrollY() === 0) {
                     startY = e.touches[0].clientY;
                     pulling = true;
                 }
@@ -8003,7 +8070,7 @@
             document.addEventListener('touchmove', function(e) {
                 if (!pulling) return;
                 const diff = e.touches[0].clientY - startY;
-                if (diff > 80 && window.scrollY === 0) {
+                if (diff > 80 && appScrollY() === 0) {
                     document.getElementById('pullIndicator').classList.add('show');
                 }
             }, { passive: true });
@@ -14010,6 +14077,8 @@
         loadShowDeceasedBirthdays();
         loadNewMemberAlertMode();
         loadSpotlightTheme();
+        // Guard all scrollable containers against scrollTop=0
+        _guardScrollTop(getAppScroll());
         loadUploadedPhotos();
         loadPrayers();
         loadBrowseSettings();
@@ -14051,7 +14120,7 @@
         document.addEventListener('click', onUserActivity);
         document.addEventListener('touchstart', onUserActivity, { passive: true });
         document.addEventListener('keydown', onUserActivity);
-        document.addEventListener('scroll', onUserActivity, { passive: true });
+        (getAppScroll() || document).addEventListener('scroll', onUserActivity, { passive: true });
 
         // ── Disable pull-to-refresh globally (iOS Safari/WebKit ignores overscroll-behavior) ──
         (function() {
@@ -14078,7 +14147,7 @@
                     el = el.parentElement;
                 }
                 // No scrollable ancestor found, or at document level — block pull-down
-                if (y > _ptrStartY && (window.scrollY || document.documentElement.scrollTop || 0) <= 0) {
+                if (y > _ptrStartY && appScrollY() <= 0) {
                     e.preventDefault();
                 }
             }, { passive: false });
@@ -14345,5 +14414,6 @@
         </div>
     </div>
 
+</div><!-- /appScroll -->
 </body>
 </html>
