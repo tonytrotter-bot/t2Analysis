@@ -14053,6 +14053,37 @@
         document.addEventListener('keydown', onUserActivity);
         document.addEventListener('scroll', onUserActivity, { passive: true });
 
+        // ── Disable pull-to-refresh globally (iOS Safari/WebKit ignores overscroll-behavior) ──
+        (function() {
+            var _ptrStartY = 0;
+            document.addEventListener('touchstart', function(e) {
+                _ptrStartY = e.touches[0].pageY;
+            }, { passive: true });
+            document.addEventListener('touchmove', function(e) {
+                var y = e.touches[0].pageY;
+                var el = e.target;
+                // Walk up the DOM to find the nearest scrollable ancestor
+                while (el && el !== document.body && el !== document.documentElement) {
+                    if (el.scrollHeight > el.clientHeight) {
+                        var style = window.getComputedStyle(el);
+                        var overflow = style.overflowY;
+                        if (overflow === 'auto' || overflow === 'scroll') {
+                            // If scrolled down inside a scrollable container, allow normal scroll
+                            if (el.scrollTop > 0) return;
+                            // At the top of a scrollable container pulling down — block it
+                            if (y > _ptrStartY) { e.preventDefault(); return; }
+                            return; // scrolling up (toward bottom) is fine
+                        }
+                    }
+                    el = el.parentElement;
+                }
+                // No scrollable ancestor found, or at document level — block pull-down
+                if (y > _ptrStartY && (window.scrollY || document.documentElement.scrollTop || 0) <= 0) {
+                    e.preventDefault();
+                }
+            }, { passive: false });
+        })();
+
         // Register Service Worker for offline caching
         // v2: Network-first for HTML pages, cache-first only for static assets
         if ('serviceWorker' in navigator) {
