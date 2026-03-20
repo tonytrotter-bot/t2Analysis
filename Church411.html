@@ -4346,6 +4346,19 @@
         }
         /* Spotlight: Celebration section */
         .spotlight-celeb-list { max-width: 560px; width: 100%; margin: 0 auto; }
+        .spotlight-tappable {
+            transition: transform 0.12s ease, box-shadow 0.12s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .spotlight-tappable:active {
+            transform: scale(0.97);
+            box-shadow: 0 0 0 2px rgba(232,180,60,0.5) !important;
+        }
+        @media (hover: hover) {
+            .spotlight-tappable:hover {
+                box-shadow: 0 0 0 2px rgba(232,180,60,0.35);
+            }
+        }
         .spotlight-celeb-row {
             display: flex; gap: 10px; align-items: center;
             background: var(--spot-card-bg); border: 1px solid var(--spot-card-border);
@@ -6990,6 +7003,33 @@
         }
 
         // ── Spotlight overlay ──
+        // Navigate from spotlight to a member's card in the grid
+        var _spotNavReady = 0; // timestamp when spotlight tiles become tappable
+        function spotlightGoToMember(memberName) {
+            if (Date.now() < _spotNavReady) return; // ignore accidental taps during opening
+            dismissSpotlight();
+            setTimeout(function() {
+                // Find the card in the grid and scroll to it
+                var cards = document.querySelectorAll('.person-card[data-member]');
+                var target = null;
+                cards.forEach(function(c) { if (c.dataset.member === memberName) target = c; });
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    // Flash the card briefly
+                    target.style.transition = 'box-shadow 0.3s';
+                    target.style.boxShadow = '0 0 0 3px rgba(232,180,60,0.7), 0 4px 16px rgba(232,180,60,0.3)';
+                    setTimeout(function() { target.style.boxShadow = ''; }, 2000);
+                    // Open the flip card after a beat
+                    setTimeout(function() { openCardFlip(memberName, null); }, 400);
+                }
+            }, 300);
+        }
+        function spotlightGoToPrayers() {
+            if (Date.now() < _spotNavReady) return;
+            dismissSpotlight();
+            setTimeout(function() { openPrayerHub(); }, 300);
+        }
+
         function _buildSpotlightCardHTML(name, dateLabel, changeTags) {
             var photoSrc = '';
             if (uploadedPhotos[name]) {
@@ -7004,7 +7044,8 @@
             var cardClass = changeTags ? 'spotlight-card spotlight-card-updated' : 'spotlight-card';
             var borderStyle = changeTags ? 'border-color:rgba(92,168,224,0.3);' : '';
             var photoBorder = changeTags ? 'border:3px solid rgba(92,168,224,0.5);' : 'border:3px solid rgba(232,180,60,0.7);';
-            var html = '<div class="' + cardClass + '" style="' + borderStyle + '">';
+            var escapedName = escapeHTML(name).replace(/'/g, "\\'");
+            var html = '<div class="' + cardClass + ' spotlight-tappable" style="' + borderStyle + 'cursor:pointer;" onclick="spotlightGoToMember(\'' + escapedName + '\')">';
             html += '<div class="spotlight-card-photo" data-name="' + escapeHTML(name) + '" style="' + photoBorder + '">';
             if (photoSrc) {
                 html += '<img src="' + photoSrc + '" alt="">';
@@ -7109,7 +7150,7 @@
                             var d = new Date(p.createdAt);
                             var dateStr = MONTHS[d.getMonth()] + ' ' + d.getDate();
                             var truncText = p.text.length > 60 ? p.text.substring(0, 57) + '\u2026' : p.text;
-                            prayerHTML += '<div class="spotlight-prayer-item">';
+                            prayerHTML += '<div class="spotlight-prayer-item spotlight-tappable" style="cursor:pointer;" onclick="spotlightGoToPrayers()">';
                             prayerHTML += '<span class="spotlight-prayer-emoji">' + catEmoji + '</span>';
                             prayerHTML += '<div class="spotlight-prayer-body">';
                             prayerHTML += '<div class="spotlight-prayer-name">' + escapeHTML(p.forName) + ' <span class="spotlight-prayer-date">' + dateStr + '</span></div>';
@@ -7124,7 +7165,7 @@
                             var d = new Date(p.answeredDate);
                             var dateStr = MONTHS[d.getMonth()] + ' ' + d.getDate();
                             var truncText = p.text.length > 60 ? p.text.substring(0, 57) + '\u2026' : p.text;
-                            prayerHTML += '<div class="spotlight-prayer-item spotlight-prayer-answered">';
+                            prayerHTML += '<div class="spotlight-prayer-item spotlight-prayer-answered spotlight-tappable" style="cursor:pointer;" onclick="spotlightGoToPrayers()">';
                             prayerHTML += '<span class="spotlight-prayer-emoji">\u2705</span>';
                             prayerHTML += '<div class="spotlight-prayer-body">';
                             prayerHTML += '<div class="spotlight-prayer-name">' + escapeHTML(p.forName) + ' <span class="spotlight-prayer-date">' + dateStr + '</span></div>';
@@ -7161,8 +7202,9 @@
                             ageLabel = ' \u2014 ' + entry.age + ' years';
                         }
                         var memoryLabel = entry.deceased ? ' \u00B7 In loving memory' : '';
-                        var rowClass = 'spotlight-celeb-row';
-                        var html = '<div class="' + rowClass + '">';
+                        var rowClass = 'spotlight-celeb-row spotlight-tappable';
+                        var escapedFN = escapeHTML(entry.fullName).replace(/'/g, "\\'");
+                        var html = '<div class="' + rowClass + '" style="cursor:pointer;" onclick="spotlightGoToMember(\'' + escapedFN + '\')">';
                         html += '<span class="spotlight-celeb-emoji" style="color:' + entry.color + '">' + entry.emoji + '</span>';
                         html += '<div class="spotlight-celeb-body">';
                         html += '<div class="spotlight-celeb-name">' + escapeHTML(entry.displayName) + '<span class="spotlight-celeb-type" style="color:' + entry.color + '">' + entry.type + ageLabel + memoryLabel + '</span></div>';
@@ -7217,6 +7259,8 @@
                 }, { passive: false });
             }
             _spotEl.classList.add('show');
+            // Set delay guard — tiles become tappable after 600ms to prevent accidental taps
+            _spotNavReady = Date.now() + 600;
         }
 
         function dismissSpotlight() {
@@ -12798,6 +12842,7 @@
                 { key: 'staff', label: 'Staff (has title)' },
                 { key: 'member', label: 'Members (no title)' },
                 { key: 'bookmarked', label: 'Bookmarked' },
+                { key: 'newupdated', label: 'New / Updated' },
                 { key: 'celebrating', label: 'Celebrating' },
                 { key: 'nophoto', label: 'Missing Photo' },
                 { key: 'nonotes', label: 'No Notes' }
@@ -12862,6 +12907,7 @@
                     if (mt === 'staff') return 'Staff';
                     if (mt === 'member') return 'Members';
                     if (mt === 'bookmarked') return 'Bookmarked';
+                    if (mt === 'newupdated') return 'New / Updated';
                     if (mt === 'celebrating') return 'Celebrating';
                     if (mt === 'nophoto') return 'Missing Photo';
                     if (mt === 'nonotes') return 'No Notes';
@@ -12912,6 +12958,13 @@
                     if (mt === 'staff' && memberTitle) matchesMType = true;
                     if (mt === 'member' && !memberTitle) matchesMType = true;
                     if (mt === 'bookmarked' && bookmarks[fullName]) matchesMType = true;
+                    if (mt === 'newupdated') {
+                        var _n = notes[fullName];
+                        if (_n) {
+                            var _cutoff = Date.now() - (badgeDuration * 86400000);
+                            if ((_n.addedAt && _n.addedAt > _cutoff) || (_n.updatedAt && _n.updatedAt > _cutoff)) matchesMType = true;
+                        }
+                    }
                     if (mt === 'celebrating' && getMemberCelebrations(fullName).length > 0) matchesMType = true;
                     if (mt === 'nophoto' && !hasPhoto) matchesMType = true;
                     if (mt === 'nonotes' && !hasNotes) matchesMType = true;
@@ -13343,6 +13396,7 @@
                 if (mt === 'staff') return 'Staff';
                 if (mt === 'member') return 'Members';
                 if (mt === 'bookmarked') return 'Bookmarked';
+                if (mt === 'newupdated') return 'New/Updated';
                 if (mt === 'nophoto') return 'No Photo';
                 if (mt === 'nonotes') return 'No Notes';
                 return mt;
