@@ -2900,20 +2900,15 @@
         }
         .edit-sheet-backdrop.show { display: block; }
         .edit-sheet {
-            display: none; position: fixed; bottom: 0; left: 0; right: 0;
-            background: #fff; border-radius: 20px 20px 0 0;
-            box-shadow: 0 -4px 24px rgba(0,0,0,0.18);
-            z-index: 9991; max-height: 88vh; max-height: 88dvh;
+            display: none; position: fixed;
+            top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 92vw; max-width: 480px;
+            background: #fff; border-radius: 20px;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.22), 0 0 0 1px rgba(0,0,0,0.05);
+            z-index: 9991; max-height: 85vh; max-height: 85dvh;
             flex-direction: column; overflow: hidden;
         }
         .edit-sheet.show { display: flex; }
-        @media (min-width: 600px) {
-            .edit-sheet {
-                left: 50%; right: auto; transform: translateX(-50%);
-                width: 500px; bottom: 20px; border-radius: 20px;
-                max-height: 85vh;
-            }
-        }
         .edit-sheet-handle {
             text-align: center; padding: 8px 0 2px; flex-shrink: 0; cursor: grab;
         }
@@ -2939,17 +2934,17 @@
             display: flex; border-bottom: 1px solid #b0c4de;
         }
         .edit-sheet-tab {
-            flex: 1; padding: 8px 0 7px; border: none; background: transparent;
+            flex: 1; padding: 11px 0 9px; border: none; background: transparent;
             border-bottom: 2.5px solid transparent; color: #5a7a9a;
-            font-weight: 500; font-size: 0.75em; cursor: pointer;
+            font-weight: 500; font-size: 0.9em; cursor: pointer;
             font-family: inherit; display: flex; align-items: center;
-            justify-content: center; gap: 4px; transition: all 0.15s;
+            justify-content: center; gap: 5px; transition: all 0.15s;
             -webkit-tap-highlight-color: transparent;
         }
         .edit-sheet-tab.active {
             border-bottom-color: #d4a843; color: #2a5a8a; font-weight: 700;
         }
-        .edit-sheet-tab-icon { font-size: 0.85em; }
+        .edit-sheet-tab-icon { font-size: 1.05em; }
         .edit-sheet-body {
             flex: 1; overflow-y: auto; padding: 14px 16px;
             -webkit-overflow-scrolling: touch; overscroll-behavior: contain;
@@ -5231,7 +5226,7 @@
             <!-- Photo tab content -->
             <div class="edit-sheet-tab-content active" id="esTabPhoto">
                 <div id="esPhotoEditor" style="text-align:center;">
-                    <div id="esPhotoPreview" style="width:140px;height:140px;border-radius:50%;background:#dde8f0;margin:0 auto 12px;overflow:hidden;display:flex;align-items:center;justify-content:center;border:3px solid #d4a843;">
+                    <div id="esPhotoPreview" style="width:140px;height:140px;border-radius:50%;background:#dde8f0;margin:0 auto 12px;overflow:hidden;display:flex;align-items:center;justify-content:center;border:3px solid #d4a843;position:relative;">
                         <span id="esPhotoInitials" style="font-size:2em;font-weight:700;color:#2a5a8a;"></span>
                     </div>
                     <div id="esSpouseTabs" style="display:none;margin-bottom:10px;text-align:center;">
@@ -5265,11 +5260,6 @@
                         <input type="text" id="esLastName" placeholder="(optional)" style="width:100%;padding:9px 10px;border-radius:8px;border:1px solid #b0c4de;font-size:0.82em;font-family:inherit;box-sizing:border-box;">
                     </div>
                 </div>
-                <div style="margin-bottom:10px;">
-                    <label style="display:block;font-size:0.72em;font-weight:600;color:#2a5a8a;margin-bottom:3px;">Title/Role</label>
-                    <div id="esTitleQuickPick" style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px;"></div>
-                    <input type="text" id="esMemberTitle" placeholder="e.g. Pastor, Deacon" style="width:100%;padding:9px 10px;border-radius:8px;border:1px solid #b0c4de;font-size:0.82em;font-family:inherit;box-sizing:border-box;">
-                </div>
                 <div style="display:flex;gap:10px;margin-bottom:10px;">
                     <div style="flex:1;">
                         <label style="display:block;font-size:0.72em;font-weight:600;color:#2a5a8a;margin-bottom:3px;">Middle Name</label>
@@ -5279,6 +5269,11 @@
                         <label style="display:block;font-size:0.72em;font-weight:600;color:#2a5a8a;margin-bottom:3px;">Nickname</label>
                         <input type="text" id="esNickname" placeholder='e.g. "Big Steve"' style="width:100%;padding:9px 10px;border-radius:8px;border:1px solid #b0c4de;font-size:0.82em;font-family:inherit;box-sizing:border-box;">
                     </div>
+                </div>
+                <div style="margin-bottom:10px;">
+                    <label style="display:block;font-size:0.72em;font-weight:600;color:#2a5a8a;margin-bottom:3px;">Title/Role</label>
+                    <div id="esTitleQuickPick" style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px;"></div>
+                    <input type="text" id="esMemberTitle" placeholder="e.g. Pastor, Deacon" style="width:100%;padding:9px 10px;border-radius:8px;border:1px solid #b0c4de;font-size:0.82em;font-family:inherit;box-sizing:border-box;">
                 </div>
                 <div style="margin-bottom:10px;">
                     <label style="display:block;font-size:0.72em;font-weight:600;color:#2a5a8a;margin-bottom:3px;">Church</label>
@@ -5294,6 +5289,10 @@
                     <div style="font-size:0.65em;color:#7a9cc6;margin-top:3px;font-style:italic;">Social media, podcast, blog, ministry site, etc.</div>
                 </div>
                 <div id="esMilestoneDatesContainer"></div>
+                <!-- Delete member (existing members only) -->
+                <div id="esDeleteSection" style="display:none;margin-top:16px;padding-top:14px;border-top:1px solid #e0e0e0;text-align:center;">
+                    <button id="esDeleteBtn" onclick="deleteFromEditSheet()" style="padding:9px 20px;border-radius:10px;border:1.5px solid #c44;background:#fff;color:#c44;font-weight:600;font-size:0.78em;cursor:pointer;font-family:inherit;">🗑 Remove Member</button>
+                </div>
             </div>
             <!-- Notes tab content -->
             <div class="edit-sheet-tab-content" id="esTabNotes">
@@ -12957,6 +12956,9 @@
             // Populate details tab
             _populateEsDetailsTab(fullName);
 
+            // Show delete section for existing members
+            document.getElementById('esDeleteSection').style.display = '';
+
             // Populate notes tab
             _populateEsNotesTab(fullName);
 
@@ -12987,6 +12989,7 @@
             document.getElementById('esProgress').style.display = 'flex';
             document.getElementById('esIdentity').style.display = 'none';
             document.getElementById('esTabs').style.display = 'none';
+            document.getElementById('esDeleteSection').style.display = 'none';
 
             // Clear photo tab
             var preview = document.getElementById('esPhotoPreview');
@@ -13180,7 +13183,7 @@
             var px = _esActiveSpouse === 'B' ? _esSpouseX : _esPhotoX;
             var py = _esActiveSpouse === 'B' ? _esSpouseY : _esPhotoY;
             if (data) {
-                preview.innerHTML = '<img src="' + data + '" alt="" style="width:100%;height:100%;object-fit:cover;transform:scale(' + (zoom / 100) + ') translate(' + px + 'px,' + py + 'px);transition:transform 0.1s;">';
+                preview.innerHTML = '<img src="' + data + '" alt="" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:contain;transform-origin:center center;transform:scale(' + (zoom / 100) + ') translate(' + px + 'px,' + py + 'px);transition:transform 0.1s;">';
                 document.getElementById('esRemovePhotoBtn').style.display = '';
             } else {
                 var initials = (_esPerson || '?').split(' ').map(function(w) { return w.charAt(0).toUpperCase(); }).join('').slice(0, 2);
@@ -13704,6 +13707,14 @@
         }
 
         // ── Edit sheet entry points ──
+        function deleteFromEditSheet() {
+            if (!_esPerson || _esMode !== 'edit') return;
+            var name = _esPerson;
+            if (!confirm('Remove ' + name + ' from the directory?\n\nThis cannot be undone.')) return;
+            closeEditSheet();
+            performRemove(name);
+        }
+
         function openEditSheetForMember(fullName) {
             // Auth check
             if (currentUserLevel === 'readonly') { showToast('Read-only access'); return; }
