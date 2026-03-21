@@ -497,6 +497,16 @@
             background: #5a3a1a; color: #e8c44a;
         }
         .pb-prayers:hover { background: #6a4a2a; color: #ffe080; }
+        .pb-add-inline {
+            display: none; font-weight: 700; color: #2a5a8a; cursor: pointer;
+            font-size: 1.15em; vertical-align: middle; padding: 0 3px;
+            border-radius: 4px; transition: color 0.2s;
+            -webkit-tap-highlight-color: transparent;
+            line-height: 1; position: relative; top: -0.5px;
+        }
+        .pb-add-inline:hover { color: #d4a843; }
+        .pb-add-inline:active { transform: scale(1.2); color: #d4a843; }
+        body:not(.access-readonly) .pb-add-inline { display: inline; }
         .pb-add-icon {
             width: 36px; height: 36px; border-radius: 50%; border: none;
             background: #3a6b3a; color: #fff; cursor: pointer;
@@ -561,8 +571,7 @@
         }
 
         /* Legacy compat — keep old class names for JS */
-        .btn-add { display: none; }
-        body.edit-mode .btn-add { display: inline-flex; }
+        .btn-add { display: none !important; }
         .btn-filter-toggle {
             padding: 7px 14px;
             font-family: inherit;
@@ -2884,6 +2893,117 @@
         .btn-save-notes:hover { background: #3a6a9a; }
         .btn-cancel-notes { background: #e8f0fa; color: #2a5a8a; border: 1px solid #a0b8d0; }
 
+        /* ── Edit Sheet (Bottom Sheet Overlay) ── */
+        .edit-sheet-backdrop {
+            display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.4); z-index: 9990;
+        }
+        .edit-sheet-backdrop.show { display: block; }
+        .edit-sheet {
+            display: none; position: fixed; bottom: 0; left: 0; right: 0;
+            background: #fff; border-radius: 20px 20px 0 0;
+            box-shadow: 0 -4px 24px rgba(0,0,0,0.18);
+            z-index: 9991; max-height: 88vh; max-height: 88dvh;
+            flex-direction: column; overflow: hidden;
+        }
+        .edit-sheet.show { display: flex; }
+        @media (min-width: 600px) {
+            .edit-sheet {
+                left: 50%; right: auto; transform: translateX(-50%);
+                width: 500px; bottom: 20px; border-radius: 20px;
+                max-height: 85vh;
+            }
+        }
+        .edit-sheet-handle {
+            text-align: center; padding: 8px 0 2px; flex-shrink: 0; cursor: grab;
+        }
+        .edit-sheet-handle-bar {
+            width: 36px; height: 4px; border-radius: 2px; background: #ccc; margin: 0 auto;
+        }
+        .edit-sheet-header {
+            padding: 4px 16px 0; flex-shrink: 0;
+        }
+        .edit-sheet-identity {
+            display: flex; align-items: center; gap: 10px; margin-bottom: 8px;
+        }
+        .edit-sheet-photo {
+            width: 38px; height: 38px; border-radius: 50%; background: #dde8f0;
+            display: flex; align-items: center; justify-content: center;
+            border: 2px solid #d4a843; font-size: 0.75em; color: #2a5a8a;
+            font-weight: 700; flex-shrink: 0; overflow: hidden;
+        }
+        .edit-sheet-photo img { width: 100%; height: 100%; object-fit: cover; }
+        .edit-sheet-name { font-weight: 700; font-size: 0.88em; color: #1a2a40; }
+        .edit-sheet-subtitle { font-size: 0.68em; color: #5a7a9a; }
+        .edit-sheet-tabs {
+            display: flex; border-bottom: 1px solid #b0c4de;
+        }
+        .edit-sheet-tab {
+            flex: 1; padding: 8px 0 7px; border: none; background: transparent;
+            border-bottom: 2.5px solid transparent; color: #5a7a9a;
+            font-weight: 500; font-size: 0.75em; cursor: pointer;
+            font-family: inherit; display: flex; align-items: center;
+            justify-content: center; gap: 4px; transition: all 0.15s;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .edit-sheet-tab.active {
+            border-bottom-color: #d4a843; color: #2a5a8a; font-weight: 700;
+        }
+        .edit-sheet-tab-icon { font-size: 0.85em; }
+        .edit-sheet-body {
+            flex: 1; overflow-y: auto; padding: 14px 16px;
+            -webkit-overflow-scrolling: touch; overscroll-behavior: contain;
+        }
+        .edit-sheet-footer {
+            padding: 10px 16px 14px; display: flex; gap: 10px;
+            border-top: 1px solid #b0c4de; background: #f8fafb; flex-shrink: 0;
+        }
+        @media all and (display-mode: standalone) {
+            .edit-sheet-footer {
+                padding-bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+            }
+        }
+        .edit-sheet-btn-cancel {
+            flex: 1; padding: 11px; border-radius: 10px; border: 1px solid #b0c4de;
+            background: #fff; color: #5a7a9a; font-weight: 600; font-size: 0.82em;
+            cursor: pointer; font-family: inherit;
+        }
+        .edit-sheet-btn-save {
+            flex: 1.5; padding: 11px; border-radius: 10px; border: none;
+            background: #2a5a8a; color: #fff; font-weight: 700; font-size: 0.82em;
+            cursor: pointer; font-family: inherit;
+        }
+        .edit-sheet-btn-save:hover { background: #3a6a9a; }
+        .edit-sheet-tab-content { display: none; }
+        .edit-sheet-tab-content.active { display: block; }
+        /* Wizard progress bar */
+        .edit-sheet-progress {
+            display: flex; gap: 4px; margin-bottom: 10px;
+        }
+        .edit-sheet-progress-step {
+            flex: 1; text-align: center;
+        }
+        .edit-sheet-progress-bar {
+            height: 4px; border-radius: 2px; background: #e0e0e0;
+            transition: background 0.3s;
+        }
+        .edit-sheet-progress-bar.done { background: #d4a843; }
+        .edit-sheet-progress-label {
+            font-size: 0.6em; margin-top: 3px; color: #5a7a9a; font-weight: 400;
+        }
+        .edit-sheet-progress-label.active { color: #2a5a8a; font-weight: 700; }
+        /* Wizard nav buttons */
+        .edit-sheet-btn-back {
+            flex: 1; padding: 11px; border-radius: 10px; border: 1px solid #b0c4de;
+            background: #fff; color: #5a7a9a; font-weight: 600; font-size: 0.82em;
+            cursor: pointer; font-family: inherit;
+        }
+        .edit-sheet-btn-next {
+            flex: 1.5; padding: 11px; border-radius: 10px; border: none;
+            background: #2a5a8a; color: #fff; font-weight: 700; font-size: 0.82em;
+            cursor: pointer; font-family: inherit;
+        }
+
         /* ── New Church Modal ── */
         .new-church-modal-overlay {
             display: none;
@@ -2959,9 +3079,6 @@
         }
         .delete-btn:hover { background: #a33; }
         body.edit-mode .delete-btn { display: block; }
-        body.edit-mode .person-name { cursor: pointer; }
-        body.edit-mode .person-name:hover { text-decoration: underline; color: #2a5a8a; }
-        body.edit-mode .pb-add-icon { display: flex; }
         body.edit-mode .card-pray-icon { display: none !important; }
         /* Banner edit button: hidden by default, shown in edit mode */
         .banner-edit-btn { display: none !important; }
@@ -3342,21 +3459,7 @@
             .prayer-print-container .pp-text { margin-top: 4px; }
         }
 
-        .edit-name-input {
-            font-family: inherit;
-            font-size: 0.85em;
-            width: 120px;
-            padding: 3px 6px;
-            border: 1px solid #2a5a8a;
-            border-radius: 4px;
-            text-align: center;
-            background: #fff;
-            color: #1a2a40;
-        }
-        .edit-name-input:focus {
-            outline: none;
-            box-shadow: 0 0 4px rgba(42,90,138,0.4);
-        }
+
 
         /* ── Modal shared styles ── */
         .modal-overlay {
@@ -4451,10 +4554,6 @@
         <div class="settings-section">
             <h3>Directory</h3>
             <div class="settings-row">
-                <label>Edit Mode</label>
-                <button class="settings-toggle" id="editToggle" onclick="toggleEditFromSettings()"></button>
-            </div>
-            <div class="settings-row" style="margin-top:8px;">
                 <label>Sync Indicator</label>
                 <select id="syncStyleSelect" onchange="updateSyncStyle(this.value)" style="padding:5px 8px;font-family:inherit;font-size:0.88em;border:1px solid #a0b8d0;border-radius:5px;background:#f8fafb;color:#1a2a40;">
                     <option value="noah">Noah's Ark</option>
@@ -4711,7 +4810,7 @@
             <details style="font-size:0.88em;color:#2a5a8a;line-height:1.6;">
                 <summary style="cursor:pointer;font-weight:bold;color:#2a5a8a;padding:4px 0;">How to use Church411</summary>
                 <p style="margin-top:10px;"><strong>Photos:</strong> Click any empty placeholder circle to upload. You can also upload from the photo editor or when adding a new member.</p>
-                <p style="margin-top:8px;"><strong>Adjust a photo:</strong> Turn on Edit Mode above, then click any photo to reposition and zoom.</p>
+                <p style="margin-top:8px;"><strong>Adjust a photo:</strong> Long-press a member card, then use the Photo tab to reposition and zoom.</p>
                 <p style="margin-top:8px;"><strong>Search:</strong> The search bar finds people by name, nickname, church, or anything in their notes.</p>
                 <p style="margin-top:8px;"><strong>Nicknames:</strong> Add a nickname via the notes editor (pencil icon on card back). It shows on the main grid and cards.</p>
                 <p style="margin-top:8px;"><strong>Sync:</strong> All changes sync automatically across your devices via the cloud.</p>
@@ -4851,7 +4950,7 @@
                         <path d="M0 30 Q24 22 48 30" stroke-width="1.5" class="side-cross"/>
                     </svg>
                 </div>
-                <span class="pb-count" id="statsText"></span>
+                <span class="pb-count" id="statsText"></span><span class="pb-add-inline" id="addInlineBtn" onclick="openNewMemberSheetWithAuth()" title="Add Member">+</span>
             </div>
             <div class="pb-search-wrap">
                 <svg class="pb-search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -4862,7 +4961,7 @@
                 <span class="pb-filter-label">Filter</span>
                 <span class="filter-count-badge" id="filterBadge">0</span>
             </button>
-            <button class="btn-add pb-add-icon" onclick="showAddModal()" title="Add Member">
+            <button class="btn-add pb-add-icon" onclick="openNewMemberSheetWithAuth()" title="Add Member">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
                     <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
                 </svg>
@@ -5084,6 +5183,131 @@
         <div class="edit-actions">
             <button class="btn-cancel-notes" onclick="cancelNotesEdit()">Cancel</button>
             <button class="btn-save-notes" onclick="saveNotesEdit()">Save Notes</button>
+        </div>
+    </div>
+
+    <!-- Edit Sheet (Bottom Sheet Overlay) -->
+    <div class="edit-sheet-backdrop" id="editSheetBackdrop" onclick="closeEditSheet()"></div>
+    <div class="edit-sheet" id="editSheet">
+        <div class="edit-sheet-handle"><div class="edit-sheet-handle-bar"></div></div>
+        <div class="edit-sheet-header">
+            <!-- Wizard progress (hidden for existing members) -->
+            <div class="edit-sheet-progress" id="esProgress" style="display:none;">
+                <div class="edit-sheet-progress-step">
+                    <div class="edit-sheet-progress-bar done" id="esProgBar0"></div>
+                    <div class="edit-sheet-progress-label active" id="esProgLbl0">Photo</div>
+                </div>
+                <div class="edit-sheet-progress-step">
+                    <div class="edit-sheet-progress-bar" id="esProgBar1"></div>
+                    <div class="edit-sheet-progress-label" id="esProgLbl1">Details</div>
+                </div>
+                <div class="edit-sheet-progress-step">
+                    <div class="edit-sheet-progress-bar" id="esProgBar2"></div>
+                    <div class="edit-sheet-progress-label" id="esProgLbl2">Notes</div>
+                </div>
+            </div>
+            <!-- Identity row (shown for existing members) -->
+            <div class="edit-sheet-identity" id="esIdentity">
+                <div class="edit-sheet-photo" id="esPhoto"></div>
+                <div>
+                    <div class="edit-sheet-name" id="esName"></div>
+                    <div class="edit-sheet-subtitle" id="esSubtitle"></div>
+                </div>
+            </div>
+            <!-- Tabs (shown for existing members) -->
+            <div class="edit-sheet-tabs" id="esTabs">
+                <button class="edit-sheet-tab active" data-tab="photo" onclick="switchEditTab('photo')">
+                    <span class="edit-sheet-tab-icon">📷</span> Photo
+                </button>
+                <button class="edit-sheet-tab" data-tab="details" onclick="switchEditTab('details')">
+                    <span class="edit-sheet-tab-icon">📝</span> Details
+                </button>
+                <button class="edit-sheet-tab" data-tab="notes" onclick="switchEditTab('notes')">
+                    <span class="edit-sheet-tab-icon">📋</span> Notes
+                </button>
+            </div>
+        </div>
+        <div class="edit-sheet-body" id="esBody">
+            <!-- Photo tab content -->
+            <div class="edit-sheet-tab-content active" id="esTabPhoto">
+                <div id="esPhotoEditor" style="text-align:center;">
+                    <div id="esPhotoPreview" style="width:140px;height:140px;border-radius:50%;background:#dde8f0;margin:0 auto 12px;overflow:hidden;display:flex;align-items:center;justify-content:center;border:3px solid #d4a843;">
+                        <span id="esPhotoInitials" style="font-size:2em;font-weight:700;color:#2a5a8a;"></span>
+                    </div>
+                    <div id="esSpouseTabs" style="display:none;margin-bottom:10px;text-align:center;">
+                        <button id="esSpTabA" onclick="switchEsSpouseTab('A')" style="padding:5px 14px;border-radius:8px;border:1.5px solid #d4a843;background:#2a5a8a;color:#fff;font-size:0.75em;font-weight:600;cursor:pointer;margin-right:4px;font-family:inherit;">Spouse A</button>
+                        <button id="esSpTabB" onclick="switchEsSpouseTab('B')" style="padding:5px 14px;border-radius:8px;border:1.5px solid #d4a843;background:#fff;color:#d4a843;font-size:0.75em;font-weight:600;cursor:pointer;font-family:inherit;">Spouse B</button>
+                    </div>
+                    <p style="font-size:0.7em;color:#5a7a9a;margin:0 0 8px;">Drag to reposition &bull; Scroll/pinch to zoom</p>
+                    <div style="display:flex;align-items:center;gap:8px;max-width:280px;margin:0 auto 10px;">
+                        <label style="font-size:0.72em;color:#5a7a9a;font-weight:600;">Zoom</label>
+                        <input type="range" id="esZoom" min="100" max="300" value="100" step="5" oninput="onEsZoom(this.value)" style="flex:1;">
+                        <span id="esZoomVal" style="font-size:0.72em;color:#5a7a9a;min-width:32px;">100%</span>
+                    </div>
+                    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+                        <label style="padding:8px 16px;border-radius:10px;border:1.5px dashed #b0c4de;background:#f8fafb;color:#2a5a8a;font-weight:600;font-size:0.78em;cursor:pointer;">
+                            📤 Upload Photo
+                            <input type="file" accept="image/*" id="esPhotoUpload" onchange="handleEsPhotoUpload(this)" style="display:none;">
+                        </label>
+                        <button onclick="removeEsPhoto()" id="esRemovePhotoBtn" style="padding:8px 16px;border-radius:10px;border:1.5px solid #c88;background:#fff;color:#c44;font-weight:600;font-size:0.78em;cursor:pointer;display:none;font-family:inherit;">🗑 Remove</button>
+                    </div>
+                </div>
+            </div>
+            <!-- Details tab content -->
+            <div class="edit-sheet-tab-content" id="esTabDetails">
+                <div style="display:flex;gap:10px;margin-bottom:10px;">
+                    <div style="flex:1;">
+                        <label style="display:block;font-size:0.72em;font-weight:600;color:#2a5a8a;margin-bottom:3px;">First Name(s)</label>
+                        <input type="text" id="esFirstName" placeholder="e.g. John, John & Jane" style="width:100%;padding:9px 10px;border-radius:8px;border:1px solid #b0c4de;font-size:0.82em;font-family:inherit;box-sizing:border-box;">
+                    </div>
+                    <div style="flex:1;">
+                        <label style="display:block;font-size:0.72em;font-weight:600;color:#2a5a8a;margin-bottom:3px;">Last Name</label>
+                        <input type="text" id="esLastName" placeholder="(optional)" style="width:100%;padding:9px 10px;border-radius:8px;border:1px solid #b0c4de;font-size:0.82em;font-family:inherit;box-sizing:border-box;">
+                    </div>
+                </div>
+                <div style="margin-bottom:10px;">
+                    <label style="display:block;font-size:0.72em;font-weight:600;color:#2a5a8a;margin-bottom:3px;">Title/Role</label>
+                    <div id="esTitleQuickPick" style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px;"></div>
+                    <input type="text" id="esMemberTitle" placeholder="e.g. Pastor, Deacon" style="width:100%;padding:9px 10px;border-radius:8px;border:1px solid #b0c4de;font-size:0.82em;font-family:inherit;box-sizing:border-box;">
+                </div>
+                <div style="display:flex;gap:10px;margin-bottom:10px;">
+                    <div style="flex:1;">
+                        <label style="display:block;font-size:0.72em;font-weight:600;color:#2a5a8a;margin-bottom:3px;">Middle Name</label>
+                        <input type="text" id="esMiddleName" placeholder="e.g. James" style="width:100%;padding:9px 10px;border-radius:8px;border:1px solid #b0c4de;font-size:0.82em;font-family:inherit;box-sizing:border-box;">
+                    </div>
+                    <div style="flex:1;">
+                        <label style="display:block;font-size:0.72em;font-weight:600;color:#2a5a8a;margin-bottom:3px;">Nickname</label>
+                        <input type="text" id="esNickname" placeholder='e.g. "Big Steve"' style="width:100%;padding:9px 10px;border-radius:8px;border:1px solid #b0c4de;font-size:0.82em;font-family:inherit;box-sizing:border-box;">
+                    </div>
+                </div>
+                <div style="margin-bottom:10px;">
+                    <label style="display:block;font-size:0.72em;font-weight:600;color:#2a5a8a;margin-bottom:3px;">Church</label>
+                    <div style="display:flex;gap:6px;">
+                        <select id="esChurch" style="flex:1;padding:9px 10px;border-radius:8px;border:1px solid #b0c4de;font-size:0.82em;font-family:inherit;background:#fff;"></select>
+                        <button onclick="showNewChurchModal()" style="padding:6px 10px;border-radius:8px;border:1px solid #b0c4de;background:#f8fafb;color:#2a5a8a;font-weight:600;font-size:0.72em;cursor:pointer;font-family:inherit;white-space:nowrap;">+ New</button>
+                    </div>
+                </div>
+                <div style="margin-bottom:10px;">
+                    <label style="display:block;font-size:0.72em;font-weight:600;color:#2a5a8a;margin-bottom:3px;">Links</label>
+                    <div id="esLinksContainer" class="edit-links-container"></div>
+                    <button type="button" class="edit-link-add" onclick="addEsLinkRow('')">+ Add Link</button>
+                    <div style="font-size:0.65em;color:#7a9cc6;margin-top:3px;font-style:italic;">Social media, podcast, blog, ministry site, etc.</div>
+                </div>
+                <div id="esMilestoneDatesContainer"></div>
+            </div>
+            <!-- Notes tab content -->
+            <div class="edit-sheet-tab-content" id="esTabNotes">
+                <div style="margin-bottom:10px;">
+                    <label style="display:block;font-size:0.72em;font-weight:600;color:#2a5a8a;margin-bottom:3px;">Note Sections</label>
+                    <div class="default-sections-bar" id="esDefaultSectionsBar"></div>
+                    <div class="sections-list" id="esSectionsList"></div>
+                    <button class="btn-add-section" onclick="addEsSectionEntry()">+ Add section</button>
+                </div>
+            </div>
+        </div>
+        <div class="edit-sheet-footer" id="esFooter">
+            <button class="edit-sheet-btn-cancel" onclick="closeEditSheet()">Cancel</button>
+            <button class="edit-sheet-btn-save" id="esSaveBtn" onclick="saveEditSheet()">Save</button>
         </div>
     </div>
 
@@ -6240,22 +6464,18 @@
             });
         })();
 
-        // ── Long-press on member cards to toggle edit mode (Admin + Full Access only) ──
+        // ── Long-press on member cards to open edit sheet (Admin + Full Access only) ──
         (function initLongPressEdit() {
             var lpTimer = null;
             var lpCard = null;
             var LP_DURATION = 800; // ms
 
             function handleLongPress() {
-                // Only Admin and Full Access can long-press to toggle edit
+                // Only Admin and Full Access can long-press to edit
                 if (!currentUserLevel || currentUserLevel === 'readonly') return;
-                // For Full Access: skip password, toggle directly
-                // For Admin: also skip password (they already authenticated with PIN)
-                if (!editMode) {
-                    isEditAuthorized = true;
-                    touchEditActivity();
-                }
-                doToggleEditMode();
+                // Get the member name from the pressed card
+                var memberName = lpCard ? lpCard.dataset.member : '';
+                if (!memberName) return;
                 // Brief haptic-style visual pulse on the pressed card
                 if (lpCard) {
                     lpCard.style.transition = 'transform 0.15s';
@@ -6264,7 +6484,10 @@
                         if (lpCard) { lpCard.style.transform = ''; }
                     }, 150);
                 }
-                showToast(editMode ? '✏️ Edit Mode ON' : '✅ Edit Mode OFF');
+                // Authorize and open edit sheet
+                isEditAuthorized = true;
+                touchEditActivity();
+                openEditSheetForMember(memberName);
             }
 
             function startLP(e) {
@@ -6319,7 +6542,7 @@
             backdrop.classList.toggle('open');
             if (!isOpen) {
                 // Sync edit toggle state
-                document.getElementById('editToggle').classList.toggle('on', editMode);
+                var _et = document.getElementById('editToggle'); if (_et) _et.classList.toggle('on', editMode);
                 // Render management lists
                 renderUsersList();
                 renderSettingsChurchList();
@@ -7946,7 +8169,7 @@
                 return;
             }
             doToggleEditMode();
-            document.getElementById('editToggle').classList.toggle('on', editMode);
+            var _et = document.getElementById('editToggle'); if (_et) _et.classList.toggle('on', editMode);
         }
 
         function showChangeForm(type) {
@@ -9465,7 +9688,7 @@
 
         // Check if any modal/editor/overlay is currently open
         function isModalOpen() {
-            var overlays = ['addModal', 'photoEditorOverlay', 'cardFlipOverlay', 'bannerEditorOverlay', 'notesEditPanel', 'editPwOverlay', 'newChurchModal', 'browseOverlay'];
+            var overlays = ['addModal', 'photoEditorOverlay', 'cardFlipOverlay', 'bannerEditorOverlay', 'notesEditPanel', 'editPwOverlay', 'newChurchModal', 'browseOverlay', 'editSheet'];
             for (var i = 0; i < overlays.length; i++) {
                 var el = document.getElementById(overlays[i]);
                 if (el && (el.classList.contains('show') || (el.style.display && el.style.display !== 'none'))) return true;
@@ -10724,7 +10947,7 @@
                             photoHTML +
                         '</div>' +
                         (memberTitles[m.full] ? '<div class="title-badge">' + escapeHTML(memberTitles[m.full]) + '</div>' : '') +
-                        '<div class="person-name" onclick="editName(this, \'' + escapedName + '\')">' + nameHTML + '</div>' +
+                        '<div class="person-name">' + nameHTML + '</div>' +
                         (nickname ? '<div class="person-nickname">"' + escapeHTML(nickname) + '"</div>' : '');
 
                     if (church) {
@@ -10897,7 +11120,7 @@
             if (currentUserLevel === 'readonly') { showToast('Read-only access'); return; }
             editMode = !editMode;
             document.body.classList.toggle('edit-mode', editMode);
-            document.getElementById('editToggle').classList.toggle('on', editMode);
+            var _et = document.getElementById('editToggle'); if (_et) _et.classList.toggle('on', editMode);
             // Edit auth persists for the session — no longer cleared on toggle off
             if (editMode) touchEditActivity();
         }
@@ -10987,38 +11210,7 @@
             }, 2000 * attempt);
         }
 
-        function editName(el, oldName) {
-            if (!editMode) return;
-            if (el.querySelector('input')) return;
-
-            const input = document.createElement('input');
-            input.type = 'text';
-            input.className = 'edit-name-input';
-            input.value = oldName;
-            el.innerHTML = '';
-            el.appendChild(input);
-            input.focus();
-            input.select();
-
-            function commit() {
-                const newName = input.value.trim();
-                if (newName && newName !== oldName) {
-                    const idx = members.indexOf(oldName);
-                    if (idx !== -1) {
-                        performRename(oldName, newName).then(function() { render(); });
-                        showToast('Renamed to ' + newName);
-                        return; // render will happen after photo migration
-                    }
-                }
-                render();
-            }
-
-            input.addEventListener('blur', commit);
-            input.addEventListener('keydown', e => {
-                if (e.key === 'Enter') { e.preventDefault(); input.blur(); }
-                if (e.key === 'Escape') { input.value = oldName; input.blur(); }
-            });
-        }
+        // editName removed — renaming is now done through the edit sheet Details tab
 
         function performRename(oldName, newName) {
             var photoPromises = [];
@@ -12039,7 +12231,7 @@
                 body.appendChild(celebWrap);
             }
             if (!hasNotes && cbCelebs.length === 0) {
-                body.innerHTML = '<div style="text-align:center;color:#7a9cc6;padding:40px 10px;font-style:italic;">No notes yet.<br>Use Edit Mode to add notes.</div>';
+                body.innerHTML = '<div style="text-align:center;color:#7a9cc6;padding:40px 10px;font-style:italic;">No notes yet.<br>Tap Edit to add notes.</div>';
             } else {
                 cardSections.forEach((s, i) => {
                     if (i > 0 || cbCelebs.length > 0) {
@@ -12105,53 +12297,13 @@
         function editFromCard() {
             if (currentUserLevel === 'readonly') { showToast('Read-only access'); return; }
             if (!currentCardPerson) return;
-            const person = currentCardPerson;
-            checkEditAuthExpiry();
-            if (!isEditAuthorized) {
-                // Need password first, then open notes
-                document.getElementById('editPwInput').value = '';
-                document.getElementById('editPwError').textContent = '';
-                document.getElementById('editPwOverlay').classList.add('show');
-                setTimeout(function() { document.getElementById('editPwInput').focus(); }, 100);
-                // Override submitEditPw temporarily
-                const origSubmit = submitEditPw;
-                submitEditPw = function() {
-                    const val = document.getElementById('editPwInput').value;
-                    hashPassword(val).then(function(h) {
-                        if (h === EDIT_PASSWORD_HASH) {
-                            isEditAuthorized = true;
-                            touchEditActivity();
-                            closeEditPw();
-                            submitEditPw = origSubmit;
-                            document.getElementById('notesEditPanel').style.display = 'block';
-                            document.getElementById('cardFlipOverlay').classList.remove('show');
-                            document.removeEventListener('keydown', closeCardFlipKey);
-                            setTimeout(function() { openNotesEdit(person); }, 250);
-                        } else {
-                            document.getElementById('editPwError').textContent = 'Incorrect password';
-                            document.getElementById('editPwInput').classList.add('error');
-                            document.getElementById('editPwInput').value = '';
-                            setTimeout(function() {
-                                document.getElementById('editPwInput').classList.remove('error');
-                                document.getElementById('editPwError').textContent = '';
-                            }, 1500);
-                        }
-                    });
-                };
-                // Also update Enter key handler
-                document.getElementById('editPwInput').onkeydown = function(e) {
-                    if (e.key === 'Enter') submitEditPw();
-                };
-                return;
-            }
-            // Mark notes edit as pending so remoteRender won't interfere during transition
-            pendingRemoteRender = false;
-            var notesPanel = document.getElementById('notesEditPanel');
-            notesPanel.style.display = 'block'; // Mark as open immediately to block remoteRender
+            var person = currentCardPerson;
+            // Close the card flip overlay first
             document.getElementById('cardFlipOverlay').classList.remove('show');
             document.removeEventListener('keydown', closeCardFlipKey);
+            // Open the new edit sheet (handles its own auth)
             setTimeout(function() {
-                openNotesEdit(person);
+                openEditSheetForMember(person);
             }, 250);
         }
 
@@ -12753,6 +12905,879 @@
         function cancelNotesEdit() {
             document.getElementById('notesEditPanel').style.display = 'none';
             if (pendingRemoteRender) { pendingRemoteRender = false; setTimeout(render, 100); }
+        }
+
+        // ════════════════════════════════════════
+        // EDIT SHEET (Bottom Sheet — Tabbed for existing, Wizard for new)
+        // ════════════════════════════════════════
+        var _esMode = ''; // 'edit' or 'new'
+        var _esPerson = ''; // full name of member being edited
+        var _esWizardStep = 0; // wizard step index for new members
+        var _esPhotoData = ''; // photo data URL for new members / current tab
+        var _esSpousePhotoData = ''; // spouse photo for couples
+        var _esActiveSpouse = 'A'; // which spouse photo tab
+        var _esPhotoZoom = 100;
+        var _esPhotoX = 0;
+        var _esPhotoY = 0;
+        var _esSpouseZoom = 100;
+        var _esSpouseX = 0;
+        var _esSpouseY = 0;
+
+        function openEditSheet(fullName) {
+            _esMode = 'edit';
+            _esPerson = fullName;
+            _esActiveSpouse = 'A';
+
+            // Show identity + tabs, hide wizard progress
+            document.getElementById('esProgress').style.display = 'none';
+            document.getElementById('esIdentity').style.display = 'flex';
+            document.getElementById('esTabs').style.display = 'flex';
+
+            // Populate header identity
+            document.getElementById('esName').textContent = fullName;
+            var personTitle = memberTitles[fullName] || '';
+            var personNotes = notes[fullName] || {};
+            document.getElementById('esSubtitle').textContent = personTitle || personNotes.church || '';
+
+            // Header photo
+            var photoEl = document.getElementById('esPhoto');
+            var initials = fullName.split(' ').map(function(w) { return w.charAt(0).toUpperCase(); }).join('').slice(0, 2);
+            photoEl.innerHTML = '<span>' + initials + '</span>';
+            if (uploadedPhotos[fullName] && uploadedPhotos[fullName] !== '_indexed_') {
+                photoEl.innerHTML = '<img src="' + uploadedPhotos[fullName] + '" alt="">';
+            } else if (uploadedPhotos[fullName] === '_indexed_') {
+                resolveLazyPhoto(fullName, function(data) {
+                    if (data) photoEl.innerHTML = '<img src="' + data + '" alt="">';
+                });
+            }
+
+            // Populate photo tab
+            _populateEsPhotoTab(fullName);
+
+            // Populate details tab
+            _populateEsDetailsTab(fullName);
+
+            // Populate notes tab
+            _populateEsNotesTab(fullName);
+
+            // Footer buttons for edit mode
+            document.getElementById('esFooter').innerHTML =
+                '<button class="edit-sheet-btn-cancel" onclick="closeEditSheet()">Cancel</button>' +
+                '<button class="edit-sheet-btn-save" onclick="saveEditSheet()">Save</button>';
+
+            // Show default tab (photo)
+            switchEditTab('photo');
+
+            // Show sheet
+            document.getElementById('editSheetBackdrop').classList.add('show');
+            document.getElementById('editSheet').classList.add('show');
+        }
+
+        function openNewMemberSheet() {
+            _esMode = 'new';
+            _esPerson = '';
+            _esWizardStep = 0;
+            _esPhotoData = '';
+            _esSpousePhotoData = '';
+            _esActiveSpouse = 'A';
+            _esPhotoZoom = 100; _esPhotoX = 0; _esPhotoY = 0;
+            _esSpouseZoom = 100; _esSpouseX = 0; _esSpouseY = 0;
+
+            // Show wizard progress, hide identity + tabs
+            document.getElementById('esProgress').style.display = 'flex';
+            document.getElementById('esIdentity').style.display = 'none';
+            document.getElementById('esTabs').style.display = 'none';
+
+            // Clear photo tab
+            var preview = document.getElementById('esPhotoPreview');
+            preview.innerHTML = '<span id="esPhotoInitials" style="font-size:2em;font-weight:700;color:#2a5a8a;">?</span>';
+            document.getElementById('esSpouseTabs').style.display = 'none';
+            document.getElementById('esZoom').value = 100;
+            document.getElementById('esZoomVal').textContent = '100%';
+            document.getElementById('esRemovePhotoBtn').style.display = 'none';
+
+            // Clear details tab
+            document.getElementById('esFirstName').value = '';
+            document.getElementById('esLastName').value = '';
+            document.getElementById('esMemberTitle').value = '';
+            _renderEsTitleQuickPicks();
+            document.getElementById('esMiddleName').value = '';
+            document.getElementById('esNickname').value = '';
+            _populateEsChurchSelect('');
+            var linksC = document.getElementById('esLinksContainer');
+            linksC.innerHTML = '';
+            addEsLinkRow('');
+            document.getElementById('esMilestoneDatesContainer').innerHTML = '';
+
+            // Clear notes tab
+            document.getElementById('esDefaultSectionsBar').innerHTML = '';
+            document.getElementById('esSectionsList').innerHTML = '';
+
+            // Set wizard footer
+            _updateWizardFooter();
+            _updateWizardProgress();
+
+            // Show all tab content for step 0 (photo)
+            _showWizardStep(0);
+
+            // Show sheet
+            document.getElementById('editSheetBackdrop').classList.add('show');
+            document.getElementById('editSheet').classList.add('show');
+
+            // After a beat, focus first input visible
+            setTimeout(function() {
+                var fi = document.querySelector('#esTabPhoto input[type="file"]');
+                // Don't auto-focus file input — just show the sheet
+            }, 200);
+        }
+
+        function closeEditSheet() {
+            document.getElementById('editSheetBackdrop').classList.remove('show');
+            document.getElementById('editSheet').classList.remove('show');
+            _esMode = '';
+            _esPerson = '';
+            if (pendingRemoteRender) { pendingRemoteRender = false; setTimeout(render, 100); }
+        }
+
+        // ESC key closes edit sheet
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && document.getElementById('editSheet').classList.contains('show')) {
+                closeEditSheet();
+                e.preventDefault();
+            }
+        });
+
+        function switchEditTab(tab) {
+            // Update tab buttons
+            var tabs = document.querySelectorAll('#esTabs .edit-sheet-tab');
+            tabs.forEach(function(t) {
+                t.classList.toggle('active', t.dataset.tab === tab);
+            });
+            // Show/hide content
+            document.getElementById('esTabPhoto').classList.toggle('active', tab === 'photo');
+            document.getElementById('esTabDetails').classList.toggle('active', tab === 'details');
+            document.getElementById('esTabNotes').classList.toggle('active', tab === 'notes');
+        }
+
+        // ── Wizard step navigation ──
+        function _showWizardStep(step) {
+            _esWizardStep = step;
+            document.getElementById('esTabPhoto').classList.toggle('active', step === 0);
+            document.getElementById('esTabDetails').classList.toggle('active', step === 1);
+            document.getElementById('esTabNotes').classList.toggle('active', step === 2);
+            _updateWizardProgress();
+            _updateWizardFooter();
+        }
+
+        function _updateWizardProgress() {
+            for (var i = 0; i < 3; i++) {
+                var bar = document.getElementById('esProgBar' + i);
+                var lbl = document.getElementById('esProgLbl' + i);
+                if (bar) bar.classList.toggle('done', i <= _esWizardStep);
+                if (lbl) lbl.classList.toggle('active', i === _esWizardStep);
+            }
+        }
+
+        function _updateWizardFooter() {
+            var footer = document.getElementById('esFooter');
+            if (_esWizardStep === 0) {
+                footer.innerHTML =
+                    '<button class="edit-sheet-btn-cancel" onclick="closeEditSheet()">Cancel</button>' +
+                    '<button class="edit-sheet-btn-next" onclick="_esWizardNext()">Next →</button>';
+            } else if (_esWizardStep === 1) {
+                footer.innerHTML =
+                    '<button class="edit-sheet-btn-back" onclick="_esWizardBack()">← Back</button>' +
+                    '<button class="edit-sheet-btn-next" onclick="_esWizardNext()">Next →</button>';
+            } else {
+                footer.innerHTML =
+                    '<button class="edit-sheet-btn-back" onclick="_esWizardBack()">← Back</button>' +
+                    '<button class="edit-sheet-btn-save" onclick="saveEditSheet()">Add Member</button>';
+            }
+        }
+
+        function _esWizardNext() {
+            // Validate current step
+            if (_esWizardStep === 1) {
+                // Must have at least first or last name
+                var fn = document.getElementById('esFirstName').value.trim();
+                var ln = document.getElementById('esLastName').value.trim();
+                var title = document.getElementById('esMemberTitle').value.trim();
+                var nick = document.getElementById('esNickname').value.trim();
+                if (!fn && !ln && !title && !nick) {
+                    showToast('Please enter at least a name, title, or nickname');
+                    return;
+                }
+            }
+            if (_esWizardStep < 2) _showWizardStep(_esWizardStep + 1);
+        }
+
+        function _esWizardBack() {
+            if (_esWizardStep > 0) _showWizardStep(_esWizardStep - 1);
+        }
+
+        // ── Populate tabs for existing member ──
+        function _populateEsPhotoTab(fullName) {
+            var preview = document.getElementById('esPhotoPreview');
+            var initials = fullName.split(' ').map(function(w) { return w.charAt(0).toUpperCase(); }).join('').slice(0, 2);
+            _esPhotoData = '';
+            _esSpousePhotoData = '';
+            _esActiveSpouse = 'A';
+
+            // Load current photo adjustments
+            var adj = photoAdj[fullName] || { zoom: 100, x: 0, y: 0 };
+            _esPhotoZoom = adj.zoom; _esPhotoX = adj.x; _esPhotoY = adj.y;
+            var spAdj = spousePhotoAdj[fullName] || { zoom: 100, x: 0, y: 0 };
+            _esSpouseZoom = spAdj.zoom; _esSpouseX = spAdj.x; _esSpouseY = spAdj.y;
+
+            document.getElementById('esZoom').value = adj.zoom;
+            document.getElementById('esZoomVal').textContent = adj.zoom + '%';
+
+            // Check if has photo
+            var hasPhoto = uploadedPhotos[fullName] && uploadedPhotos[fullName] !== '_indexed_';
+            if (hasPhoto) {
+                _esPhotoData = uploadedPhotos[fullName];
+                _renderEsPhotoPreview();
+            } else if (uploadedPhotos[fullName] === '_indexed_') {
+                preview.innerHTML = '<span style="font-size:2em;font-weight:700;color:#2a5a8a;">' + escapeHTML(initials) + '</span>';
+                resolveLazyPhoto(fullName, function(data) {
+                    if (data) {
+                        _esPhotoData = data;
+                        _renderEsPhotoPreview();
+                    }
+                });
+            } else {
+                preview.innerHTML = '<span style="font-size:2em;font-weight:700;color:#2a5a8a;">' + escapeHTML(initials) + '</span>';
+            }
+            document.getElementById('esRemovePhotoBtn').style.display = hasPhoto || uploadedPhotos[fullName] === '_indexed_' ? '' : 'none';
+
+            // Spouse tabs
+            var spouseTabs = document.getElementById('esSpouseTabs');
+            if (isCouple(fullName)) {
+                spouseTabs.style.display = '';
+                var c = parseCoupleNames(fullName);
+                document.getElementById('esSpTabA').textContent = c ? c.spouseA : 'Spouse A';
+                document.getElementById('esSpTabB').textContent = c ? c.spouseB : 'Spouse B';
+                // Load spouse B photo
+                if (spousePhotos[fullName]) {
+                    if (spousePhotos[fullName] !== '_indexed_') {
+                        _esSpousePhotoData = spousePhotos[fullName];
+                    } else {
+                        resolveLazyPhoto('spouse:' + fullName, function(data) {
+                            if (data) _esSpousePhotoData = data;
+                        });
+                    }
+                }
+                switchEsSpouseTab('A');
+            } else {
+                spouseTabs.style.display = 'none';
+            }
+        }
+
+        function _renderEsPhotoPreview() {
+            var preview = document.getElementById('esPhotoPreview');
+            var data = _esActiveSpouse === 'B' ? _esSpousePhotoData : _esPhotoData;
+            var zoom = _esActiveSpouse === 'B' ? _esSpouseZoom : _esPhotoZoom;
+            var px = _esActiveSpouse === 'B' ? _esSpouseX : _esPhotoX;
+            var py = _esActiveSpouse === 'B' ? _esSpouseY : _esPhotoY;
+            if (data) {
+                preview.innerHTML = '<img src="' + data + '" alt="" style="width:100%;height:100%;object-fit:cover;transform:scale(' + (zoom / 100) + ') translate(' + px + 'px,' + py + 'px);transition:transform 0.1s;">';
+                document.getElementById('esRemovePhotoBtn').style.display = '';
+            } else {
+                var initials = (_esPerson || '?').split(' ').map(function(w) { return w.charAt(0).toUpperCase(); }).join('').slice(0, 2);
+                preview.innerHTML = '<span style="font-size:2em;font-weight:700;color:#2a5a8a;">' + escapeHTML(initials) + '</span>';
+                document.getElementById('esRemovePhotoBtn').style.display = 'none';
+            }
+            document.getElementById('esZoom').value = zoom;
+            document.getElementById('esZoomVal').textContent = zoom + '%';
+        }
+
+        // Drag-to-pan on edit sheet photo preview
+        (function initEsPhotoDrag() {
+            var dragging = false, startX = 0, startY = 0, origX = 0, origY = 0;
+            function getPreview() { return document.getElementById('esPhotoPreview'); }
+            function onDown(e) {
+                var preview = getPreview();
+                if (!preview || !preview.querySelector('img')) return;
+                dragging = true;
+                var pt = e.touches ? e.touches[0] : e;
+                startX = pt.clientX; startY = pt.clientY;
+                origX = _esActiveSpouse === 'B' ? _esSpouseX : _esPhotoX;
+                origY = _esActiveSpouse === 'B' ? _esSpouseY : _esPhotoY;
+                if (e.touches) e.preventDefault();
+            }
+            function onMove(e) {
+                if (!dragging) return;
+                var pt = e.touches ? e.touches[0] : e;
+                var dx = pt.clientX - startX;
+                var dy = pt.clientY - startY;
+                if (_esActiveSpouse === 'B') { _esSpouseX = origX + dx; _esSpouseY = origY + dy; }
+                else { _esPhotoX = origX + dx; _esPhotoY = origY + dy; }
+                _renderEsPhotoPreview();
+            }
+            function onUp() { dragging = false; }
+            document.addEventListener('mousedown', function(e) { if (e.target.closest('#esPhotoPreview')) onDown(e); });
+            document.addEventListener('mousemove', onMove);
+            document.addEventListener('mouseup', onUp);
+            document.addEventListener('touchstart', function(e) { if (e.target.closest('#esPhotoPreview')) onDown(e); }, { passive: false });
+            document.addEventListener('touchmove', function(e) { if (dragging) { onMove(e); e.preventDefault(); } }, { passive: false });
+            document.addEventListener('touchend', onUp);
+        })();
+
+        function onEsZoom(val) {
+            val = parseInt(val);
+            if (_esActiveSpouse === 'B') { _esSpouseZoom = val; } else { _esPhotoZoom = val; }
+            document.getElementById('esZoomVal').textContent = val + '%';
+            _renderEsPhotoPreview();
+        }
+
+        function switchEsSpouseTab(tab) {
+            _esActiveSpouse = tab;
+            var btnA = document.getElementById('esSpTabA');
+            var btnB = document.getElementById('esSpTabB');
+            if (tab === 'A') {
+                btnA.style.background = '#2a5a8a'; btnA.style.color = '#fff';
+                btnB.style.background = '#fff'; btnB.style.color = '#d4a843';
+            } else {
+                btnB.style.background = '#2a5a8a'; btnB.style.color = '#fff';
+                btnA.style.background = '#fff'; btnA.style.color = '#d4a843';
+            }
+            _renderEsPhotoPreview();
+        }
+
+        function handleEsPhotoUpload(input) {
+            if (!input.files || !input.files[0]) return;
+            var file = input.files[0];
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                resizeImage(e.target.result, 1200, 0.7, function(compressed) {
+                    if (_esActiveSpouse === 'B') {
+                        _esSpousePhotoData = compressed;
+                        _esSpouseZoom = 100; _esSpouseX = 0; _esSpouseY = 0;
+                    } else {
+                        _esPhotoData = compressed;
+                        _esPhotoZoom = 100; _esPhotoX = 0; _esPhotoY = 0;
+                    }
+                    _renderEsPhotoPreview();
+                });
+            };
+            reader.readAsDataURL(file);
+            input.value = ''; // reset for re-upload
+        }
+
+        function removeEsPhoto() {
+            if (_esActiveSpouse === 'B') {
+                _esSpousePhotoData = '';
+                _esSpouseZoom = 100; _esSpouseX = 0; _esSpouseY = 0;
+            } else {
+                _esPhotoData = '';
+                _esPhotoZoom = 100; _esPhotoX = 0; _esPhotoY = 0;
+            }
+            _renderEsPhotoPreview();
+        }
+
+        function _populateEsDetailsTab(fullName) {
+            var personNotes = notes[fullName] || {};
+            var personTitle = memberTitles[fullName] || '';
+            // Name fields
+            var fn = personNotes.firstName;
+            var ln = personNotes.lastName;
+            if (fn == null && ln == null) {
+                var parsed = parseName(fullName);
+                fn = parsed.first;
+                ln = parsed.last;
+            }
+            document.getElementById('esFirstName').value = fn || '';
+            document.getElementById('esLastName').value = ln || '';
+            document.getElementById('esMemberTitle').value = personTitle;
+            _renderEsTitleQuickPicks();
+            document.getElementById('esMiddleName').value = personNotes.middleName || '';
+            document.getElementById('esNickname').value = personNotes.nickname || '';
+            _populateEsChurchSelect(personNotes.church || '');
+            _populateEsLinks(fullName);
+            _renderEsMilestoneDates(fullName, personNotes);
+        }
+
+        function _renderEsTitleQuickPicks() {
+            var container = document.getElementById('esTitleQuickPick');
+            if (!container) return;
+            var currentValue = document.getElementById('esMemberTitle').value.trim();
+            container.innerHTML = '';
+            titles.forEach(function(t) {
+                var btn = document.createElement('button');
+                btn.type = 'button';
+                btn.textContent = t;
+                var isActive = currentValue === t;
+                btn.style.cssText = 'padding:4px 10px;font-size:0.72em;background:' + (isActive ? '#5a3a8a' : '#e8f0fa') + ';color:' + (isActive ? '#fff' : '#2a5a8a') + ';border:1px solid ' + (isActive ? '#5a3a8a' : '#a0b8d0') + ';border-radius:12px;cursor:pointer;font-family:inherit;';
+                btn.onclick = function(e) {
+                    e.preventDefault();
+                    var field = document.getElementById('esMemberTitle');
+                    field.value = field.value.trim() === t ? '' : t;
+                    _renderEsTitleQuickPicks();
+                };
+                container.appendChild(btn);
+            });
+        }
+
+        function _populateEsChurchSelect(selected) {
+            var sel = document.getElementById('esChurch');
+            sel.innerHTML = '<option value="">(none)</option>';
+            churches.forEach(function(c) {
+                var opt = document.createElement('option');
+                opt.value = c; opt.textContent = c;
+                if (c === selected) opt.selected = true;
+                sel.appendChild(opt);
+            });
+        }
+
+        function _populateEsLinks(fullName) {
+            var container = document.getElementById('esLinksContainer');
+            container.innerHTML = '';
+            var links = getMemberLinks(fullName);
+            if (links.length === 0) {
+                addEsLinkRow('');
+            } else {
+                links.forEach(function(url) { addEsLinkRow(url); });
+            }
+        }
+
+        function addEsLinkRow(url) {
+            var container = document.getElementById('esLinksContainer');
+            var row = document.createElement('div');
+            row.className = 'edit-link-row';
+            var iconDiv = document.createElement('div');
+            iconDiv.className = 'edit-link-platform-icon';
+            var platform = detectPlatform(url);
+            if (platform) {
+                iconDiv.className += ' cb-link-icon ' + platform.key;
+                iconDiv.innerHTML = platform.icon;
+            } else if (url) {
+                iconDiv.innerHTML = '\uD83D\uDD17';
+            } else {
+                iconDiv.innerHTML = '<span style="color:#ccc;">\uD83D\uDD17</span>';
+            }
+            row.appendChild(iconDiv);
+            var input = document.createElement('input');
+            input.type = 'url'; input.value = url; input.placeholder = 'https://example.com';
+            input.style.cssText = 'flex:1;padding:8px 10px;border-radius:8px;border:1px solid #b0c4de;font-size:0.82em;font-family:inherit;';
+            input.addEventListener('input', function() {
+                var p = detectPlatform(this.value);
+                if (p) { iconDiv.className = 'edit-link-platform-icon cb-link-icon ' + p.key; iconDiv.innerHTML = p.icon; }
+                else if (this.value.trim()) { iconDiv.className = 'edit-link-platform-icon'; iconDiv.innerHTML = '\uD83D\uDD17'; }
+                else { iconDiv.className = 'edit-link-platform-icon'; iconDiv.innerHTML = '<span style="color:#ccc;">\uD83D\uDD17</span>'; }
+            });
+            row.appendChild(input);
+            var removeBtn = document.createElement('button');
+            removeBtn.type = 'button'; removeBtn.className = 'edit-link-remove'; removeBtn.innerHTML = '&times;';
+            removeBtn.onclick = function() { row.remove(); if (container.children.length === 0) addEsLinkRow(''); };
+            row.appendChild(removeBtn);
+            container.appendChild(row);
+        }
+
+        function _collectEsLinks() {
+            var links = [];
+            document.querySelectorAll('#esLinksContainer .edit-link-row').forEach(function(row) {
+                var val = row.querySelector('input').value.trim();
+                if (val) links.push(val);
+            });
+            return links;
+        }
+
+        function _renderEsMilestoneDates(fullName, personNotes) {
+            // Reuse the milestone date rendering logic
+            var container = document.getElementById('esMilestoneDatesContainer');
+            container.innerHTML = '';
+            if (typeof milestoneTypes === 'undefined' || !milestoneTypes || milestoneTypes.length === 0) return;
+            var dates = (personNotes && personNotes.dates) || {};
+            var isCoup = isCouple(fullName);
+            milestoneTypes.forEach(function(mt) {
+                // Add main date row
+                _addEsMilestoneDateRow(container, mt.name, mt.emoji + ' ' + mt.name, dates[mt.name]);
+                // If couple, add spouse variant
+                if (isCoup && mt.name !== 'Anniversary') {
+                    var c = parseCoupleNames(fullName);
+                    var spouseKey = mt.name + ':spouse';
+                    _addEsMilestoneDateRow(container, spouseKey, mt.emoji + ' ' + mt.name + ' (' + (c ? c.spouseB : 'Spouse') + ')', dates[spouseKey]);
+                }
+            });
+        }
+
+        function _addEsMilestoneDateRow(container, key, label, dateObj) {
+            var row = document.createElement('div');
+            row.className = 'milestone-date-row';
+            row.dataset.dateKey = key;
+            row.style.cssText = 'margin-bottom:10px;';
+            var month = dateObj ? dateObj.month : '';
+            var day = dateObj ? dateObj.day : '';
+            var year = dateObj ? (dateObj.year || '') : '';
+            row.innerHTML =
+                '<label style="display:block;font-size:0.72em;font-weight:600;color:#2a5a8a;margin-bottom:3px;">' + escapeHTML(label) + '</label>' +
+                '<div style="display:flex;gap:6px;">' +
+                '<select class="md-month" style="flex:1.2;padding:8px 6px;border-radius:8px;border:1px solid #b0c4de;font-size:0.8em;font-family:inherit;background:#fff;">' +
+                '<option value="0">Month</option><option value="1"' + (month===1?' selected':'') + '>Jan</option><option value="2"' + (month===2?' selected':'') + '>Feb</option><option value="3"' + (month===3?' selected':'') + '>Mar</option><option value="4"' + (month===4?' selected':'') + '>Apr</option><option value="5"' + (month===5?' selected':'') + '>May</option><option value="6"' + (month===6?' selected':'') + '>Jun</option><option value="7"' + (month===7?' selected':'') + '>Jul</option><option value="8"' + (month===8?' selected':'') + '>Aug</option><option value="9"' + (month===9?' selected':'') + '>Sep</option><option value="10"' + (month===10?' selected':'') + '>Oct</option><option value="11"' + (month===11?' selected':'') + '>Nov</option><option value="12"' + (month===12?' selected':'') + '>Dec</option>' +
+                '</select>' +
+                '<input type="number" class="md-day" min="1" max="31" placeholder="Day" value="' + (day || '') + '" style="flex:0.7;padding:8px 6px;border-radius:8px;border:1px solid #b0c4de;font-size:0.8em;font-family:inherit;text-align:center;">' +
+                '<input type="number" class="md-year" min="1900" max="2099" placeholder="Year" value="' + (year || '') + '" style="flex:0.8;padding:8px 6px;border-radius:8px;border:1px solid #b0c4de;font-size:0.8em;font-family:inherit;text-align:center;">' +
+                '</div>';
+            container.appendChild(row);
+        }
+
+        function _populateEsNotesTab(fullName) {
+            var personNotes = notes[fullName] || {};
+            var sections = normalizeSections(personNotes.sections);
+
+            // Render default sections bar
+            var bar = document.getElementById('esDefaultSectionsBar');
+            bar.innerHTML = '';
+            if (typeof defaultSections !== 'undefined' && defaultSections.length > 0) {
+                defaultSections.forEach(function(ds) {
+                    var exists = sections.some(function(s) { return s.label === ds; });
+                    if (!exists) {
+                        var btn = document.createElement('button');
+                        btn.type = 'button';
+                        btn.textContent = '+ ' + ds;
+                        btn.style.cssText = 'padding:4px 10px;font-size:0.7em;background:#e8f0fa;color:#2a5a8a;border:1px solid #a0b8d0;border-radius:12px;cursor:pointer;font-family:inherit;margin:0 4px 4px 0;';
+                        btn.onclick = function() {
+                            _addEsSectionEntry(ds, '');
+                            btn.remove();
+                        };
+                        bar.appendChild(btn);
+                    }
+                });
+            }
+
+            // Render section entries
+            var list = document.getElementById('esSectionsList');
+            list.innerHTML = '';
+            sections.forEach(function(s) {
+                _addEsSectionEntry(s.label || '', s.value || '');
+            });
+        }
+
+        function _addEsSectionEntry(label, value) {
+            var list = document.getElementById('esSectionsList');
+            var entry = document.createElement('div');
+            entry.className = 'section-entry';
+            entry.style.cssText = 'margin-bottom:8px;border:1px solid #d0dbe8;border-radius:8px;padding:8px;background:#fafcfe;';
+            entry.innerHTML =
+                '<div style="display:flex;gap:6px;margin-bottom:4px;">' +
+                '<input type="text" class="section-label-input" value="' + escapeHTML(label) + '" placeholder="Section label" style="flex:1;padding:6px 8px;border-radius:6px;border:1px solid #b0c4de;font-size:0.78em;font-family:inherit;font-weight:600;">' +
+                '<button type="button" onclick="this.closest(\'.section-entry\').remove()" style="padding:4px 8px;border:none;background:transparent;color:#c44;font-size:1em;cursor:pointer;">&times;</button>' +
+                '</div>' +
+                '<textarea class="section-value-textarea" placeholder="Notes..." style="width:100%;min-height:60px;padding:6px 8px;border-radius:6px;border:1px solid #b0c4de;font-size:0.78em;font-family:inherit;resize:vertical;box-sizing:border-box;">' + escapeHTML(value) + '</textarea>';
+            list.appendChild(entry);
+        }
+
+        function addEsSectionEntry() {
+            _addEsSectionEntry('', '');
+        }
+
+        // ── Save edit sheet ──
+        function saveEditSheet() {
+            touchEditActivity();
+
+            if (_esMode === 'new') {
+                _saveNewMemberFromSheet();
+            } else {
+                _saveExistingMemberFromSheet();
+            }
+        }
+
+        function _saveNewMemberFromSheet() {
+            var firstName = document.getElementById('esFirstName').value.trim();
+            var lastName = document.getElementById('esLastName').value.trim();
+            var title = document.getElementById('esMemberTitle').value.trim();
+            var nickname = document.getElementById('esNickname').value.trim();
+            var middleName = document.getElementById('esMiddleName').value.trim();
+            var church = document.getElementById('esChurch').value;
+            var editedLinks = _collectEsLinks();
+
+            // Validation
+            if (!firstName && !lastName && !title && !nickname) {
+                showToast('Please enter at least a name, title, or nickname');
+                if (_esWizardStep !== 1) _showWizardStep(1);
+                return;
+            }
+
+            // Build full name
+            var fullName = '';
+            if (firstName && lastName) { fullName = firstName + ' ' + lastName; }
+            else if (lastName) { fullName = lastName; }
+            else if (firstName) { fullName = firstName; }
+            else if (title) { fullName = title; }
+            else { fullName = nickname; }
+
+            if (members.includes(fullName)) {
+                showToast(fullName + ' already exists');
+                if (_esWizardStep !== 1) _showWizardStep(1);
+                return;
+            }
+
+            // Add member
+            members.push(fullName);
+            saveMembers();
+            saveMemberToFirebase(fullName);
+
+            // Title
+            if (title) { memberTitles[fullName] = title; saveMemberTitleFor(fullName); }
+
+            // Notes
+            if (!notes[fullName]) notes[fullName] = { church: '', sections: [] };
+            var n = notes[fullName];
+            if (church) n.church = church;
+            if (nickname) n.nickname = nickname;
+            if (middleName) n.middleName = middleName;
+            n.firstName = firstName;
+            n.lastName = lastName;
+            n.addedAt = Date.now();
+            n.links = editedLinks;
+            n.webURL = editedLinks.length > 0 ? editedLinks[0] : '';
+
+            // Collect milestone dates
+            var editDates = _collectEsMilestoneDates();
+            if (Object.keys(editDates).length > 0) n.dates = editDates;
+
+            // Collect sections
+            n.sections = _collectEsSections();
+
+            saveNotesFor(fullName);
+
+            // Photo
+            if (_esPhotoData) {
+                uploadedPhotos[fullName] = _esPhotoData;
+                saveUploadedPhotosStore(fullName);
+                stampMemberUpdate(fullName, 'photo');
+                saveNotesFor(fullName);
+            }
+
+            closeEditSheet();
+            render();
+            playSaveSound();
+            showToast('Added ' + fullName);
+        }
+
+        function _saveExistingMemberFromSheet() {
+            if (!_esPerson) return;
+            var oldName = _esPerson;
+            var firstName = document.getElementById('esFirstName').value.trim();
+            var lastName = document.getElementById('esLastName').value.trim();
+            var title = document.getElementById('esMemberTitle').value.trim();
+            var church = document.getElementById('esChurch').value;
+            var nickname = document.getElementById('esNickname').value.trim();
+            var middleName = document.getElementById('esMiddleName').value.trim();
+            var editedLinks = _collectEsLinks();
+
+            // Build new full name
+            var newFullName;
+            if (firstName && lastName) { newFullName = firstName + ' ' + lastName; }
+            else if (lastName) { newFullName = lastName; }
+            else if (firstName) { newFullName = firstName; }
+            else { newFullName = oldName; }
+
+            var nameChanged = newFullName !== oldName;
+            var renamePromise = null;
+            if (nameChanged) {
+                if (members.includes(newFullName)) {
+                    showToast(newFullName + ' already exists');
+                    switchEditTab('details');
+                    return;
+                }
+                renamePromise = performRename(oldName, newFullName);
+                _esPerson = newFullName;
+            }
+
+            // Collect milestone dates
+            var editDates = _collectEsMilestoneDates();
+            var editingPerson = _esPerson;
+            var oldDates = (notes[editingPerson] && notes[editingPerson].dates) || {};
+            for (var odKey in oldDates) {
+                if (!editDates[odKey]) {
+                    var baseName = odKey.replace(':spouse', '');
+                    var stillDefined = milestoneTypes.some(function(mt) { return mt.name === baseName; });
+                    if (!stillDefined) editDates[odKey] = oldDates[odKey];
+                }
+            }
+
+            // Update notes
+            if (!notes[editingPerson]) notes[editingPerson] = {};
+            var n = notes[editingPerson];
+            n.church = church;
+            n.nickname = nickname;
+            n.middleName = middleName;
+            var oldLinks = JSON.stringify(n.links || (n.webURL ? [n.webURL] : []));
+            n.links = editedLinks;
+            n.webURL = editedLinks.length > 0 ? editedLinks[0] : '';
+            if (JSON.stringify(editedLinks) !== oldLinks && editedLinks.length > 0) {
+                stampMemberUpdate(editingPerson, 'links');
+            }
+            var oldTitle = memberTitles[editingPerson] || '';
+            n.sections = _collectEsSections();
+            n.firstName = firstName;
+            n.lastName = lastName;
+            if (Object.keys(editDates).length > 0) { n.dates = editDates; } else { delete n.dates; }
+            saveNotesFor(editingPerson);
+
+            if (title) {
+                if (title !== oldTitle) stampMemberUpdate(editingPerson, 'title');
+                memberTitles[editingPerson] = title;
+                saveMemberTitleFor(editingPerson);
+            } else if (memberTitles[editingPerson]) {
+                delete memberTitles[editingPerson];
+                saveMemberTitleFor(editingPerson);
+            }
+
+            // Photo changes
+            var origPhoto = uploadedPhotos[oldName];
+            if (_esPhotoData && _esPhotoData !== origPhoto) {
+                // New or changed photo
+                uploadedPhotos[editingPerson] = _esPhotoData;
+                saveUploadedPhotosStore(editingPerson);
+                stampMemberUpdate(editingPerson, 'photo');
+                saveNotesFor(editingPerson);
+            } else if (!_esPhotoData && origPhoto) {
+                // Photo removed
+                delete uploadedPhotos[editingPerson];
+                removeCachedPhoto(editingPerson);
+                saveUploadedPhotosStore(editingPerson);
+            }
+            // Save photo adjustments
+            if (_esPhotoData) {
+                photoAdj[editingPerson] = { zoom: _esPhotoZoom, x: _esPhotoX, y: _esPhotoY };
+                savePhotoAdjFor(editingPerson);
+            }
+            // Spouse photo
+            if (isCouple(editingPerson)) {
+                var origSpouse = spousePhotos[oldName];
+                if (_esSpousePhotoData && _esSpousePhotoData !== origSpouse) {
+                    spousePhotos[editingPerson] = _esSpousePhotoData;
+                    saveSpousePhoto(editingPerson);
+                } else if (!_esSpousePhotoData && origSpouse) {
+                    delete spousePhotos[editingPerson];
+                    removeCachedPhoto('spouse:' + editingPerson);
+                    saveSpousePhoto(editingPerson);
+                }
+                if (_esSpousePhotoData) {
+                    spousePhotoAdj[editingPerson] = { zoom: _esSpouseZoom, x: _esSpouseX, y: _esSpouseY };
+                    saveSpousePhotoAdjFor(editingPerson);
+                }
+            }
+
+            closeEditSheet();
+            pendingRemoteRender = false;
+            if (nameChanged && renamePromise) {
+                renamePromise.then(function() { render(); });
+            } else if (nameChanged) {
+                render();
+            } else {
+                updateCardInPlace(editingPerson);
+            }
+            playSaveSound();
+            showToast(nameChanged ? 'Saved & renamed to ' + newFullName : 'Saved');
+        }
+
+        function _collectEsMilestoneDates() {
+            var editDates = {};
+            var dateRows = document.querySelectorAll('#esMilestoneDatesContainer .milestone-date-row');
+            dateRows.forEach(function(row) {
+                var key = row.dataset.dateKey;
+                if (!key) return;
+                var month = parseInt(row.querySelector('.md-month').value) || 0;
+                var day = parseInt(row.querySelector('.md-day').value) || 0;
+                var yearVal = row.querySelector('.md-year').value.trim();
+                var year = yearVal ? parseInt(yearVal) : null;
+                if (month && day) {
+                    var entry = { month: month, day: day };
+                    if (year) entry.year = year;
+                    editDates[key] = entry;
+                }
+            });
+            return editDates;
+        }
+
+        function _collectEsSections() {
+            var sections = [];
+            document.querySelectorAll('#esSectionsList .section-entry').forEach(function(entry) {
+                var label = entry.querySelector('.section-label-input').value.trim();
+                var value = entry.querySelector('.section-value-textarea').value.trim();
+                if (label || value) sections.push({ label: label || 'Notes', value: value });
+            });
+            return sections;
+        }
+
+        // ── Edit sheet entry points ──
+        function openEditSheetForMember(fullName) {
+            // Auth check
+            if (currentUserLevel === 'readonly') { showToast('Read-only access'); return; }
+            checkEditAuthExpiry();
+            if (!isEditAuthorized) {
+                // Need password first
+                document.getElementById('editPwInput').value = '';
+                document.getElementById('editPwError').textContent = '';
+                document.getElementById('editPwOverlay').classList.add('show');
+                setTimeout(function() { document.getElementById('editPwInput').focus(); }, 100);
+                var origSubmit = submitEditPw;
+                submitEditPw = function() {
+                    var val = document.getElementById('editPwInput').value;
+                    hashPassword(val).then(function(h) {
+                        if (h === EDIT_PASSWORD_HASH) {
+                            isEditAuthorized = true;
+                            touchEditActivity();
+                            closeEditPw();
+                            submitEditPw = origSubmit;
+                            openEditSheet(fullName);
+                        } else {
+                            document.getElementById('editPwError').textContent = 'Incorrect password';
+                            document.getElementById('editPwInput').classList.add('error');
+                            document.getElementById('editPwInput').value = '';
+                            setTimeout(function() {
+                                document.getElementById('editPwInput').classList.remove('error');
+                                document.getElementById('editPwError').textContent = '';
+                            }, 1500);
+                        }
+                    });
+                };
+                document.getElementById('editPwInput').onkeydown = function(e) {
+                    if (e.key === 'Enter') submitEditPw();
+                };
+                return;
+            }
+            openEditSheet(fullName);
+        }
+
+        function openNewMemberSheetWithAuth() {
+            if (currentUserLevel === 'readonly') { showToast('Read-only access'); return; }
+            checkEditAuthExpiry();
+            if (!isEditAuthorized) {
+                document.getElementById('editPwInput').value = '';
+                document.getElementById('editPwError').textContent = '';
+                document.getElementById('editPwOverlay').classList.add('show');
+                setTimeout(function() { document.getElementById('editPwInput').focus(); }, 100);
+                var origSubmit = submitEditPw;
+                submitEditPw = function() {
+                    var val = document.getElementById('editPwInput').value;
+                    hashPassword(val).then(function(h) {
+                        if (h === EDIT_PASSWORD_HASH) {
+                            isEditAuthorized = true;
+                            touchEditActivity();
+                            closeEditPw();
+                            submitEditPw = origSubmit;
+                            openNewMemberSheet();
+                        } else {
+                            document.getElementById('editPwError').textContent = 'Incorrect password';
+                            document.getElementById('editPwInput').classList.add('error');
+                            document.getElementById('editPwInput').value = '';
+                            setTimeout(function() {
+                                document.getElementById('editPwInput').classList.remove('error');
+                                document.getElementById('editPwError').textContent = '';
+                            }, 1500);
+                        }
+                    });
+                };
+                document.getElementById('editPwInput').onkeydown = function(e) {
+                    if (e.key === 'Enter') submitEditPw();
+                };
+                return;
+            }
+            openNewMemberSheet();
         }
 
         function showNewChurchModal() {
