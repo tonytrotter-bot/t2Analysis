@@ -2973,18 +2973,18 @@
         .edit-sheet-tab-content.active { display: block; }
         /* Wizard progress bar */
         .edit-sheet-progress {
-            display: flex; gap: 4px; margin-bottom: 10px;
+            display: flex; gap: 6px; margin-bottom: 12px;
         }
         .edit-sheet-progress-step {
             flex: 1; text-align: center;
         }
         .edit-sheet-progress-bar {
-            height: 4px; border-radius: 2px; background: #e0e0e0;
+            height: 5px; border-radius: 2.5px; background: #e0e0e0;
             transition: background 0.3s;
         }
         .edit-sheet-progress-bar.done { background: #d4a843; }
         .edit-sheet-progress-label {
-            font-size: 0.6em; margin-top: 3px; color: #5a7a9a; font-weight: 400;
+            font-size: 0.78em; margin-top: 4px; color: #5a7a9a; font-weight: 500;
         }
         .edit-sheet-progress-label.active { color: #2a5a8a; font-weight: 700; }
         /* Wizard nav buttons */
@@ -12915,6 +12915,8 @@
         var _esPhotoData = ''; // photo data URL for new members / current tab
         var _esSpousePhotoData = ''; // spouse photo for couples
         var _esActiveSpouse = 'A'; // which spouse photo tab
+        var _esPhotoChanged = false; // track if user actually changed the photo
+        var _esSpousePhotoChanged = false;
         var _esPhotoZoom = 100;
         var _esPhotoX = 0;
         var _esPhotoY = 0;
@@ -12926,6 +12928,8 @@
             _esMode = 'edit';
             _esPerson = fullName;
             _esActiveSpouse = 'A';
+            _esPhotoChanged = false;
+            _esSpousePhotoChanged = false;
 
             // Show identity + tabs, hide wizard progress
             document.getElementById('esProgress').style.display = 'none';
@@ -13256,9 +13260,11 @@
                     if (_esActiveSpouse === 'B') {
                         _esSpousePhotoData = compressed;
                         _esSpouseZoom = 100; _esSpouseX = 0; _esSpouseY = 0;
+                        _esSpousePhotoChanged = true;
                     } else {
                         _esPhotoData = compressed;
                         _esPhotoZoom = 100; _esPhotoX = 0; _esPhotoY = 0;
+                        _esPhotoChanged = true;
                     }
                     _renderEsPhotoPreview();
                 });
@@ -13271,9 +13277,11 @@
             if (_esActiveSpouse === 'B') {
                 _esSpousePhotoData = '';
                 _esSpouseZoom = 100; _esSpouseX = 0; _esSpouseY = 0;
+                _esSpousePhotoChanged = true;
             } else {
                 _esPhotoData = '';
                 _esPhotoZoom = 100; _esPhotoX = 0; _esPhotoY = 0;
+                _esPhotoChanged = true;
             }
             _renderEsPhotoPreview();
         }
@@ -13386,73 +13394,85 @@
         }
 
         function _renderEsMilestoneDates(fullName, personNotes) {
-            // Reuse the milestone date rendering logic
+            // Reuse the same milestone-dates-group + buildDateRow as the original notes panel
             var container = document.getElementById('esMilestoneDatesContainer');
             container.innerHTML = '';
             if (typeof milestoneTypes === 'undefined' || !milestoneTypes || milestoneTypes.length === 0) return;
             var dates = (personNotes && personNotes.dates) || {};
-            var isCoup = isCouple(fullName);
+            var couple = isCouple(fullName);
+            var cp = couple ? parseCoupleNames(fullName) : null;
+            var group = document.createElement('div');
+            group.className = 'milestone-dates-group';
+            group.innerHTML = '<div class="mdg-title">Milestone Dates</div>';
+            var isFirst = true;
             milestoneTypes.forEach(function(mt) {
-                // Add main date row
-                _addEsMilestoneDateRow(container, mt.name, mt.emoji + ' ' + mt.name, dates[mt.name]);
-                // If couple, add spouse variant
-                if (isCoup && mt.name !== 'Anniversary') {
-                    var c = parseCoupleNames(fullName);
-                    var spouseKey = mt.name + ':spouse';
-                    _addEsMilestoneDateRow(container, spouseKey, mt.emoji + ' ' + mt.name + ' (' + (c ? c.spouseB : 'Spouse') + ')', dates[spouseKey]);
+                if (!isFirst) {
+                    var div = document.createElement('hr');
+                    div.className = 'milestone-date-divider';
+                    group.appendChild(div);
+                }
+                isFirst = false;
+                if (couple && !mt.shared) {
+                    var typeLabel = document.createElement('div');
+                    typeLabel.className = 'milestone-date-type-label';
+                    typeLabel.innerHTML = mt.emoji + ' ' + escapeHTML(mt.name) + ' <span class="mdtl-hint">(per person)</span>';
+                    group.appendChild(typeLabel);
+                    group.appendChild(buildDateRow(mt, mt.name, dates[mt.name], cp ? cp.spouseA : 'Person A'));
+                    group.appendChild(buildDateRow(mt, mt.name + ':spouse', dates[mt.name + ':spouse'], cp ? cp.spouseB : 'Person B'));
+                } else if (couple && mt.shared) {
+                    var typeLabel2 = document.createElement('div');
+                    typeLabel2.className = 'milestone-date-type-label';
+                    typeLabel2.innerHTML = mt.emoji + ' ' + escapeHTML(mt.name) + ' <span class="mdtl-hint">(shared)</span>';
+                    group.appendChild(typeLabel2);
+                    group.appendChild(buildDateRow(mt, mt.name, dates[mt.name], 'Together'));
+                } else {
+                    group.appendChild(buildDateRow(mt, mt.name, dates[mt.name], null));
                 }
             });
-        }
-
-        function _addEsMilestoneDateRow(container, key, label, dateObj) {
-            var row = document.createElement('div');
-            row.className = 'milestone-date-row';
-            row.dataset.dateKey = key;
-            row.style.cssText = 'margin-bottom:10px;';
-            var month = dateObj ? dateObj.month : '';
-            var day = dateObj ? dateObj.day : '';
-            var year = dateObj ? (dateObj.year || '') : '';
-            row.innerHTML =
-                '<label style="display:block;font-size:0.72em;font-weight:600;color:#2a5a8a;margin-bottom:3px;">' + escapeHTML(label) + '</label>' +
-                '<div style="display:flex;gap:6px;">' +
-                '<select class="md-month" style="flex:1.2;padding:8px 6px;border-radius:8px;border:1px solid #b0c4de;font-size:0.8em;font-family:inherit;background:#fff;">' +
-                '<option value="0">Month</option><option value="1"' + (month===1?' selected':'') + '>Jan</option><option value="2"' + (month===2?' selected':'') + '>Feb</option><option value="3"' + (month===3?' selected':'') + '>Mar</option><option value="4"' + (month===4?' selected':'') + '>Apr</option><option value="5"' + (month===5?' selected':'') + '>May</option><option value="6"' + (month===6?' selected':'') + '>Jun</option><option value="7"' + (month===7?' selected':'') + '>Jul</option><option value="8"' + (month===8?' selected':'') + '>Aug</option><option value="9"' + (month===9?' selected':'') + '>Sep</option><option value="10"' + (month===10?' selected':'') + '>Oct</option><option value="11"' + (month===11?' selected':'') + '>Nov</option><option value="12"' + (month===12?' selected':'') + '>Dec</option>' +
-                '</select>' +
-                '<input type="number" class="md-day" min="1" max="31" placeholder="Day" value="' + (day || '') + '" style="flex:0.7;padding:8px 6px;border-radius:8px;border:1px solid #b0c4de;font-size:0.8em;font-family:inherit;text-align:center;">' +
-                '<input type="number" class="md-year" min="1900" max="2099" placeholder="Year" value="' + (year || '') + '" style="flex:0.8;padding:8px 6px;border-radius:8px;border:1px solid #b0c4de;font-size:0.8em;font-family:inherit;text-align:center;">' +
-                '</div>';
-            container.appendChild(row);
+            container.appendChild(group);
         }
 
         function _populateEsNotesTab(fullName) {
             var personNotes = notes[fullName] || {};
             var sections = normalizeSections(personNotes.sections);
 
-            // Render default sections bar
-            var bar = document.getElementById('esDefaultSectionsBar');
-            bar.innerHTML = '';
-            if (typeof defaultSections !== 'undefined' && defaultSections.length > 0) {
-                defaultSections.forEach(function(ds) {
-                    var exists = sections.some(function(s) { return s.label === ds; });
-                    if (!exists) {
-                        var btn = document.createElement('button');
-                        btn.type = 'button';
-                        btn.textContent = '+ ' + ds;
-                        btn.style.cssText = 'padding:4px 10px;font-size:0.7em;background:#e8f0fa;color:#2a5a8a;border:1px solid #a0b8d0;border-radius:12px;cursor:pointer;font-family:inherit;margin:0 4px 4px 0;';
-                        btn.onclick = function() {
-                            _addEsSectionEntry(ds, '');
-                            btn.remove();
-                        };
-                        bar.appendChild(btn);
-                    }
-                });
-            }
-
-            // Render section entries
+            // Render section entries first so we can check used labels
             var list = document.getElementById('esSectionsList');
             list.innerHTML = '';
             sections.forEach(function(s) {
                 _addEsSectionEntry(s.label || '', s.value || '');
+            });
+
+            // Render default sections bar (matches original renderDefaultSectionsBar)
+            _renderEsDefaultSectionsBar();
+        }
+
+        function _renderEsDefaultSectionsBar() {
+            var bar = document.getElementById('esDefaultSectionsBar');
+            bar.innerHTML = '';
+            if (typeof DEFAULT_SECTIONS === 'undefined' || !DEFAULT_SECTIONS || DEFAULT_SECTIONS.length === 0) return;
+            var usedLabels = [];
+            document.querySelectorAll('#esSectionsList .section-entry').forEach(function(entry) {
+                var lbl = entry.querySelector('.section-label-input');
+                if (lbl) usedLabels.push(lbl.value.trim());
+            });
+            DEFAULT_SECTIONS.forEach(function(sectionName) {
+                var btn = document.createElement('button');
+                btn.className = 'btn-default-section';
+                if (usedLabels.indexOf(sectionName) !== -1) {
+                    btn.classList.add('used');
+                    btn.textContent = '\u2713 ' + sectionName;
+                    btn.disabled = true;
+                } else {
+                    btn.textContent = sectionName;
+                    btn.onclick = function() {
+                        _addEsSectionEntry(sectionName, '');
+                        _renderEsDefaultSectionsBar();
+                        var textareas = document.querySelectorAll('#esSectionsList .section-value-textarea');
+                        if (textareas.length > 0) textareas[textareas.length - 1].focus();
+                    };
+                }
+                bar.appendChild(btn);
             });
         }
 
@@ -13628,32 +13648,33 @@
                 saveMemberTitleFor(editingPerson);
             }
 
-            // Photo changes
-            var origPhoto = uploadedPhotos[oldName];
-            if (_esPhotoData && _esPhotoData !== origPhoto) {
-                // New or changed photo
-                uploadedPhotos[editingPerson] = _esPhotoData;
-                saveUploadedPhotosStore(editingPerson);
-                stampMemberUpdate(editingPerson, 'photo');
-                saveNotesFor(editingPerson);
-            } else if (!_esPhotoData && origPhoto) {
-                // Photo removed
-                delete uploadedPhotos[editingPerson];
-                removeCachedPhoto(editingPerson);
-                saveUploadedPhotosStore(editingPerson);
+            // Photo changes — only process if user actually changed the photo
+            var photoDidChange = false;
+            if (_esPhotoChanged) {
+                if (_esPhotoData) {
+                    uploadedPhotos[editingPerson] = _esPhotoData;
+                    saveUploadedPhotosStore(editingPerson);
+                    stampMemberUpdate(editingPerson, 'photo');
+                    saveNotesFor(editingPerson);
+                } else {
+                    // Photo removed
+                    delete uploadedPhotos[editingPerson];
+                    removeCachedPhoto(editingPerson);
+                    saveUploadedPhotosStore(editingPerson);
+                }
+                photoDidChange = true;
             }
-            // Save photo adjustments
-            if (_esPhotoData) {
+            // Save photo adjustments if photo exists
+            if (_esPhotoData && (_esPhotoChanged || _esPhotoZoom !== 100 || _esPhotoX !== 0 || _esPhotoY !== 0)) {
                 photoAdj[editingPerson] = { zoom: _esPhotoZoom, x: _esPhotoX, y: _esPhotoY };
                 savePhotoAdjFor(editingPerson);
             }
-            // Spouse photo
-            if (isCouple(editingPerson)) {
-                var origSpouse = spousePhotos[oldName];
-                if (_esSpousePhotoData && _esSpousePhotoData !== origSpouse) {
+            // Spouse photo — only if changed
+            if (isCouple(editingPerson) && _esSpousePhotoChanged) {
+                if (_esSpousePhotoData) {
                     spousePhotos[editingPerson] = _esSpousePhotoData;
                     saveSpousePhoto(editingPerson);
-                } else if (!_esSpousePhotoData && origSpouse) {
+                } else {
                     delete spousePhotos[editingPerson];
                     removeCachedPhoto('spouse:' + editingPerson);
                     saveSpousePhoto(editingPerson);
@@ -13662,13 +13683,14 @@
                     spousePhotoAdj[editingPerson] = { zoom: _esSpouseZoom, x: _esSpouseX, y: _esSpouseY };
                     saveSpousePhotoAdjFor(editingPerson);
                 }
+                photoDidChange = true;
             }
 
             closeEditSheet();
             pendingRemoteRender = false;
             if (nameChanged && renamePromise) {
                 renamePromise.then(function() { render(); });
-            } else if (nameChanged) {
+            } else if (nameChanged || photoDidChange) {
                 render();
             } else {
                 updateCardInPlace(editingPerson);
