@@ -12986,6 +12986,8 @@
             _esPhotoData = '';
             _esSpousePhotoData = '';
             _esActiveSpouse = 'A';
+            _esPhotoChanged = true; // always "changed" for new members
+            _esSpousePhotoChanged = false;
             _esPhotoZoom = 100; _esPhotoX = 0; _esPhotoY = 0;
             _esSpouseZoom = 100; _esSpouseX = 0; _esSpouseY = 0;
 
@@ -13016,9 +13018,9 @@
             addEsLinkRow('');
             document.getElementById('esMilestoneDatesContainer').innerHTML = '';
 
-            // Clear notes tab
-            document.getElementById('esDefaultSectionsBar').innerHTML = '';
+            // Clear notes tab and populate default sections bar
             document.getElementById('esSectionsList').innerHTML = '';
+            _renderEsDefaultSectionsBar();
 
             // Set wizard footer
             _updateWizardFooter();
@@ -13484,7 +13486,7 @@
             entry.innerHTML =
                 '<div style="display:flex;gap:6px;margin-bottom:4px;">' +
                 '<input type="text" class="section-label-input" value="' + escapeHTML(label) + '" placeholder="Section label" style="flex:1;padding:6px 8px;border-radius:6px;border:1px solid #b0c4de;font-size:0.78em;font-family:inherit;font-weight:600;">' +
-                '<button type="button" onclick="this.closest(\'.section-entry\').remove()" style="padding:4px 8px;border:none;background:transparent;color:#c44;font-size:1em;cursor:pointer;">&times;</button>' +
+                '<button type="button" onclick="this.closest(\'.section-entry\').remove();_renderEsDefaultSectionsBar();" style="padding:4px 8px;border:none;background:transparent;color:#c44;font-size:1em;cursor:pointer;">&times;</button>' +
                 '</div>' +
                 '<textarea class="section-value-textarea" placeholder="Notes..." style="width:100%;min-height:60px;padding:6px 8px;border-radius:6px;border:1px solid #b0c4de;font-size:0.78em;font-family:inherit;resize:vertical;box-sizing:border-box;">' + escapeHTML(value) + '</textarea>';
             list.appendChild(entry);
@@ -13574,6 +13576,7 @@
 
             closeEditSheet();
             render();
+            if (_esPhotoData) setTimeout(function() { _forceLoadCardPhoto(fullName); }, 50);
             playSaveSound();
             showToast('Added ' + fullName);
         }
@@ -13688,15 +13691,31 @@
 
             closeEditSheet();
             pendingRemoteRender = false;
+            var finalName = editingPerson;
             if (nameChanged && renamePromise) {
-                renamePromise.then(function() { render(); });
+                renamePromise.then(function() {
+                    render();
+                    if (photoDidChange) _forceLoadCardPhoto(finalName);
+                });
             } else if (nameChanged || photoDidChange) {
                 render();
+                if (photoDidChange) setTimeout(function() { _forceLoadCardPhoto(finalName); }, 50);
             } else {
                 updateCardInPlace(editingPerson);
             }
             playSaveSound();
             showToast(nameChanged ? 'Saved & renamed to ' + newFullName : 'Saved');
+        }
+
+        // Force-load a specific member's card photo immediately (skip IntersectionObserver)
+        function _forceLoadCardPhoto(fullName) {
+            var cards = document.querySelectorAll('.person-card');
+            for (var i = 0; i < cards.length; i++) {
+                if (cards[i].dataset.member !== fullName) continue;
+                var lazyImgs = cards[i].querySelectorAll('img.lazy-photo[data-lazy-src]');
+                lazyImgs.forEach(function(img) { _loadPhotoForImg(img); });
+                break;
+            }
         }
 
         function _collectEsMilestoneDates() {
