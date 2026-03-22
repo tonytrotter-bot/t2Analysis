@@ -110,15 +110,14 @@
         .banner-browse-btn::after {
             content: 'Browse';
             position: absolute;
-            top: calc(100% + 4px);
-            right: 0;
+            right: calc(100% + 6px);
+            top: 50%;
+            transform: translateY(-50%);
             font-size: 0.6em;
             color: #fff;
-            background: rgba(0,0,0,0.65);
-            padding: 2px 7px;
-            border-radius: 4px;
             white-space: nowrap;
             pointer-events: none;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.7), 0 0 8px rgba(0,0,0,0.4);
         }
         /* ═══ Banner Logo Overlay ═══ */
         .banner-logo {
@@ -169,26 +168,74 @@
             border-radius: 8px;
             object-fit: cover;
         }
+        /* Mode D: Corner Bug — small logo pinned to a corner like a TV network bug */
+        .banner-wrap[data-logo-mode="corner"] .banner-logo {
+            top: 8px; left: 10px;
+            width: auto; height: 38%;
+            max-width: 30%;
+            border-radius: 6px;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.3);
+        }
+        .banner-wrap[data-logo-mode="corner"] .banner-logo img {
+            object-fit: contain;
+            border-radius: 4px;
+        }
+
+        /* ═══ Logo Horizontal Position ═══ */
+        /* Overlay & Corner: base CSS puts them left — center/right override */
+        .banner-wrap[data-logo-pos="center"][data-logo-mode="overlay"] .banner-logo {
+            left: 50%; right: auto; transform: translate(-50%, 0); bottom: 8px;
+        }
+        .banner-wrap[data-logo-pos="center"][data-logo-mode="corner"] .banner-logo {
+            left: 50%; right: auto; transform: translate(-50%, 0); top: 8px;
+        }
+        .banner-wrap[data-logo-pos="right"][data-logo-mode="overlay"] .banner-logo {
+            left: auto; right: 10px;
+        }
+        .banner-wrap[data-logo-pos="right"][data-logo-mode="corner"] .banner-logo {
+            left: auto; right: 10px;
+        }
+        /* Badge: base CSS centers it — left/right override */
+        .banner-wrap[data-logo-pos="left"][data-logo-mode="badge"] .banner-logo {
+            left: 10px; right: auto; transform: translateY(35%);
+        }
+        .banner-wrap[data-logo-pos="right"][data-logo-mode="badge"] .banner-logo {
+            left: auto; right: 10px; transform: translateY(35%);
+        }
+
         /* No logo mode */
         .banner-wrap[data-logo-mode="none"] .banner-logo { display: none !important; }
 
         /* ═══ Banner Size: Showcase (large) — logo stays compact-sized ═══ */
         .banner-wrap[data-banner-size="showcase"] { height: 320px; }
         .banner-wrap[data-banner-size="showcase"] .banner-logo { height: 42%; max-height: 84px; }
+        .banner-wrap[data-banner-size="showcase"][data-logo-mode="corner"] .banner-logo { height: 28%; max-height: 60px; }
+        .banner-wrap[data-banner-size="showcase"][data-logo-mode="badge"] .banner-logo { bottom: 0; }
 
-        /* ═══ Corner Overlay Shape: Square ═══ */
-        .banner-wrap[data-logo-mode="overlay"][data-overlay-shape="square"] .banner-logo {
+        /* ═══ Overlay/Corner Shape: Square ═══ */
+        .banner-wrap[data-logo-mode="overlay"][data-overlay-shape="square"] .banner-logo,
+        .banner-wrap[data-logo-mode="corner"][data-overlay-shape="square"] .banner-logo {
             width: auto; height: auto;
             aspect-ratio: 1 / 1;
-            bottom: 10px; left: 10px;
             max-height: 80%;
             border-radius: 10px;
         }
-        .banner-wrap[data-logo-mode="overlay"][data-overlay-shape="square"] .banner-logo img {
+        .banner-wrap[data-logo-mode="overlay"][data-overlay-shape="square"] .banner-logo {
+            bottom: 10px; left: 10px;
+        }
+        .banner-wrap[data-logo-mode="corner"][data-overlay-shape="square"] .banner-logo {
+            top: 8px; left: 10px;
+            max-height: 60%;
+        }
+        .banner-wrap[data-logo-mode="overlay"][data-overlay-shape="square"] .banner-logo img,
+        .banner-wrap[data-logo-mode="corner"][data-overlay-shape="square"] .banner-logo img {
             object-fit: cover;
         }
         .banner-wrap[data-banner-size="showcase"][data-logo-mode="overlay"][data-overlay-shape="square"] .banner-logo {
             max-height: 55%;
+        }
+        .banner-wrap[data-banner-size="showcase"][data-logo-mode="corner"][data-overlay-shape="square"] .banner-logo {
+            max-height: 40%;
         }
 
         /* ── Banner Editor Overlay ── */
@@ -3438,10 +3485,11 @@
             .banner-wrap { height: 180px; }
             .banner-wrap[data-banner-size="showcase"] { height: 300px; }
             .banner-wrap[data-banner-size="showcase"] .banner-logo { max-height: 76px; }
-            .banner-wrap[data-logo-mode="badge"] { margin-bottom: 40px; }
-            .banner-wrap[data-logo-mode="badge"] .banner-logo { width: 55%; height: 52%; }
-            .banner-wrap[data-logo-mode="overlay"] .banner-logo { width: 40%; height: 50%; }
-            .banner-wrap[data-logo-mode="glass"] .banner-logo { width: 60%; height: 68%; }
+            .banner-wrap[data-logo-mode="badge"] { margin-bottom: 45px; }
+            .banner-wrap[data-logo-mode="badge"] .banner-logo { width: 50%; height: 48%; bottom: -5px; }
+            .banner-wrap[data-logo-mode="overlay"] .banner-logo { width: 35%; height: 45%; }
+            .banner-wrap[data-logo-mode="glass"] .banner-logo { width: 55%; height: 62%; }
+            .banner-wrap[data-logo-mode="corner"] .banner-logo { height: 32%; max-width: 25%; }
         }
 
         /* Desktop: larger flip cards */
@@ -3474,8 +3522,9 @@
         @media (max-width: 768px) {
             .banner-wrap { height: 180px; }
             .banner-wrap[data-banner-size="showcase"] { height: 280px; }
-            .banner-wrap[data-banner-size="showcase"] .banner-logo { max-height: 76px; }
-            .banner-wrap[data-logo-mode="badge"] .banner-logo { height: 48%; }
+            .banner-wrap[data-banner-size="showcase"] .banner-logo { max-height: 70px; }
+            .banner-wrap[data-logo-mode="badge"] .banner-logo { height: 42%; width: 60%; }
+            .banner-wrap[data-logo-mode="corner"] .banner-logo { height: 30%; max-width: 28%; }
             .card-grid { grid-template-columns: repeat(3, 1fr); }
             .photo-frame { width: 105px; height: 105px; border-width: 2px; }
             .person-name { font-size: 0.85em; }
@@ -3490,11 +3539,13 @@
         @media (max-width: 500px) {
             .banner-wrap { height: 150px; }
             .banner-wrap[data-banner-size="showcase"] { height: 240px; }
-            .banner-wrap[data-banner-size="showcase"] .banner-logo { max-height: 63px; }
-            .banner-wrap[data-logo-mode="badge"] { margin-bottom: 30px; }
-            .banner-wrap[data-logo-mode="badge"] .banner-logo { width: 75%; padding: 4px; }
-            .banner-wrap[data-logo-mode="overlay"] .banner-logo { width: 50%; height: 40%; }
-            .banner-wrap[data-logo-mode="glass"] .banner-logo { width: 78%; height: 58%; padding: 4px; }
+            .banner-wrap[data-banner-size="showcase"] .banner-logo { max-height: 55px; }
+            .banner-wrap[data-logo-mode="badge"] { margin-bottom: 25px; }
+            .banner-wrap[data-logo-mode="badge"] .banner-logo { width: 65%; height: 38%; padding: 3px; }
+            .banner-wrap[data-logo-mode="overlay"] .banner-logo { width: 42%; height: 36%; }
+            .banner-wrap[data-logo-mode="glass"] .banner-logo { width: 70%; height: 52%; padding: 4px; }
+            .banner-wrap[data-logo-mode="corner"] .banner-logo { height: 28%; max-width: 30%; }
+            .banner-wrap[data-logo-mode="corner"][data-overlay-shape="square"] .banner-logo { max-height: 36px; }
             .card-grid { grid-template-columns: repeat(2, 1fr); }
             .photo-frame { width: 95px; height: 95px; border-width: 2px; margin: 0 auto 4px; }
             .person-name { font-size: 0.8em; }
@@ -4322,6 +4373,15 @@
                     <option value="overlay">Corner Overlay</option>
                     <option value="glass">Frosted Glass</option>
                     <option value="badge">Floating Badge</option>
+                    <option value="corner">Corner Bug</option>
+                </select>
+            </div>
+            <div class="settings-row" style="margin-top:8px;" id="logoPositionRow">
+                <label>Logo Position</label>
+                <select id="logoPositionSelect" onchange="updateLogoPosition(this.value)" style="padding:5px 8px;font-family:inherit;font-size:0.88em;border:1px solid #a0b8d0;border-radius:5px;background:#f8fafb;color:#1a2a40;">
+                    <option value="left">Left</option>
+                    <option value="center" selected>Center</option>
+                    <option value="right">Right</option>
                 </select>
             </div>
             <div class="settings-row" style="margin-top:8px;" id="overlayShapeRow">
@@ -5261,9 +5321,10 @@
         };
         let tempBannerAdj = { zoom: 100, x: 0, y: 0 };
         let tempLogoAdj = { zoom: 100, x: 0, y: 0 };
-        var bannerLogoMode = 'none'; // 'none', 'overlay', 'glass', 'badge'
+        var bannerLogoMode = 'none'; // 'none', 'overlay', 'glass', 'badge', 'corner'
         var bannerSize = 'compact'; // 'compact' (current) or 'showcase' (large)
         var overlayShape = 'rectangle'; // 'rectangle' or 'square'
+        var logoPosition = 'center'; // 'left', 'center', 'right'
         let bannerDragging = false;
         let bannerDragStartX = 0, bannerDragStartY = 0;
         let bannerDragStartAdjX = 0, bannerDragStartAdjY = 0;
@@ -7556,7 +7617,8 @@
                         syncStyle: syncIndicatorStyle,
                         bannerLogoMode: bannerLogoMode,
                         bannerSize: bannerSize,
-                        overlayShape: overlayShape
+                        overlayShape: overlayShape,
+                        logoPosition: logoPosition
                     }
                 };
                 var json = JSON.stringify(backup);
@@ -7720,6 +7782,7 @@
                     if (appS.bannerLogoMode) safeLocalSet('church411_bannerLogoMode', appS.bannerLogoMode);
                     if (appS.bannerSize) safeLocalSet('church411_bannerSize', appS.bannerSize);
                     if (appS.overlayShape) safeLocalSet('church411_overlayShape', appS.overlayShape);
+                    if (appS.logoPosition) safeLocalSet('church411_logoPosition', appS.logoPosition);
                     // Legacy: restore old single-PIN format
                     if (!backup.users && appS.pin) {
                         var legId = generateUserId();
@@ -9900,6 +9963,17 @@
                     applyOverlayShape();
                 }
             });
+            db.ref('churchDirectory/settings/logoPosition').on('value', function(snap) {
+                if (recentlySaved('settings/logoPosition')) return;
+                var val = snap.val();
+                if (val && (val === 'left' || val === 'center' || val === 'right')) {
+                    logoPosition = val;
+                    safeLocalSet('church411_logoPosition', val);
+                    var sel = document.getElementById('logoPositionSelect');
+                    if (sel) sel.value = val;
+                    applyLogoPosition();
+                }
+            });
             db.ref('churchDirectory/settings/browseStyle').on('value', function(snap) {
                 if (recentlySaved('settings/browseStyle')) return;
                 var val = snap.val();
@@ -9999,6 +10073,21 @@
             if (!bannerState.src) {
                 document.getElementById('fileInput').click();
                 return;
+            }
+            // Match editor preview to actual banner aspect ratio
+            var bannerEl = document.getElementById('bannerWrap');
+            var previewWrap = document.getElementById('bannerEditorPreview');
+            if (bannerEl && previewWrap) {
+                var bw = bannerEl.offsetWidth || 900;
+                var bh = bannerEl.offsetHeight || 200;
+                var ratio = (bh / bw) * 100;
+                previewWrap.style.paddingBottom = Math.min(ratio, 45) + '%';
+            }
+            // Match logo editor preview to shape
+            var logoPreview = document.getElementById('logoEditorPreview');
+            if (logoPreview) {
+                var isSquare = (overlayShape === 'square' && (bannerLogoMode === 'overlay' || bannerLogoMode === 'corner'));
+                logoPreview.style.paddingBottom = isSquare ? 'min(25vw, 180px)' : 'min(18vw, 120px)';
             }
             tempBannerAdj = { ...bannerState.adj };
             document.getElementById('bannerEditorImg').src = bannerState.src;
@@ -10141,12 +10230,29 @@
             var saved = localStorage.getItem('church411_bannerSize');
             if (saved && (saved === 'compact' || saved === 'showcase')) bannerSize = saved;
         }
+        function applyLogoPosition() {
+            var wrap = document.getElementById('bannerWrap');
+            if (wrap) wrap.setAttribute('data-logo-pos', logoPosition);
+        }
+        function updateLogoPosition(val) {
+            logoPosition = val;
+            safeLocalSet('church411_logoPosition', val);
+            applyLogoPosition();
+            if (typeof db !== 'undefined' && db) {
+                markSaved('settings/logoPosition');
+                markSaved('settings');
+                db.ref('churchDirectory/settings/logoPosition').set(val);
+            }
+        }
         function applyOverlayShape() {
             var wrap = document.getElementById('bannerWrap');
             if (wrap) wrap.setAttribute('data-overlay-shape', overlayShape);
             // Show/hide the overlay shape row based on logo mode
             var row = document.getElementById('overlayShapeRow');
-            if (row) row.style.display = bannerLogoMode === 'overlay' ? '' : 'none';
+            if (row) row.style.display = (bannerLogoMode === 'overlay' || bannerLogoMode === 'corner') ? '' : 'none';
+            // Show/hide position row (hidden for glass — always centered)
+            var posRow = document.getElementById('logoPositionRow');
+            if (posRow) posRow.style.display = (bannerLogoMode !== 'none' && bannerLogoMode !== 'glass') ? '' : 'none';
         }
         function updateOverlayShape(val) {
             overlayShape = val;
@@ -14131,6 +14237,14 @@
             var sizeSel = document.getElementById('bannerSizeSelect');
             if (sizeSel) sizeSel.value = bannerSize;
             applyBannerSize();
+            // Load logo position
+            var savedLogoPos = safeLocalGet('church411_logoPosition');
+            if (savedLogoPos && (savedLogoPos === 'left' || savedLogoPos === 'center' || savedLogoPos === 'right')) {
+                logoPosition = savedLogoPos;
+                var posSel = document.getElementById('logoPositionSelect');
+                if (posSel) posSel.value = savedLogoPos;
+            }
+            applyLogoPosition();
             // Load overlay shape
             loadOverlayShape();
             var shapeSel = document.getElementById('overlayShapeSelect');
