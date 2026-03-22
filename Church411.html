@@ -118,12 +118,7 @@
             padding: 2px 7px;
             border-radius: 4px;
             white-space: nowrap;
-            opacity: 0;
             pointer-events: none;
-            transition: opacity 0.2s ease;
-        }
-        .banner-browse-btn:hover::after {
-            opacity: 1;
         }
         /* ═══ Banner Logo Overlay ═══ */
         .banner-logo {
@@ -1291,7 +1286,7 @@
             border: 1px solid rgba(255, 215, 0, 0.3);
         }
         .browse-notes-preview {
-            display: block;
+            display: none;
             flex: 1;
             width: 100%;
             overflow-y: auto;
@@ -1640,8 +1635,8 @@
                 margin-bottom: 4px;
             }
             .browse-name { font-size: 0.9em; }
-            .browse-notes-preview { font-size: 0.62em; margin-top: 2px; padding-top: 2px; }
-            .browse-notes-mode .browse-notes-preview { font-size: 0.62em; margin-top: 2px; padding-top: 2px; }
+            .browse-notes-preview { display: none; }
+            .browse-notes-mode .browse-notes-preview { display: block; font-size: 0.62em; margin-top: 2px; padding-top: 2px; }
             .browse-notes-mode .browse-photo { width: 35px; height: 35px; margin-bottom: 2px; }
             .browse-notes-mode .browse-name { font-size: 0.72em; }
             .browse-notes-mode .browse-title-badge { display: none; }
