@@ -125,49 +125,6 @@
         .banner-browse-btn:hover::after {
             opacity: 1;
         }
-        .banner-edit-btn {
-            position: absolute;
-            bottom: 12px;
-            right: 12px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 8px;
-            background: rgba(0,0,0,0.5);
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            font-family: inherit;
-            font-size: 0.78em;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            z-index: 5;
-            overflow: hidden;
-            white-space: nowrap;
-        }
-        .banner-edit-btn svg {
-            width: 18px; height: 18px;
-            fill: none; stroke: #fff;
-            stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
-            flex-shrink: 0;
-        }
-        .banner-edit-label {
-            max-width: 0;
-            overflow: hidden;
-            opacity: 0;
-            transition: max-width 0.3s ease, opacity 0.3s ease;
-        }
-        .banner-edit-btn:hover .banner-edit-label,
-        .banner-edit-btn.expanded .banner-edit-label {
-            max-width: 120px;
-            opacity: 1;
-        }
-        .banner-edit-btn:hover,
-        .banner-edit-btn.expanded {
-            padding: 8px 14px;
-            background: rgba(0,0,0,0.7);
-        }
-
         /* ═══ Banner Logo Overlay ═══ */
         .banner-logo {
             display: none; position: absolute; z-index: 3;
@@ -507,16 +464,6 @@
         .pb-add-inline:hover { color: #d4a843; }
         .pb-add-inline:active { transform: scale(1.2); color: #d4a843; }
         body:not(.access-readonly) .pb-add-inline { display: inline; }
-        .pb-add-icon {
-            width: 36px; height: 36px; border-radius: 50%; border: none;
-            background: #3a6b3a; color: #fff; cursor: pointer;
-            display: none; align-items: center; justify-content: center;
-            flex-shrink: 0; transition: all 0.2s; padding: 0;
-        }
-        .pb-add-icon:hover { background: #4a8a4a; }
-        .pb-add-icon svg { width: 18px; height: 18px; }
-        body.edit-mode .pb-add-icon { display: flex; }
-        body.access-readonly .pb-add-icon { display: none !important; }
         /* ── Info Row (sync + count + prayers) ── */
         .pb-info-row {
             display: flex;
@@ -1819,13 +1766,6 @@
             border-color: #7a9cc6;
             box-shadow: 0 0 6px rgba(42,90,138,0.25);
         }
-        body.edit-mode .photo-frame {
-            border-color: #2a5a8a;
-        }
-        body.edit-mode .photo-frame:hover {
-            border-color: #3a7aaa;
-            box-shadow: 0 0 6px rgba(42,90,138,0.4);
-        }
         .initial-coin {
             width: 100%;
             height: 100%;
@@ -2401,66 +2341,6 @@
             stroke-linecap: round;
             stroke-linejoin: round;
         }
-        .photo-upload-area {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 18px;
-        }
-        .photo-upload-circle {
-            width: 110px;
-            height: 110px;
-            border-radius: 50%;
-            border: 3px dashed #a0b8d0;
-            background: #f0f4fa;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-            cursor: pointer;
-            transition: all 0.3s;
-            margin-bottom: 8px;
-            overflow: hidden;
-            position: relative;
-        }
-        .photo-upload-circle:hover {
-            border-color: #2a5a8a;
-            background: #e8f0fa;
-        }
-        .photo-upload-circle.has-photo {
-            border-style: solid;
-            border-color: #a0b8d0;
-        }
-        .photo-upload-circle.has-photo:hover {
-            border-color: #2a5a8a;
-        }
-        .photo-upload-circle svg {
-            width: 28px;
-            height: 28px;
-            stroke: #7a9cc6;
-            fill: none;
-            stroke-width: 1.8;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-        }
-        .photo-upload-circle .upload-label {
-            font-size: 0.68em;
-            color: #7a9cc6;
-            font-style: italic;
-        }
-        .photo-upload-circle img {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .photo-upload-hint {
-            font-size: 0.75em;
-            color: #7a9cc6;
-        }
-
         /* ── Card Flip Overlay ── */
         .card-flip-overlay {
             display: none;
@@ -2688,21 +2568,6 @@
             cursor: default;
         }
 
-        /* ── Notes Edit Panel ── */
-        .notes-edit-panel {
-            display: none;
-            max-width: 900px;
-            margin: 30px auto 0;
-            background: #fff;
-            border: 1px solid #a0b8d0;
-            border-radius: 12px;
-            padding: 24px;
-        }
-        .notes-edit-panel h2 {
-            color: #2a5a8a;
-            font-size: 1.15em;
-            margin-bottom: 14px;
-        }
         .edit-row {
             display: flex;
             gap: 12px;
@@ -3053,41 +2918,13 @@
         .new-church-modal .btn-mm-cancel { background: #e8f0fa; color: #2a5a8a; border: 1px solid #a0b8d0; }
         .new-church-modal .btn-mm-save { background: #2a5a8a; color: #fff; border: 1px solid #2a5a8a; }
 
-        /* ── Edit mode styles ── */
-        .delete-btn {
-            display: none;
-            position: absolute;
-            top: 2px;
-            right: 2px;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            background: #c44;
-            color: #fff;
-            border: none;
-            font-size: 14px;
-            line-height: 24px;
-            text-align: center;
-            cursor: pointer;
-            padding: 0;
-            z-index: 2;
-        }
-        .delete-btn:hover { background: #a33; }
-        body.edit-mode .delete-btn { display: block; }
-        body.edit-mode .card-pray-icon { display: none !important; }
-        /* Banner edit button: hidden by default, shown in edit mode */
-        .banner-edit-btn { display: none !important; }
-        body.edit-mode .banner-edit-btn { display: flex !important; }
-
         /* ── Read-Only Access ── */
         body.access-readonly .cb-edit-btn,
         body.access-readonly .browse-cf-edit-btn,
         body.access-readonly .bookmark-ribbon,
-        body.access-readonly .banner-edit-btn,
         body.access-readonly .btn-add,
-        body.access-readonly .pb-add-icon,
-        body.access-readonly #editToggle { display: none !important; }
-        /* Settings gear hidden for non-admin users — Full Access uses long-press for edit mode */
+        body.access-readonly .pb-add-inline { display: none !important; }
+        /* Settings gear hidden for non-admin users */
         body.access-readonly .settings-btn { display: none !important; }
         body.access-noadmin .settings-btn { display: none !important; }
         /* Users & Access section admin-only */
@@ -3456,76 +3293,6 @@
 
 
 
-        /* ── Modal shared styles ── */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.4);
-            z-index: 100;
-            justify-content: center;
-            align-items: center;
-        }
-        .modal-overlay.show { display: flex; }
-        .modal {
-            background: #fff;
-            border-radius: 12px;
-            padding: 30px;
-            width: 90%;
-            max-width: 380px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
-        }
-        .modal h3 {
-            color: #1a3050;
-            margin-bottom: 16px;
-            font-size: 1.2em;
-        }
-        .modal label {
-            display: block;
-            font-size: 0.9em;
-            color: #2a5a8a;
-            margin-bottom: 4px;
-        }
-        .modal input[type="text"] {
-            width: 100%;
-            padding: 8px 12px;
-            font-size: 1em;
-            font-family: inherit;
-            border: 1px solid #a0b8d0;
-            border-radius: 6px;
-            margin-bottom: 14px;
-            color: #1a2a40;
-        }
-        .modal input[type="text"]:focus {
-            outline: none;
-            border-color: #2a5a8a;
-            box-shadow: 0 0 4px rgba(42,90,138,0.3);
-        }
-        .modal .btn-row {
-            display: flex;
-            gap: 10px;
-            justify-content: flex-end;
-            margin-top: 6px;
-        }
-        .modal button {
-            font-family: inherit;
-            font-size: 0.9em;
-            padding: 8px 18px;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-        .modal .btn-cancel {
-            background: #e8f0fa;
-            color: #2a5a8a;
-            border: 1px solid #a0b8d0;
-        }
-        .modal .btn-save {
-            background: #3a6b3a;
-            color: #fff;
-            border: 1px solid #3a6b3a;
-        }
-        .modal .btn-save:hover { background: #4a8a4a; }
-
         /* ── Photo Editor Modal ── */
         .photo-editor-overlay {
             display: none;
@@ -3666,10 +3433,9 @@
 
         @media print {
             body { background: #fff; padding: 20px; }
-            .banner-wrap, .pb-info-row, .pill-bar, .pb-filter-row, .toast, .modal-overlay, .photo-editor-overlay, .card-flip-overlay, .banner-editor-overlay, .notes-edit-panel, .new-church-modal-overlay, .noah-sync-wrap, .cross-sync-wrap, .calvary-sync-wrap { display: none !important; }
+            .banner-wrap, .pb-info-row, .pill-bar, .pb-filter-row, .toast, .photo-editor-overlay, .card-flip-overlay, .banner-editor-overlay, .new-church-modal-overlay, .noah-sync-wrap, .cross-sync-wrap, .calvary-sync-wrap, .edit-sheet, .edit-sheet-backdrop { display: none !important; }
             .person-card:hover { background: none; }
             .card-grid { grid-template-columns: repeat(4, 1fr); }
-            .delete-btn { display: none !important; }
         }
 
         /* Desktop / iPad landscape — compact banner */
@@ -3724,7 +3490,6 @@
             .edit-field { min-width: 0; }
             .edit-actions { flex-direction: column; }
             .edit-actions button { width: 100%; text-align: center; }
-            .notes-edit-panel { padding: 16px; }
         }
 
         @media (max-width: 500px) {
@@ -3749,7 +3514,6 @@
             .card-flip-hint { font-size: 0.7em; margin-top: 10px; }
             .banner-browse-btn { width: 32px; height: 32px; top: 7px; right: 7px; }
             .banner-browse-btn svg { width: 15px; height: 15px; }
-            .banner-edit-btn { padding: 6px 10px; font-size: 0.72em; bottom: 8px; right: 8px; }
             .editor-preview-wrap { width: 94vw; }
             .editor-zoom-row input[type="range"] { width: 140px; }
             .editor-actions { flex-direction: column; width: 80vw; }
@@ -3759,7 +3523,7 @@
         }
 
         @media (hover: none) {
-            .person-card, .photo-frame, .banner-edit-btn, .banner-browse-btn, .editor-preview-wrap, button, .cb-edit-btn {
+            .person-card, .photo-frame, .banner-browse-btn, .editor-preview-wrap, button, .cb-edit-btn {
                 touch-action: manipulation;
             }
         }
@@ -4579,7 +4343,14 @@
                     <option value="showcase">Showcase</option>
                 </select>
             </div>
-            <div style="font-size:0.72em;color:#7a9cc6;margin-top:4px;padding-left:2px;">Upload a logo via the banner editor. Showcase gives more room for photos; Compact works well with patterns or logos alone.</div>
+            <div class="settings-row" style="margin-top:12px;gap:8px;">
+                <button class="settings-change-btn" onclick="changeBannerPhoto()" style="flex:1;">Change Banner Photo</button>
+                <button class="settings-change-btn" onclick="changeBannerLogo()" style="flex:1;">Change Logo</button>
+            </div>
+            <div class="settings-row" style="margin-top:6px;">
+                <button class="settings-change-btn" onclick="openBannerEditor()" id="settingsAdjustBannerBtn" style="flex:1;background:#f0faf0;color:#3a6b3a;border-color:#3a6b3a;">Adjust Banner Position</button>
+            </div>
+            <div style="font-size:0.72em;color:#7a9cc6;margin-top:6px;padding-left:2px;">Showcase gives more room for photos; Compact works well with patterns or logos alone.</div>
         </div>
 
         <div class="settings-section">
@@ -4838,10 +4609,6 @@
                 <polygon points="14 14 12 12.5 12 18.5 18 15.5" fill="currentColor" stroke="none"/>
             </svg>
         </button>
-        <button class="banner-edit-btn" id="bannerEditBtn" onclick="bannerEditTap()" onmouseenter="this.classList.add('expanded')" onmouseleave="this.classList.remove('expanded')">
-            <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-            <span class="banner-edit-label">Edit Banner</span>
-        </button>
     </div>
 
     <!-- Banner Editor Overlay -->
@@ -4884,7 +4651,7 @@
     <input type="file" class="hidden-input" id="logoFileInput" accept="image/*" onchange="handleLogoSelect(event)">
     <input type="file" class="hidden-input" id="memberPhotoInput" accept="image/*" onchange="handleMemberPhotoUpload(event)">
     <input type="file" class="hidden-input" id="editorPhotoInput" accept="image/*" onchange="handleEditorPhotoUpload(event)">
-    <input type="file" class="hidden-input" id="addMemberPhotoInput" accept="image/*" onchange="handleAddMemberPhoto(event)">
+
 
     <div class="container">
         <!-- ═══ Pill Bar (2 rows) ═══ -->
@@ -4956,11 +4723,6 @@
                 <span class="pb-filter-label">Filter</span>
                 <span class="filter-count-badge" id="filterBadge">0</span>
             </button>
-            <button class="btn-add pb-add-icon" onclick="openNewMemberSheetWithAuth()" title="Add Member">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-                    <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
-                </svg>
-            </button>
         </div>
         <div class="pb-filter-row">
             <div class="filter-chips" id="filterChips"></div>
@@ -5001,35 +4763,6 @@
             <button class="browse-nav-btn" onclick="browseNext()">›</button>
         </div>
         <div class="browse-kbd-hint">Swipe, scroll, or use ← → arrow keys to navigate</div>
-    </div>
-
-    <!-- Add Member Modal -->
-    <div class="modal-overlay" id="addModal">
-        <div class="modal">
-            <h3>Add New Member</h3>
-            <div class="photo-upload-area">
-                <div class="photo-upload-circle" id="addMemberPhotoCircle" onclick="document.getElementById('addMemberPhotoInput').click()">
-                    <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                    <span class="upload-label">Add photo</span>
-                </div>
-                <div class="photo-upload-hint">Optional — click to add a photo</div>
-            </div>
-            <label for="addTitle">Title/Role</label>
-            <div id="addTitleQuickPick" style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px;"></div>
-            <input type="text" id="addTitle" placeholder="e.g. Pastor (or select above)">
-            <label for="addFirst">First Name(s)</label>
-            <input type="text" id="addFirst" placeholder="e.g. John Michael">
-            <label for="addLast">Last Name</label>
-            <input type="text" id="addLast" placeholder="e.g. Smith">
-            <label for="addNickname">Nickname</label>
-            <input type="text" id="addNickname" placeholder="e.g. Big Steve, Momma B">
-            <label for="addChurch">Church</label>
-            <select id="addChurch"></select>
-            <div class="btn-row">
-                <button class="btn-cancel" onclick="hideAddModal()">Cancel</button>
-                <button class="btn-save" onclick="addMember()">Add</button>
-            </div>
-        </div>
     </div>
 
     <!-- Photo Editor Modal -->
@@ -5115,73 +4848,7 @@
         </div>
     </div>
 
-    <!-- Notes Edit Panel -->
-    <div class="notes-edit-panel" id="notesEditPanel">
-        <h2 id="editTitle">Edit Notes</h2>
-
-        <div class="edit-row" style="display:flex;gap:10px;">
-            <div class="edit-field" style="flex:1;">
-                <label>First Name(s)</label>
-                <input type="text" id="editFirstName" placeholder="e.g. John, John & Jane">
-            </div>
-            <div class="edit-field" style="flex:1;">
-                <label>Last Name</label>
-                <input type="text" id="editLastName" placeholder="(optional)">
-            </div>
-        </div>
-        <div class="nickname-hint" style="margin-top:-6px;">For couples use: John &amp; Jane. Last name is optional.</div>
-
-        <div class="edit-row">
-            <div class="edit-field">
-                <label>Title/Role</label>
-                <input type="text" id="editMemberTitle" placeholder="e.g. Pastor, Deacon">
-                <div id="editTitleQuickPick" style="display:flex;flex-wrap:wrap;gap:4px;margin-top:6px;"></div>
-            </div>
-        </div>
-
-        <div class="edit-row">
-            <div class="edit-field" style="flex:1;">
-                <label>Middle Name</label>
-                <input type="text" id="editMiddleName" placeholder="e.g. James, Marie">
-            </div>
-            <div class="edit-field" style="flex:1;">
-                <label>Nickname</label>
-                <input type="text" id="editNickname" placeholder='e.g. "Big Steve"'>
-            </div>
-        </div>
-        <div class="edit-field" style="margin-bottom:10px;">
-            <label>Links</label>
-            <div id="editLinksContainer" class="edit-links-container"></div>
-            <button type="button" class="edit-link-add" onclick="addEditLinkRow('')">+ Add Link</button>
-            <div style="font-size:0.7em;color:#7a9cc6;margin-top:3px;font-style:italic;">Social media, podcast, blog, ministry site, etc. Platform icons auto-detected.</div>
-        </div>
-
-        <div class="edit-row">
-            <div class="edit-field">
-                <label>Church</label>
-                <div class="church-select-row">
-                    <select id="editChurch"></select>
-                    <button class="btn-add-church" onclick="showNewChurchModal()">+ New</button>
-                </div>
-            </div>
-        </div>
-
-        <div id="milestoneDatesContainer"></div>
-
-        <div class="edit-field" style="margin-bottom: 14px;">
-            <label>Note Sections</label>
-            <div class="default-sections-bar" id="defaultSectionsBar"></div>
-            <div class="sections-list" id="sectionsList"></div>
-            <button class="btn-add-section" onclick="addSectionEntry()">+ Add section</button>
-        </div>
-
-        <div class="edit-actions">
-            <button class="btn-cancel-notes" onclick="cancelNotesEdit()">Cancel</button>
-            <button class="btn-save-notes" onclick="saveNotesEdit()">Save Notes</button>
-        </div>
-    </div>
-
-    <!-- Edit Sheet (Bottom Sheet Overlay) -->
+    <!-- Edit Sheet (Centered Overlay) -->
     <div class="edit-sheet-backdrop" id="editSheetBackdrop" onclick="closeEditSheet()"></div>
     <div class="edit-sheet" id="editSheet">
         <div class="edit-sheet-handle"><div class="edit-sheet-handle-bar"></div></div>
@@ -5610,7 +5277,6 @@
         // DIRECTORY STATE
         // ════════════════════════════════════════
         let members = [];
-        let editMode = false;
         let photoAdj = {};
         let churches = [];
         let notes = {}; // { "Full Name": { church: "", nickname: "", sections: [{label, value}], title: "" } }
@@ -5871,14 +5537,12 @@
             currentUserId = null;
             document.body.classList.remove('access-readonly', 'access-noadmin');
             if (browseMode) exitBrowseMode();
-            if (editMode) doToggleEditMode();
             // Close any open modals/overlays
-            ['addModal', 'photoEditorOverlay', 'cardFlipOverlay', 'bannerEditorOverlay', 'editPwOverlay', 'newChurchModal'].forEach(function(id) {
+            ['photoEditorOverlay', 'cardFlipOverlay', 'bannerEditorOverlay', 'editPwOverlay', 'newChurchModal'].forEach(function(id) {
                 var el = document.getElementById(id);
                 if (el) el.classList.remove('show');
             });
-            var notesPanel = document.getElementById('notesEditPanel');
-            if (notesPanel) notesPanel.style.display = 'none';
+            if (typeof closeEditSheet === 'function') closeEditSheet();
             // Close settings panel
             var sp = document.getElementById('settingsPanel');
             if (sp && sp.classList.contains('open')) {
@@ -6317,7 +5981,7 @@
                     isEditAuthorized = true;
                     touchEditActivity();
                     closeEditPw();
-                    doToggleEditMode();
+                    // Base handler — callers hijack submitEditPw for specific post-auth actions
                 } else {
                     document.getElementById('editPwError').textContent = 'Incorrect password';
                     document.getElementById('editPwInput').classList.add('error');
@@ -6463,76 +6127,6 @@
             });
         })();
 
-        // ── Long-press on member cards to open edit sheet (Admin + Full Access only) ──
-        (function initLongPressEdit() {
-            var lpTimer = null;
-            var lpCard = null;
-            var LP_DURATION = 800; // ms
-
-            function handleLongPress() {
-                // Only Admin and Full Access can long-press to edit
-                if (!currentUserLevel || currentUserLevel === 'readonly') return;
-                // Get the member name from the pressed card
-                var memberName = lpCard ? lpCard.dataset.member : '';
-                if (!memberName) return;
-                // Brief haptic-style visual pulse on the pressed card
-                if (lpCard) {
-                    lpCard.style.transition = 'transform 0.15s';
-                    lpCard.style.transform = 'scale(0.95)';
-                    setTimeout(function() {
-                        if (lpCard) { lpCard.style.transform = ''; }
-                    }, 150);
-                }
-                // Authorize and open edit sheet
-                isEditAuthorized = true;
-                touchEditActivity();
-                openEditSheetForMember(memberName);
-            }
-
-            function startLP(e) {
-                var card = e.target.closest('.person-card');
-                if (!card) return;
-                lpCard = card;
-                lpTimer = setTimeout(handleLongPress, LP_DURATION);
-            }
-            function cancelLP() {
-                if (lpTimer) { clearTimeout(lpTimer); lpTimer = null; }
-                lpCard = null;
-            }
-
-            // Block native context menu on cards (prevents iOS copy/paste popup during long-press)
-            document.addEventListener('contextmenu', function(e) {
-                if (e.target.closest('.person-card')) {
-                    e.preventDefault();
-                }
-            });
-
-            // Touch events
-            document.addEventListener('touchstart', function(e) {
-                var card = e.target.closest('.person-card');
-                if (!card) return;
-                startLP(e);
-            }, { passive: true });
-            document.addEventListener('touchend', cancelLP, { passive: true });
-            document.addEventListener('touchmove', function(e) {
-                // Cancel if finger moves (prevents accidental trigger while scrolling)
-                if (lpTimer) { cancelLP(); }
-            }, { passive: true });
-            document.addEventListener('touchcancel', cancelLP, { passive: true });
-
-            // Mouse events (for desktop testing)
-            document.addEventListener('mousedown', function(e) {
-                var card = e.target.closest('.person-card');
-                if (!card) return;
-                // Ignore right-click and clicks on buttons within cards
-                if (e.button !== 0) return;
-                if (e.target.closest('.delete-btn') || e.target.closest('.card-pray-icon')) return;
-                startLP(e);
-            });
-            document.addEventListener('mouseup', cancelLP);
-            document.addEventListener('mouseleave', cancelLP);
-        })();
-
         function toggleSettings() {
             const panel = document.getElementById('settingsPanel');
             const backdrop = document.getElementById('settingsBackdrop');
@@ -6540,8 +6134,6 @@
             panel.classList.toggle('open');
             backdrop.classList.toggle('open');
             if (!isOpen) {
-                // Sync edit toggle state
-                var _et = document.getElementById('editToggle'); if (_et) _et.classList.toggle('on', editMode);
                 // Render management lists
                 renderUsersList();
                 renderSettingsChurchList();
@@ -8153,24 +7745,6 @@
             reader.readAsText(file);
         }
 
-        function toggleEditFromSettings() {
-            if (currentUserLevel === 'readonly') { showToast('Read-only access'); return; }
-            checkEditAuthExpiry();
-            // Full Access users skip edit password — their PIN authenticated them
-            if (currentUserLevel === 'full' && !isEditAuthorized) {
-                isEditAuthorized = true;
-                touchEditActivity();
-            }
-            if (!editMode && !isEditAuthorized) {
-                // Admin needs password if not yet authorized
-                toggleSettings(); // close settings panel
-                promptEditPassword();
-                return;
-            }
-            doToggleEditMode();
-            var _et = document.getElementById('editToggle'); if (_et) _et.classList.toggle('on', editMode);
-        }
-
         function showChangeForm(type) {
             if (type === 'pw') {
                 document.getElementById('changePwForm').classList.add('show');
@@ -9687,7 +9261,7 @@
 
         // Check if any modal/editor/overlay is currently open
         function isModalOpen() {
-            var overlays = ['addModal', 'photoEditorOverlay', 'cardFlipOverlay', 'bannerEditorOverlay', 'notesEditPanel', 'editPwOverlay', 'newChurchModal', 'browseOverlay', 'editSheet'];
+            var overlays = ['photoEditorOverlay', 'cardFlipOverlay', 'bannerEditorOverlay', 'editPwOverlay', 'newChurchModal', 'browseOverlay', 'editSheet'];
             for (var i = 0; i < overlays.length; i++) {
                 var el = document.getElementById(overlays[i]);
                 if (el && (el.classList.contains('show') || (el.style.display && el.style.display !== 'none'))) return true;
@@ -10460,21 +10034,6 @@
             if (pendingRemoteRender) { pendingRemoteRender = false; setTimeout(render, 100); }
         }
 
-        var bannerTapExpanded = false;
-        function bannerEditTap() {
-            var btn = document.getElementById('bannerEditBtn');
-            if (!btn.classList.contains('expanded')) {
-                btn.classList.add('expanded');
-                bannerTapExpanded = true;
-                setTimeout(function() {
-                    if (bannerTapExpanded) { btn.classList.remove('expanded'); bannerTapExpanded = false; }
-                }, 3000);
-            } else {
-                bannerTapExpanded = false;
-                openBannerEditor();
-            }
-        }
-
         function handleFileSelect(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -10938,7 +10497,6 @@
                     else if (isUpdated) badgeHTML = '<span class="updated-member-badge">UPDATED</span>';
 
                     card.innerHTML =
-                        '<button class="delete-btn" title="Remove member" onclick="removeMember(\'' + escapedName + '\')">&times;</button>' +
                         '<button class="card-pray-icon" onclick="event.stopPropagation(); openPrayerForm(\'' + escapedName + '\')" title="Pray for ' + escapeHTML(m.first || m.last) + '">🙏</button>' +
                         badgeHTML +
                         celebIconsHTML +
@@ -10960,8 +10518,7 @@
                     if (hasTwoPhotos) {
                         (function(name) {
                             card.addEventListener('click', function(e) {
-                                if (editMode) return;
-                                if (e.target.closest('.photo-frame') || e.target.closest('.delete-btn')) return;
+                                if (e.target.closest('.photo-frame')) return;
                                 openCardFlip(name, null);
                             });
                         })(m.full);
@@ -11101,33 +10658,6 @@
             imgs.forEach(function(img) { photoObserver.observe(img); });
         }
 
-        function toggleEditMode() {
-            checkEditAuthExpiry();
-            // Full Access users skip edit password
-            if (currentUserLevel === 'full' && !isEditAuthorized) {
-                isEditAuthorized = true;
-                touchEditActivity();
-            }
-            if (!editMode && !isEditAuthorized) {
-                promptEditPassword();
-                return;
-            }
-            doToggleEditMode();
-        }
-
-        function doToggleEditMode() {
-            if (currentUserLevel === 'readonly') { showToast('Read-only access'); return; }
-            editMode = !editMode;
-            document.body.classList.toggle('edit-mode', editMode);
-            var _et = document.getElementById('editToggle'); if (_et) _et.classList.toggle('on', editMode);
-            // Edit auth persists for the session — no longer cleared on toggle off
-            if (editMode) touchEditActivity();
-        }
-
-        function removeMember(fullName) {
-            if (!confirm('Remove ' + fullName + ' from the directory?')) return;
-            performRemove(fullName);
-        }
 
         function performRemove(fullName) {
             members = members.filter(function(m) { return m !== fullName; });
@@ -11332,155 +10862,15 @@
             return photoPromises.length > 0 ? Promise.all(photoPromises) : Promise.resolve();
         }
 
-        function showAddModal() {
-            document.getElementById('addTitle').value = '';
-            document.getElementById('addFirst').value = '';
-            document.getElementById('addLast').value = '';
-            document.getElementById('addNickname').value = '';
-            addMemberPhotoData = '';
-            const circle = document.getElementById('addMemberPhotoCircle');
-            circle.innerHTML = '<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><span class="upload-label">Add photo</span>';
-            circle.classList.remove('has-photo');
-            // Populate quick-pick title buttons
-            const qp = document.getElementById('addTitleQuickPick');
-            qp.innerHTML = '';
-            titles.forEach(t => {
-                const btn = document.createElement('button');
-                btn.textContent = t;
-                btn.style.cssText = 'padding:4px 10px;font-size:0.75em;background:#e8f0fa;color:#2a5a8a;border:1px solid #a0b8d0;border-radius:12px;cursor:pointer;font-family:inherit;';
-                btn.onclick = function(e) { e.preventDefault(); document.getElementById('addTitle').value = t; };
-                qp.appendChild(btn);
-            });
-            // Populate church dropdown
-            var addChSel = document.getElementById('addChurch');
-            addChSel.innerHTML = '<option value="">(none)</option>';
-            churches.forEach(function(c) {
-                var opt = document.createElement('option');
-                opt.value = c;
-                opt.textContent = c;
-                if (churches.length === 1) opt.selected = true; // auto-select if only one church
-                addChSel.appendChild(opt);
-            });
-            document.getElementById('addModal').classList.add('show');
-            setTimeout(() => document.getElementById('addTitle').focus(), 100);
-        }
-        function hideAddModal() {
-            document.getElementById('addModal').classList.remove('show');
-            if (pendingRemoteRender) { pendingRemoteRender = false; setTimeout(render, 100); }
-        }
-        function addMember() {
-            touchEditActivity();
-            const title = document.getElementById('addTitle').value.trim();
-            const first = document.getElementById('addFirst').value.trim();
-            const last = document.getElementById('addLast').value.trim();
-            const nickname = document.getElementById('addNickname').value.trim();
-            const church = document.getElementById('addChurch').value;
-
-            // Validation: at least one of title, first, last, or nickname required
-            if (!title && !first && !last && !nickname) {
-                alert('Please enter at least a Title, First Name, Last Name, or Nickname.');
-                return;
-            }
-
-            // Build full name (require at least last or first if no title/nickname)
-            let fullName = '';
-            if (first && last) {
-                fullName = first + ' ' + last;
-            } else if (last) {
-                fullName = last;
-            } else if (first) {
-                fullName = first;
-            } else if (title) {
-                fullName = title; // use title if no name parts
-            } else {
-                fullName = nickname; // use nickname as last resort
-            }
-
-            if (members.includes(fullName)) { alert(fullName + ' is already in the directory.'); return; }
-
-            members.push(fullName);
-            saveMembers();
-            saveMemberToFirebase(fullName);
-
-            // Save title if provided
-            if (title) {
-                memberTitles[fullName] = title;
-                saveMemberTitleFor(fullName);
-            }
-
-            // Save church, nickname, and addedAt timestamp
-            if (!notes[fullName]) notes[fullName] = { church: '', sections: [] };
-            if (church) notes[fullName].church = church;
-            if (nickname) notes[fullName].nickname = nickname;
-            stampAddedAt(fullName);
-            saveNotesFor(fullName);
-
-            if (addMemberPhotoData) {
-                uploadedPhotos[fullName] = addMemberPhotoData;
-                saveUploadedPhotosStore(fullName);
-                addMemberPhotoData = '';
-            }
-
-            hideAddModal();
-            render();
-
-            // Show "Add Notes?" prompt
-            promptAddNotes(fullName);
-        }
-
-        function promptAddNotes(fullName) {
-            // Custom Yes/No prompt (avoid confusing Ok/Cancel)
-            var overlay = document.createElement('div');
-            overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:10000;display:flex;align-items:center;justify-content:center;';
-            var box = document.createElement('div');
-            box.style.cssText = 'background:#fff;border-radius:12px;padding:24px;max-width:320px;width:90%;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,0.3);';
-            box.innerHTML = '<div style="font-size:1.05em;font-weight:600;color:#1a3050;margin-bottom:8px;">Add notes for ' + escapeHTML(fullName) + '?</div>' +
-                '<div style="font-size:0.85em;color:#5a7a9a;margin-bottom:18px;">You can always add notes later from the card.</div>' +
-                '<div style="display:flex;gap:10px;justify-content:center;">' +
-                '<button id="promptNotesNo" style="padding:8px 24px;border-radius:8px;border:1px solid #b0c4de;background:#fff;color:#2a5a8a;font-size:0.9em;font-weight:600;cursor:pointer;">No</button>' +
-                '<button id="promptNotesYes" style="padding:8px 24px;border-radius:8px;border:none;background:#2a5a8a;color:#fff;font-size:0.9em;font-weight:600;cursor:pointer;">Yes</button>' +
-                '</div>';
-            overlay.appendChild(box);
-            document.body.appendChild(overlay);
-            document.getElementById('promptNotesYes').onclick = function() {
-                document.body.removeChild(overlay);
-                openNotesEdit(fullName);
-            };
-            document.getElementById('promptNotesNo').onclick = function() {
-                document.body.removeChild(overlay);
-                showToast(fullName + ' added');
-            };
-            overlay.onclick = function(e) {
-                if (e.target === overlay) {
-                    document.body.removeChild(overlay);
-                    showToast(fullName + ' added');
-                }
-            };
-        }
-        document.getElementById('addModal').addEventListener('click', function(e) {
-            if (e.target === this) hideAddModal();
-        });
-        document.getElementById('addLast').addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') { e.preventDefault(); addMember(); }
-        });
-
-
         // ════════════════════════════════════════
         // PHOTO EDITOR
         // ════════════════════════════════════════
         let editorState = { name: '', zoom: 100, x: 0, y: 0, dragging: false, startX: 0, startY: 0, origX: 0, origY: 0, imgSrc: '', activeTab: 'A', spouseZoom: 100, spouseX: 0, spouseY: 0 };
 
         function onPhotoClick(fullName, frameEl) {
-            // Handle couple coin
+            // Handle couple coin — flip between spouses
             var coupleScene = frameEl.querySelector('.couple-coin-scene');
             if (coupleScene) {
-                if (editMode) {
-                    // In edit mode, open photo editor (with or without existing photo)
-                    var mainImg = coupleScene.querySelector('.couple-coin-face.front img');
-                    openPhotoEditor(fullName, mainImg || null);
-                    return;
-                }
-                // Read-only mode: flip coin between spouses
                 var flipEl = coupleScene.querySelector('.couple-coin-flip');
                 if (flipEl) {
                     playCoinFlipSound();
@@ -11501,21 +10891,9 @@
                 }
                 return;
             }
+            // Single member: open card flip (edit sheet handles photo editing)
             const img = frameEl.querySelector('img');
-            if (!img) {
-                // No photo: in edit mode, open editor (which has upload); otherwise open card flip
-                if (editMode) {
-                    openPhotoEditor(fullName, null);
-                } else {
-                    openCardFlip(fullName, null);
-                }
-                return;
-            }
-            if (editMode) {
-                openPhotoEditor(fullName, img);
-            } else {
-                openCardFlip(fullName, img);
-            }
+            openCardFlip(fullName, img || null);
         }
 
         function openPhotoEditor(fullName, img) {
@@ -11887,7 +11265,6 @@
         // PHOTO UPLOAD
         // ════════════════════════════════════════
         let pendingUploadName = '';
-        let addMemberPhotoData = '';
 
         function uploadForMember(fullName) {
             pendingUploadName = fullName;
@@ -11946,22 +11323,6 @@
                     document.getElementById('editorZoomVal').textContent = '100%';
                     updateEditorPreview();
                     showToast('Photo uploaded');
-                });
-            };
-            reader.readAsDataURL(file);
-            e.target.value = '';
-        }
-
-        function handleAddMemberPhoto(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(ev) {
-                resizeImage(ev.target.result, 1200, 0.7, function(compressed) {
-                    addMemberPhotoData = compressed;
-                    const circle = document.getElementById('addMemberPhotoCircle');
-                    circle.innerHTML = '<img src="' + compressed + '" alt="">';
-                    circle.classList.add('has-photo');
                 });
             };
             reader.readAsDataURL(file);
@@ -12351,7 +11712,7 @@
         })();
 
         // ════════════════════════════════════════
-        // NOTES EDIT PANEL
+        // SHARED HELPERS (used by edit sheet and other systems)
         // ════════════════════════════════════════
         function normalizeSections(raw) {
             if (!raw) return [];
@@ -12361,179 +11722,6 @@
             return [];
         }
 
-        function openNotesEdit(fullName) {
-            editingCardPerson = fullName;
-            document.getElementById('editTitle').textContent = 'Edit Notes — ' + fullName;
-            const personNotes = notes[fullName] || { church: '', nickname: '', sections: [] };
-            const sections = normalizeSections(personNotes.sections);
-            const personTitle = memberTitles[fullName] || '';
-            // Populate first/last name fields — use stored values if available, else parse
-            var fn = personNotes.firstName;
-            var ln = personNotes.lastName;
-            if (fn == null && ln == null) {
-                var parsed = parseName(fullName);
-                fn = parsed.first;
-                ln = parsed.last;
-            }
-            document.getElementById('editFirstName').value = fn || '';
-            document.getElementById('editLastName').value = ln || '';
-            document.getElementById('editMemberTitle').value = personTitle;
-            renderEditTitleQuickPicks();
-            document.getElementById('editNickname').value = personNotes.nickname || '';
-            document.getElementById('editMiddleName').value = personNotes.middleName || '';
-            populateEditLinks(fullName);
-            populateChurchSelect(personNotes.church);
-            renderMilestoneDateFields(fullName, personNotes);
-            renderSectionEntries(sections);
-            renderDefaultSectionsBar(sections);
-            const panel = document.getElementById('notesEditPanel');
-            panel.style.display = 'block';
-            setTimeout(function() { panel.scrollIntoView({ behavior: 'smooth' }); }, 100);
-        }
-
-        // ── Multi-URL edit form helpers ──
-        function populateEditLinks(fullName) {
-            var container = document.getElementById('editLinksContainer');
-            container.innerHTML = '';
-            var links = getMemberLinks(fullName);
-            if (links.length === 0) {
-                addEditLinkRow('');
-            } else {
-                links.forEach(function(url) { addEditLinkRow(url); });
-            }
-        }
-        function addEditLinkRow(url) {
-            var container = document.getElementById('editLinksContainer');
-            var row = document.createElement('div');
-            row.className = 'edit-link-row';
-            var iconDiv = document.createElement('div');
-            iconDiv.className = 'edit-link-platform-icon';
-            var platform = detectPlatform(url);
-            if (platform) {
-                iconDiv.className += ' cb-link-icon ' + platform.key;
-                iconDiv.style.cssText = '';
-                iconDiv.innerHTML = platform.icon;
-            } else if (url) {
-                iconDiv.innerHTML = '\uD83D\uDD17';
-            } else {
-                iconDiv.innerHTML = '<span style="color:#ccc;">\uD83D\uDD17</span>';
-            }
-            row.appendChild(iconDiv);
-            var input = document.createElement('input');
-            input.type = 'url';
-            input.value = url;
-            input.placeholder = 'https://example.com';
-            input.addEventListener('input', function() {
-                var p = detectPlatform(this.value);
-                if (p) {
-                    iconDiv.className = 'edit-link-platform-icon cb-link-icon ' + p.key;
-                    iconDiv.innerHTML = p.icon;
-                } else if (this.value.trim()) {
-                    iconDiv.className = 'edit-link-platform-icon';
-                    iconDiv.innerHTML = '\uD83D\uDD17';
-                } else {
-                    iconDiv.className = 'edit-link-platform-icon';
-                    iconDiv.innerHTML = '<span style="color:#ccc;">\uD83D\uDD17</span>';
-                }
-            });
-            row.appendChild(input);
-            var removeBtn = document.createElement('button');
-            removeBtn.type = 'button';
-            removeBtn.className = 'edit-link-remove';
-            removeBtn.innerHTML = '&times;';
-            removeBtn.onclick = function() {
-                row.remove();
-                if (container.children.length === 0) addEditLinkRow('');
-            };
-            row.appendChild(removeBtn);
-            container.appendChild(row);
-            if (!url) input.focus();
-        }
-        function collectEditLinks() {
-            var links = [];
-            var rows = document.querySelectorAll('#editLinksContainer .edit-link-row');
-            rows.forEach(function(row) {
-                var val = row.querySelector('input').value.trim();
-                if (val) links.push(val);
-            });
-            return links;
-        }
-
-        function renderEditTitleQuickPicks() {
-            var container = document.getElementById('editTitleQuickPick');
-            if (!container) return;
-            var currentValue = document.getElementById('editMemberTitle').value.trim();
-            container.innerHTML = '';
-            titles.forEach(function(t) {
-                var btn = document.createElement('button');
-                btn.type = 'button';
-                btn.textContent = t;
-                var isActive = currentValue === t;
-                btn.style.cssText = 'padding:4px 10px;font-size:0.75em;background:' + (isActive ? '#5a3a8a' : '#e8f0fa') + ';color:' + (isActive ? '#fff' : '#2a5a8a') + ';border:1px solid ' + (isActive ? '#5a3a8a' : '#a0b8d0') + ';border-radius:12px;cursor:pointer;font-family:inherit;';
-                btn.onclick = function(e) {
-                    e.preventDefault();
-                    var field = document.getElementById('editMemberTitle');
-                    field.value = field.value.trim() === t ? '' : t;
-                    renderEditTitleQuickPicks();
-                };
-                container.appendChild(btn);
-            });
-        }
-
-        function populateChurchSelect(selected) {
-            const sel = document.getElementById('editChurch');
-            sel.innerHTML = '<option value="">(none)</option>';
-            churches.forEach(c => {
-                const opt = document.createElement('option');
-                opt.value = c;
-                opt.textContent = c;
-                if (c === selected) opt.selected = true;
-                sel.appendChild(opt);
-            });
-        }
-
-        function renderMilestoneDateFields(fullName, personNotes) {
-            var container = document.getElementById('milestoneDatesContainer');
-            if (!container) return;
-            container.innerHTML = '';
-            if (milestoneTypes.length === 0) return;
-            var dates = (personNotes && personNotes.dates) || {};
-            var couple = isCouple(fullName);
-            var cp = couple ? parseCoupleNames(fullName) : null;
-            var group = document.createElement('div');
-            group.className = 'milestone-dates-group';
-            group.innerHTML = '<div class="mdg-title">Milestone Dates</div>';
-            var isFirst = true;
-            milestoneTypes.forEach(function(mt) {
-                if (!isFirst) {
-                    var div = document.createElement('hr');
-                    div.className = 'milestone-date-divider';
-                    group.appendChild(div);
-                }
-                isFirst = false;
-                if (couple && !mt.shared) {
-                    // Per-person: two rows
-                    var typeLabel = document.createElement('div');
-                    typeLabel.className = 'milestone-date-type-label';
-                    typeLabel.innerHTML = mt.emoji + ' ' + escapeHTML(mt.name) + ' <span class="mdtl-hint">(per person)</span>';
-                    group.appendChild(typeLabel);
-                    // Spouse A
-                    group.appendChild(buildDateRow(mt, mt.name, dates[mt.name], cp ? cp.spouseA : 'Person A'));
-                    // Spouse B
-                    group.appendChild(buildDateRow(mt, mt.name + ':spouse', dates[mt.name + ':spouse'], cp ? cp.spouseB : 'Person B'));
-                } else if (couple && mt.shared) {
-                    var typeLabel2 = document.createElement('div');
-                    typeLabel2.className = 'milestone-date-type-label';
-                    typeLabel2.innerHTML = mt.emoji + ' ' + escapeHTML(mt.name) + ' <span class="mdtl-hint">(shared)</span>';
-                    group.appendChild(typeLabel2);
-                    group.appendChild(buildDateRow(mt, mt.name, dates[mt.name], 'Together'));
-                } else {
-                    // Single member
-                    group.appendChild(buildDateRow(mt, mt.name, dates[mt.name], null));
-                }
-            });
-            container.appendChild(group);
-        }
         function buildDateRow(mt, key, dateData, labelText) {
             var row = document.createElement('div');
             row.className = 'milestone-date-row';
@@ -12587,197 +11775,6 @@
             optSpan.textContent = 'opt.';
             row.appendChild(optSpan);
             return row;
-        }
-
-        function renderSectionEntries(sections) {
-            sections = normalizeSections(sections);
-            const list = document.getElementById('sectionsList');
-            list.innerHTML = '';
-            sections.forEach((s, i) => {
-                addSectionRow(list, s.label, s.value, i);
-            });
-            if (sections.length === 0) {
-                list.innerHTML = '<div style="text-align:center;color:#7a9cc6;font-size:0.85em;padding:10px;">No sections yet. Click "+ Add section" below.</div>';
-            }
-        }
-
-        function addSectionRow(container, label, value, idx) {
-            const placeholder = container.querySelector('div[style]');
-            if (placeholder && placeholder.textContent.includes('No sections')) placeholder.remove();
-
-            const row = document.createElement('div');
-            row.className = 'section-entry';
-            row.innerHTML =
-                '<div class="section-top-row">' +
-                    '<input class="section-label-input" value="' + (label || '').replace(/"/g, '&quot;') + '" placeholder="Section label (e.g. Family, Notes...)">' +
-                    '<button class="btn-remove-section" onclick="removeSection(this)" title="Remove section">&times;</button>' +
-                '</div>' +
-                '<textarea class="section-value-textarea" placeholder="Type your notes here...">' + (value || '').replace(/</g, '&lt;') + '</textarea>';
-            container.appendChild(row);
-        }
-
-        function removeSection(btn) {
-            const sectionLabel = btn.closest('.section-entry').querySelector('.section-label-input').value.trim();
-            btn.closest('.section-entry').remove();
-            if (DEFAULT_SECTIONS.includes(sectionLabel)) {
-                renderDefaultSectionsBar(getCurrentSections());
-            }
-        }
-
-        function addSectionEntry() {
-            const list = document.getElementById('sectionsList');
-            addSectionRow(list, '', '', -1);
-            const inputs = list.querySelectorAll('.section-label-input');
-            inputs[inputs.length - 1].focus();
-        }
-
-        function renderDefaultSectionsBar(currentSections) {
-            currentSections = normalizeSections(currentSections);
-            const bar = document.getElementById('defaultSectionsBar');
-            bar.innerHTML = '';
-            const usedLabels = currentSections.map(s => s.label);
-            DEFAULT_SECTIONS.forEach(sectionName => {
-                const btn = document.createElement('button');
-                btn.className = 'btn-default-section';
-                if (usedLabels.includes(sectionName)) {
-                    btn.classList.add('used');
-                    btn.textContent = '✓ ' + sectionName;
-                    btn.disabled = true;
-                } else {
-                    btn.textContent = sectionName;
-                    btn.onclick = function() {
-                        const list = document.getElementById('sectionsList');
-                        const placeholder = list.querySelector('div[style]');
-                        if (placeholder && placeholder.textContent.includes('No sections')) placeholder.remove();
-                        addSectionRow(list, sectionName, '', -1);
-                        renderDefaultSectionsBar(getCurrentSections());
-                        list.querySelector('.section-value-textarea:last-of-type').focus();
-                    };
-                }
-                bar.appendChild(btn);
-            });
-        }
-
-        function getCurrentSections() {
-            const sections = [];
-            document.querySelectorAll('#sectionsList .section-entry').forEach(row => {
-                const label = row.querySelector('.section-label-input').value.trim();
-                const value = row.querySelector('.section-value-textarea').value.trim();
-                if (label || value) sections.push({ label: label || 'Notes', value: value });
-            });
-            return sections;
-        }
-
-        function saveNotesEdit() {
-            if (!editingCardPerson) return;
-            touchEditActivity();
-            var oldName = editingCardPerson;
-            var firstName = document.getElementById('editFirstName').value.trim();
-            var lastName = document.getElementById('editLastName').value.trim();
-            const title = document.getElementById('editMemberTitle').value.trim();
-            const church = document.getElementById('editChurch').value;
-            const nickname = document.getElementById('editNickname').value.trim();
-            const middleName = document.getElementById('editMiddleName').value.trim();
-            const editedLinks = collectEditLinks();
-            const entries = document.querySelectorAll('#sectionsList .section-entry');
-            const sections = [];
-            entries.forEach(row => {
-                const label = row.querySelector('.section-label-input').value.trim();
-                const value = row.querySelector('.section-value-textarea').value.trim();
-                if (label || value) sections.push({ label: label || 'Notes', value: value });
-            });
-
-            // Build new full name from first/last fields
-            var newFullName;
-            if (firstName && lastName) {
-                newFullName = firstName + ' ' + lastName;
-            } else if (lastName) {
-                newFullName = lastName;
-            } else if (firstName) {
-                newFullName = firstName;
-            } else {
-                newFullName = oldName; // keep original if both blank
-            }
-
-            // Handle rename if name changed
-            var nameChanged = newFullName !== oldName;
-            var renamePromise = null;
-            if (nameChanged) {
-                if (members.includes(newFullName)) {
-                    alert(newFullName + ' already exists in the directory.');
-                    return;
-                }
-                renamePromise = performRename(oldName, newFullName);
-                editingCardPerson = newFullName;
-            }
-
-            // Collect milestone dates from editor
-            var editDates = {};
-            var dateRows = document.querySelectorAll('#milestoneDatesContainer .milestone-date-row');
-            dateRows.forEach(function(row) {
-                var key = row.dataset.dateKey;
-                if (!key) return;
-                var month = parseInt(row.querySelector('.md-month').value) || 0;
-                var day = parseInt(row.querySelector('.md-day').value) || 0;
-                var yearVal = row.querySelector('.md-year').value.trim();
-                var year = yearVal ? parseInt(yearVal) : null;
-                if (month && day) {
-                    var entry = { month: month, day: day };
-                    if (year) entry.year = year;
-                    editDates[key] = entry;
-                }
-            });
-            // Preserve any existing dates from milestone types that have been removed
-            var oldDates = (notes[editingCardPerson] && notes[editingCardPerson].dates) || {};
-            for (var odKey in oldDates) {
-                if (!editDates[odKey]) {
-                    // Check if this key belongs to a currently-defined milestone type
-                    var baseName = odKey.replace(':spouse', '');
-                    var stillDefined = milestoneTypes.some(function(mt) { return mt.name === baseName; });
-                    if (!stillDefined) editDates[odKey] = oldDates[odKey]; // preserve orphaned data
-                }
-            }
-
-            // Update notes — preserve existing metadata (addedAt, etc.)
-            if (!notes[editingCardPerson]) notes[editingCardPerson] = {};
-            var n = notes[editingCardPerson];
-            n.church = church;
-            n.nickname = nickname;
-            n.middleName = middleName;
-            // Multi-URL: save links array, keep webURL for backward compat
-            var oldLinks = JSON.stringify(n.links || (n.webURL ? [n.webURL] : []));
-            n.links = editedLinks;
-            n.webURL = editedLinks.length > 0 ? editedLinks[0] : '';
-            if (JSON.stringify(editedLinks) !== oldLinks && editedLinks.length > 0) {
-                stampMemberUpdate(editingCardPerson, 'links');
-            }
-            // Track title changes for notifications
-            var oldTitle = memberTitles[editingCardPerson] || '';
-            n.sections = sections;
-            n.firstName = firstName;
-            n.lastName = lastName;
-            if (Object.keys(editDates).length > 0) { n.dates = editDates; } else { delete n.dates; }
-            saveNotesFor(editingCardPerson);
-            if (title) {
-                if (title !== oldTitle) stampMemberUpdate(editingCardPerson, 'title');
-                memberTitles[editingCardPerson] = title;
-                saveMemberTitleFor(editingCardPerson);
-            } else if (memberTitles[editingCardPerson]) {
-                delete memberTitles[editingCardPerson];
-                saveMemberTitleFor(editingCardPerson);
-            }
-            document.getElementById('notesEditPanel').style.display = 'none';
-            pendingRemoteRender = false; // clear any queued echo renders
-            if (nameChanged && renamePromise) {
-                // Wait for photo migration to complete before rendering
-                renamePromise.then(function() { render(); });
-            } else if (nameChanged) {
-                render();
-            } else {
-                updateCardInPlace(editingCardPerson);
-            }
-            playSaveSound();
-            showToast(nameChanged ? 'Saved & renamed to ' + newFullName : 'Notes saved');
         }
 
         // Update a single card in the directory without full DOM rebuild
@@ -12899,11 +11896,6 @@
 
             // Re-run filter in case church/search data changed visibility
             filterNames();
-        }
-
-        function cancelNotesEdit() {
-            document.getElementById('notesEditPanel').style.display = 'none';
-            if (pendingRemoteRender) { pendingRemoteRender = false; setTimeout(render, 100); }
         }
 
         // ════════════════════════════════════════
@@ -13189,7 +12181,7 @@
             var px = _esActiveSpouse === 'B' ? _esSpouseX : _esPhotoX;
             var py = _esActiveSpouse === 'B' ? _esSpouseY : _esPhotoY;
             if (data) {
-                preview.innerHTML = '<img src="' + data + '" alt="" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:contain;transform-origin:center center;transform:scale(' + (zoom / 100) + ') translate(' + px + 'px,' + py + 'px);transition:transform 0.1s;">';
+                preview.innerHTML = '<img src="' + data + '" alt="" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:contain;transform-origin:center center;transform:scale(' + (zoom / 100) + ') translate(' + px + '%,' + py + '%);transition:transform 0.1s;">';
                 document.getElementById('esRemovePhotoBtn').style.display = '';
             } else {
                 var initials = (_esPerson || '?').split(' ').map(function(w) { return w.charAt(0).toUpperCase(); }).join('').slice(0, 2);
@@ -13201,6 +12193,7 @@
         }
 
         // Drag-to-pan on edit sheet photo preview
+        // Drag-to-pan on edit sheet photo preview — stores values as percentages (same as original editor)
         (function initEsPhotoDrag() {
             var dragging = false, startX = 0, startY = 0, origX = 0, origY = 0;
             function getPreview() { return document.getElementById('esPhotoPreview'); }
@@ -13217,8 +12210,13 @@
             function onMove(e) {
                 if (!dragging) return;
                 var pt = e.touches ? e.touches[0] : e;
-                var dx = pt.clientX - startX;
-                var dy = pt.clientY - startY;
+                var preview = getPreview();
+                var previewSize = (preview ? preview.offsetWidth : 140) || 140;
+                var zoom = _esActiveSpouse === 'B' ? _esSpouseZoom : _esPhotoZoom;
+                var scale = zoom / 100;
+                // Convert pixel delta to percentage (matches original photo editor)
+                var dx = (pt.clientX - startX) / scale / previewSize * 100;
+                var dy = (pt.clientY - startY) / scale / previewSize * 100;
                 if (_esActiveSpouse === 'B') { _esSpouseX = origX + dx; _esSpouseY = origY + dy; }
                 else { _esPhotoX = origX + dx; _esPhotoY = origY + dy; }
                 _renderEsPhotoPreview();
@@ -13445,7 +12443,7 @@
                 _addEsSectionEntry(s.label || '', s.value || '');
             });
 
-            // Render default sections bar (matches original renderDefaultSectionsBar)
+            // Render default sections bar
             _renderEsDefaultSectionsBar();
         }
 
@@ -13667,10 +12665,16 @@
                 }
                 photoDidChange = true;
             }
-            // Save photo adjustments if photo exists
-            if (_esPhotoData && (_esPhotoChanged || _esPhotoZoom !== 100 || _esPhotoX !== 0 || _esPhotoY !== 0)) {
-                photoAdj[editingPerson] = { zoom: _esPhotoZoom, x: _esPhotoX, y: _esPhotoY };
-                savePhotoAdjFor(editingPerson);
+            // Save photo adjustments if photo exists (round x/y to 2 decimals like original editor)
+            if (_esPhotoData) {
+                var rx = Math.round(_esPhotoX * 100) / 100;
+                var ry = Math.round(_esPhotoY * 100) / 100;
+                var oldAdj = photoAdj[editingPerson] || { zoom: 100, x: 0, y: 0 };
+                if (_esPhotoZoom !== oldAdj.zoom || rx !== oldAdj.x || ry !== oldAdj.y) {
+                    photoAdj[editingPerson] = { zoom: _esPhotoZoom, x: rx, y: ry };
+                    savePhotoAdjFor(editingPerson);
+                    photoDidChange = true; // adjustment changed — need full render
+                }
             }
             // Spouse photo — only if changed
             if (isCouple(editingPerson) && _esSpousePhotoChanged) {
@@ -13683,7 +12687,9 @@
                     saveSpousePhoto(editingPerson);
                 }
                 if (_esSpousePhotoData) {
-                    spousePhotoAdj[editingPerson] = { zoom: _esSpouseZoom, x: _esSpouseX, y: _esSpouseY };
+                    var srx = Math.round(_esSpouseX * 100) / 100;
+                    var sry = Math.round(_esSpouseY * 100) / 100;
+                    spousePhotoAdj[editingPerson] = { zoom: _esSpouseZoom, x: srx, y: sry };
                     saveSpousePhotoAdjFor(editingPerson);
                 }
                 photoDidChange = true;
@@ -13749,6 +12755,7 @@
 
         // ── Edit sheet entry points ──
         function deleteFromEditSheet() {
+            if (currentUserLevel === 'readonly') { showToast('Read-only access'); return; }
             if (!_esPerson || _esMode !== 'edit') return;
             var name = _esPerson;
             if (!confirm('Remove ' + name + ' from the directory?\n\nThis cannot be undone.')) return;
@@ -13757,78 +12764,16 @@
         }
 
         function openEditSheetForMember(fullName) {
-            // Auth check
+            // PIN-based auth: readonly blocked, full/admin go straight through
             if (currentUserLevel === 'readonly') { showToast('Read-only access'); return; }
-            checkEditAuthExpiry();
-            if (!isEditAuthorized) {
-                // Need password first
-                document.getElementById('editPwInput').value = '';
-                document.getElementById('editPwError').textContent = '';
-                document.getElementById('editPwOverlay').classList.add('show');
-                setTimeout(function() { document.getElementById('editPwInput').focus(); }, 100);
-                var origSubmit = submitEditPw;
-                submitEditPw = function() {
-                    var val = document.getElementById('editPwInput').value;
-                    hashPassword(val).then(function(h) {
-                        if (h === EDIT_PASSWORD_HASH) {
-                            isEditAuthorized = true;
-                            touchEditActivity();
-                            closeEditPw();
-                            submitEditPw = origSubmit;
-                            openEditSheet(fullName);
-                        } else {
-                            document.getElementById('editPwError').textContent = 'Incorrect password';
-                            document.getElementById('editPwInput').classList.add('error');
-                            document.getElementById('editPwInput').value = '';
-                            setTimeout(function() {
-                                document.getElementById('editPwInput').classList.remove('error');
-                                document.getElementById('editPwError').textContent = '';
-                            }, 1500);
-                        }
-                    });
-                };
-                document.getElementById('editPwInput').onkeydown = function(e) {
-                    if (e.key === 'Enter') submitEditPw();
-                };
-                return;
-            }
+            touchEditActivity();
             openEditSheet(fullName);
         }
 
         function openNewMemberSheetWithAuth() {
+            // PIN-based auth: readonly blocked, full/admin go straight through
             if (currentUserLevel === 'readonly') { showToast('Read-only access'); return; }
-            checkEditAuthExpiry();
-            if (!isEditAuthorized) {
-                document.getElementById('editPwInput').value = '';
-                document.getElementById('editPwError').textContent = '';
-                document.getElementById('editPwOverlay').classList.add('show');
-                setTimeout(function() { document.getElementById('editPwInput').focus(); }, 100);
-                var origSubmit = submitEditPw;
-                submitEditPw = function() {
-                    var val = document.getElementById('editPwInput').value;
-                    hashPassword(val).then(function(h) {
-                        if (h === EDIT_PASSWORD_HASH) {
-                            isEditAuthorized = true;
-                            touchEditActivity();
-                            closeEditPw();
-                            submitEditPw = origSubmit;
-                            openNewMemberSheet();
-                        } else {
-                            document.getElementById('editPwError').textContent = 'Incorrect password';
-                            document.getElementById('editPwInput').classList.add('error');
-                            document.getElementById('editPwInput').value = '';
-                            setTimeout(function() {
-                                document.getElementById('editPwInput').classList.remove('error');
-                                document.getElementById('editPwError').textContent = '';
-                            }, 1500);
-                        }
-                    });
-                };
-                document.getElementById('editPwInput').onkeydown = function(e) {
-                    if (e.key === 'Enter') submitEditPw();
-                };
-                return;
-            }
+            touchEditActivity();
             openNewMemberSheet();
         }
 
@@ -13847,8 +12792,9 @@
                 churches.push(name);
                 saveChurchesStore();
             }
-            populateChurchSelect(name);
-            document.getElementById('editChurch').value = name;
+            // Refresh the edit sheet's church dropdown and select the new church
+            _populateEsChurchSelect(name);
+            document.getElementById('esChurch').value = name;
             hideNewChurchModal();
         }
         document.getElementById('newChurchModal').addEventListener('click', function(e) {
@@ -14918,47 +13864,11 @@
             }
         }
 
-        // Edit notes from coverflow card back
+        // Edit from coverflow card back — delegates to the unified edit sheet
         function browseEditFromCard(fullName) {
             if (currentUserLevel === 'readonly') { showToast('Read-only access'); return; }
-            checkEditAuthExpiry();
-            if (!isEditAuthorized) {
-                // Need password first
-                document.getElementById('editPwInput').value = '';
-                document.getElementById('editPwError').textContent = '';
-                document.getElementById('editPwOverlay').classList.add('show');
-                setTimeout(function() { document.getElementById('editPwInput').focus(); }, 100);
-                var origSubmit = submitEditPw;
-                submitEditPw = function() {
-                    var val = document.getElementById('editPwInput').value;
-                    hashPassword(val).then(function(h) {
-                        if (h === EDIT_PASSWORD_HASH) {
-                            isEditAuthorized = true;
-                            touchEditActivity();
-                            closeEditPw();
-                            submitEditPw = origSubmit;
-                            exitBrowseMode();
-                            setTimeout(function() { openNotesEdit(fullName); }, 300);
-                        } else {
-                            document.getElementById('editPwError').textContent = 'Incorrect password';
-                            document.getElementById('editPwInput').classList.add('error');
-                            document.getElementById('editPwInput').value = '';
-                            setTimeout(function() {
-                                document.getElementById('editPwInput').classList.remove('error');
-                                document.getElementById('editPwError').textContent = '';
-                            }, 1500);
-                        }
-                    });
-                };
-                document.getElementById('editPwInput').onkeydown = function(e) {
-                    if (e.key === 'Enter') submitEditPw();
-                };
-                return;
-            }
-            pendingRemoteRender = false;
-            document.getElementById('notesEditPanel').style.display = 'block';
             exitBrowseMode();
-            setTimeout(function() { openNotesEdit(fullName); }, 300);
+            setTimeout(function() { openEditSheetForMember(fullName); }, 300);
         }
 
         function applyCoverflowTransforms() {
