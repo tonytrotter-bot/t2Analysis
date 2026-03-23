@@ -113,7 +113,9 @@
             right: calc(100% + 6px);
             top: 50%;
             transform: translateY(-50%);
-            font-size: 0.6em;
+            font-size: 0.85em;
+            font-weight: 500;
+            letter-spacing: 0.02em;
             color: #fff;
             white-space: nowrap;
             pointer-events: none;
@@ -214,6 +216,34 @@
         }
         .banner-wrap[data-logo-pos="right"][data-logo-mode="badge"] .banner-logo {
             left: auto; right: 10px; transform: translateY(35%);
+        }
+        /* Corner Bug positions — default is upper-left (set in base rule) */
+        .banner-wrap[data-logo-pos="upper-right"][data-logo-mode="corner"] .banner-logo {
+            top: 8px; left: auto; right: 10px; bottom: auto;
+        }
+        .banner-wrap[data-logo-pos="lower-left"][data-logo-mode="corner"] .banner-logo {
+            top: auto; left: 10px; right: auto; bottom: 8px;
+        }
+        .banner-wrap[data-logo-pos="lower-right"][data-logo-mode="corner"] .banner-logo {
+            top: auto; left: auto; right: 10px; bottom: 8px;
+        }
+        /* Corner Bug square + positions */
+        .banner-wrap[data-logo-pos="upper-right"][data-logo-mode="corner"][data-overlay-shape="square"] .banner-logo {
+            top: 8px; left: auto; right: 10px; bottom: auto;
+        }
+        .banner-wrap[data-logo-pos="lower-left"][data-logo-mode="corner"][data-overlay-shape="square"] .banner-logo {
+            top: auto; left: 10px; right: auto; bottom: 8px;
+        }
+        .banner-wrap[data-logo-pos="lower-right"][data-logo-mode="corner"][data-overlay-shape="square"] .banner-logo {
+            top: auto; left: auto; right: 10px; bottom: 8px;
+        }
+
+        /* ═══ Browse Button: flip to left when corner bug is upper-right ═══ */
+        .banner-wrap[data-logo-mode="corner"][data-logo-pos="upper-right"] .banner-browse-btn {
+            right: auto; left: 10px;
+        }
+        .banner-wrap[data-logo-mode="corner"][data-logo-pos="upper-right"] .banner-browse-btn::after {
+            right: auto; left: calc(100% + 6px);
         }
 
         /* No logo mode */
@@ -3595,6 +3625,7 @@
             .card-flip-overlay { align-items: flex-start; padding-top: 5vh; }
             .card-flip-hint { font-size: 0.7em; margin-top: 10px; }
             .banner-browse-btn { width: 32px; height: 32px; top: 7px; right: 7px; }
+            .banner-wrap[data-logo-mode="corner"][data-logo-pos="upper-right"] .banner-browse-btn { right: auto; left: 7px; }
             .banner-browse-btn svg { width: 15px; height: 15px; }
             .editor-preview-wrap { width: 94vw; }
             .editor-zoom-row input[type="range"] { width: 140px; }
@@ -10015,7 +10046,7 @@
             db.ref('churchDirectory/settings/logoPosition').on('value', function(snap) {
                 if (recentlySaved('settings/logoPosition')) return;
                 var val = snap.val();
-                if (val && (val === 'left' || val === 'center' || val === 'right')) {
+                if (val && (val === 'left' || val === 'center' || val === 'right' || val === 'upper-left' || val === 'upper-right' || val === 'lower-left' || val === 'lower-right')) {
                     logoPosition = val;
                     safeLocalSet('church411_logoPosition', val);
                     var sel = document.getElementById('logoPositionSelect');
@@ -10327,6 +10358,14 @@
                     // Badge: left/center/right
                     posSel.innerHTML = '<option value="left">Left</option><option value="center">Center</option><option value="right">Right</option>';
                     posSel.value = logoPosition;
+                } else if (m === 'corner') {
+                    posRow.style.display = '';
+                    // Corner Bug: four corners
+                    posSel.innerHTML = '<option value="upper-left">Upper Left</option><option value="upper-right">Upper Right</option><option value="lower-left">Lower Left</option><option value="lower-right">Lower Right</option>';
+                    // Map legacy values to valid corner positions
+                    var cp = logoPosition;
+                    if (cp !== 'upper-left' && cp !== 'upper-right' && cp !== 'lower-left' && cp !== 'lower-right') cp = 'upper-left';
+                    posSel.value = cp;
                 } else {
                     posRow.style.display = 'none';
                 }
