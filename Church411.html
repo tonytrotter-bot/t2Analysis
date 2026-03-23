@@ -6248,8 +6248,11 @@
                 if (bsSel) bsSel.value = bannerSize;
                 var osSel = document.getElementById('overlayShapeSelect');
                 if (osSel) osSel.value = overlayShape;
-                var osRow = document.getElementById('overlayShapeRow');
-                if (osRow) osRow.style.display = bannerLogoMode === 'overlay' ? '' : 'none';
+                // Sync frost dropdown
+                var gfSel = document.getElementById('glassFrostSelect');
+                if (gfSel) gfSel.value = glassFrost;
+                // Refresh all mode-dependent row visibility
+                applyOverlayShape();
                 // Sync backup reminder dropdown
                 var brSel = document.getElementById('backupReminderDays');
                 if (brSel) brSel.value = String(backupReminderDays);
