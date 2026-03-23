@@ -5398,7 +5398,7 @@
         var bannerLogoMode = 'none'; // 'none', 'overlay', 'glass', 'badge', 'corner'
         var bannerSize = 'compact'; // 'compact' (current) or 'showcase' (large)
         var overlayShape = 'rectangle'; // 'rectangle' or 'square'
-        var logoPosition = 'center'; // 'left', 'center', 'right'
+        var logoPosition = 'center'; // 'left', 'center', 'right', 'upper-left', 'upper-right', 'lower-left', 'lower-right'
         var glassFrost = 'on'; // 'on' or 'off'
         let bannerDragging = false;
         let bannerDragStartX = 0, bannerDragStartY = 0;
@@ -14376,7 +14376,7 @@
             applyBannerSize();
             // Load logo position
             var savedLogoPos = safeLocalGet('church411_logoPosition');
-            if (savedLogoPos && (savedLogoPos === 'left' || savedLogoPos === 'center' || savedLogoPos === 'right')) {
+            if (savedLogoPos && (savedLogoPos === 'left' || savedLogoPos === 'center' || savedLogoPos === 'right' || savedLogoPos === 'upper-left' || savedLogoPos === 'upper-right' || savedLogoPos === 'lower-left' || savedLogoPos === 'lower-right')) {
                 logoPosition = savedLogoPos;
                 var posSel = document.getElementById('logoPositionSelect');
                 if (posSel) posSel.value = savedLogoPos;
