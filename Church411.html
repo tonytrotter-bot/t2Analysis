@@ -185,15 +185,22 @@
             bottom: 0; left: 50%; transform: translate(-50%, 35%);
             width: auto; max-width: 420px; height: 42%;
             aspect-ratio: 16 / 7;
-            padding: 5px;
-            background: #fff;
+            padding: 0;
+            background: none;
             border-radius: 12px;
-            box-shadow: 0 3px 14px rgba(0,0,0,0.18);
-            border: 2px solid #e0e8f0;
+            box-shadow: 0 3px 14px rgba(0,0,0,0.25);
+            border: none;
         }
         .banner-wrap[data-logo-mode="badge"] .banner-logo img {
-            border-radius: 8px;
+            border-radius: 12px;
             object-fit: cover;
+        }
+        /* Badge extended drop — pushes 2/3 outside banner for logos with text */
+        .banner-wrap[data-logo-mode="badge"][data-badge-drop="extended"] {
+            margin-bottom: 70px;
+        }
+        .banner-wrap[data-logo-mode="badge"][data-badge-drop="extended"] .banner-logo {
+            transform: translate(-50%, 65%);
         }
         /* Mode D: Corner Bug — small logo pinned to top-left like a TV network bug */
         .banner-wrap[data-logo-mode="corner"] .banner-logo {
@@ -3566,6 +3573,7 @@
             .banner-wrap[data-banner-size="showcase"] { height: 300px; }
             .banner-wrap[data-banner-size="showcase"] .banner-logo { max-height: 76px; }
             .banner-wrap[data-logo-mode="badge"] { margin-bottom: 50px; }
+            .banner-wrap[data-logo-mode="badge"][data-badge-drop="extended"] { margin-bottom: 80px; }
             .banner-wrap[data-logo-mode="badge"] .banner-logo { height: 48%; bottom: -8px; }
             .banner-wrap[data-logo-mode="overlay"] .banner-logo { height: 45%; }
             .banner-wrap[data-logo-mode="glass"] .banner-logo { width: 55%; height: 65%; }
@@ -3624,7 +3632,8 @@
             .banner-wrap[data-banner-size="showcase"] { height: 240px; }
             .banner-wrap[data-banner-size="showcase"] .banner-logo { max-height: 55px; }
             .banner-wrap[data-logo-mode="badge"] { margin-bottom: 25px; }
-            .banner-wrap[data-logo-mode="badge"] .banner-logo { height: 36%; padding: 3px; }
+            .banner-wrap[data-logo-mode="badge"][data-badge-drop="extended"] { margin-bottom: 50px; }
+            .banner-wrap[data-logo-mode="badge"] .banner-logo { height: 36%; }
             .banner-wrap[data-logo-mode="overlay"] .banner-logo { height: 34%; }
             .banner-wrap[data-logo-mode="glass"] .banner-logo { width: 65%; height: 65%; padding: 10px; }
             .banner-wrap[data-logo-mode="corner"] .banner-logo { height: 26%; }
@@ -4483,6 +4492,13 @@
                 <select id="glassFrostSelect" onchange="updateGlassFrost(this.value)" style="padding:5px 8px;font-family:inherit;font-size:0.88em;border:1px solid #a0b8d0;border-radius:5px;background:#f8fafb;color:#1a2a40;">
                     <option value="on">On</option>
                     <option value="off">Off</option>
+                </select>
+            </div>
+            <div class="settings-row" style="margin-top:8px;display:none;" id="badgeDropRow">
+                <label>Badge Drop</label>
+                <select id="badgeDropSelect" onchange="updateBadgeDrop(this.value)" style="padding:5px 8px;font-family:inherit;font-size:0.88em;border:1px solid #a0b8d0;border-radius:5px;background:#f8fafb;color:#1a2a40;">
+                    <option value="standard">Standard (1/3)</option>
+                    <option value="extended">Extended (2/3)</option>
                 </select>
             </div>
             <div class="settings-row" style="margin-top:8px;">
@@ -5420,6 +5436,7 @@
         var overlayShape = 'rectangle'; // 'rectangle' or 'square'
         var logoPosition = 'center'; // 'left', 'center', 'right', 'upper-left', 'upper-right', 'lower-left', 'lower-right'
         var glassFrost = 'on'; // 'on' or 'off'
+        var badgeDrop = 'standard'; // 'standard' or 'extended'
         let bannerDragging = false;
         let bannerDragStartX = 0, bannerDragStartY = 0;
         let bannerDragStartAdjX = 0, bannerDragStartAdjY = 0;
@@ -6302,6 +6319,9 @@
                 // Sync frost dropdown
                 var gfSel = document.getElementById('glassFrostSelect');
                 if (gfSel) gfSel.value = glassFrost;
+                // Sync badge drop dropdown
+                var bdSel = document.getElementById('badgeDropSelect');
+                if (bdSel) bdSel.value = badgeDrop;
                 // Refresh all mode-dependent row visibility
                 applyOverlayShape();
                 // Sync backup reminder dropdown
@@ -7717,7 +7737,8 @@
                         bannerSize: bannerSize,
                         overlayShape: overlayShape,
                         logoPosition: logoPosition,
-                        glassFrost: glassFrost
+                        glassFrost: glassFrost,
+                        badgeDrop: badgeDrop
                     }
                 };
                 var json = JSON.stringify(backup);
@@ -7883,6 +7904,7 @@
                     if (appS.overlayShape) safeLocalSet('church411_overlayShape', appS.overlayShape);
                     if (appS.logoPosition) safeLocalSet('church411_logoPosition', appS.logoPosition);
                     if (appS.glassFrost) safeLocalSet('church411_glassFrost', appS.glassFrost);
+                    if (appS.badgeDrop) safeLocalSet('church411_badgeDrop', appS.badgeDrop);
                     // Legacy: restore old single-PIN format
                     if (!backup.users && appS.pin) {
                         var legId = generateUserId();
@@ -10085,6 +10107,17 @@
                     applyGlassFrost();
                 }
             });
+            db.ref('churchDirectory/settings/badgeDrop').on('value', function(snap) {
+                if (recentlySaved('settings/badgeDrop')) return;
+                var val = snap.val();
+                if (val && (val === 'standard' || val === 'extended')) {
+                    badgeDrop = val;
+                    safeLocalSet('church411_badgeDrop', val);
+                    var sel = document.getElementById('badgeDropSelect');
+                    if (sel) sel.value = val;
+                    applyBadgeDrop();
+                }
+            });
             db.ref('churchDirectory/settings/browseStyle').on('value', function(snap) {
                 if (recentlySaved('settings/browseStyle')) return;
                 var val = snap.val();
@@ -10405,6 +10438,9 @@
             // Frost row: only visible for glass mode
             var frostRow = document.getElementById('glassFrostRow');
             if (frostRow) frostRow.style.display = (m === 'glass') ? '' : 'none';
+            // Badge drop row: only visible for badge mode
+            var dropRow = document.getElementById('badgeDropRow');
+            if (dropRow) dropRow.style.display = (m === 'badge') ? '' : 'none';
         }
         function updateOverlayShape(val) {
             overlayShape = val;
@@ -10428,6 +10464,20 @@
                 markSaved('settings/glassFrost');
                 markSaved('settings');
                 db.ref('churchDirectory/settings/glassFrost').set(val);
+            }
+        }
+        function applyBadgeDrop() {
+            var wrap = document.getElementById('bannerWrap');
+            if (wrap) wrap.setAttribute('data-badge-drop', badgeDrop);
+        }
+        function updateBadgeDrop(val) {
+            badgeDrop = val;
+            safeLocalSet('church411_badgeDrop', val);
+            applyBadgeDrop();
+            if (typeof db !== 'undefined' && db) {
+                markSaved('settings/badgeDrop');
+                markSaved('settings');
+                db.ref('churchDirectory/settings/badgeDrop').set(val);
             }
         }
         function loadOverlayShape() {
@@ -14419,6 +14469,14 @@
                 if (frostSel) frostSel.value = savedFrost;
             }
             applyGlassFrost();
+            // Load badge drop
+            var savedDrop = safeLocalGet('church411_badgeDrop');
+            if (savedDrop && (savedDrop === 'standard' || savedDrop === 'extended')) {
+                badgeDrop = savedDrop;
+                var dropSel = document.getElementById('badgeDropSelect');
+                if (dropSel) dropSel.value = savedDrop;
+            }
+            applyBadgeDrop();
             // Load overlay shape
             loadOverlayShape();
             var shapeSel = document.getElementById('overlayShapeSelect');
