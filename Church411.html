@@ -146,7 +146,7 @@
         /* Mode B: Frosted Glass — centered with glass backdrop */
         .banner-wrap[data-logo-mode="glass"] .banner-logo {
             top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 55%; height: 65%;
+            width: 70%; height: 75%;
             border-radius: 18px;
             background: rgba(255,255,255,0.12);
             backdrop-filter: blur(20px) saturate(1.3);
@@ -160,6 +160,18 @@
         }
         .banner-wrap[data-logo-mode="glass"] .banner-logo img {
             object-fit: cover;
+        }
+        /* Glass without frost — clean transparent pane */
+        .banner-wrap[data-glass-frost="off"][data-logo-mode="glass"] .banner-logo {
+            background: none;
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+            box-shadow: none;
+            padding: 0;
+        }
+        .banner-wrap[data-glass-frost="off"][data-logo-mode="glass"] .banner-logo-clip {
+            border-radius: 10px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.25);
         }
         /* Mode C: Floating Badge — mini-banner that bridges bottom edge */
         .banner-wrap[data-logo-mode="badge"] {
@@ -251,11 +263,11 @@
         }
         /* Glass square */
         .banner-wrap[data-logo-mode="glass"][data-overlay-shape="square"] .banner-logo {
-            width: auto; height: 65%;
+            width: auto; height: 80%;
             aspect-ratio: 1 / 1;
         }
         .banner-wrap[data-logo-mode="glass"][data-overlay-shape="square"] .banner-logo img { object-fit: cover; }
-        .banner-wrap[data-banner-size="showcase"][data-logo-mode="glass"][data-overlay-shape="square"] .banner-logo { height: 55%; }
+        .banner-wrap[data-banner-size="showcase"][data-logo-mode="glass"][data-overlay-shape="square"] .banner-logo { height: 70%; }
 
         /* ── Banner Editor Overlay ── */
         .banner-editor-overlay {
@@ -3507,7 +3519,7 @@
             .banner-wrap[data-logo-mode="badge"] { margin-bottom: 50px; }
             .banner-wrap[data-logo-mode="badge"] .banner-logo { width: 50%; height: 48%; bottom: -8px; }
             .banner-wrap[data-logo-mode="overlay"] .banner-logo { width: 35%; height: 45%; }
-            .banner-wrap[data-logo-mode="glass"] .banner-logo { width: 40%; height: 50%; }
+            .banner-wrap[data-logo-mode="glass"] .banner-logo { width: 55%; height: 65%; }
             .banner-wrap[data-logo-mode="corner"] .banner-logo { height: 32%; max-width: 25%; }
         }
 
@@ -3565,7 +3577,7 @@
             .banner-wrap[data-logo-mode="badge"] { margin-bottom: 25px; }
             .banner-wrap[data-logo-mode="badge"] .banner-logo { width: 60%; height: 36%; padding: 3px; }
             .banner-wrap[data-logo-mode="overlay"] .banner-logo { width: 38%; height: 34%; }
-            .banner-wrap[data-logo-mode="glass"] .banner-logo { width: 50%; height: 50%; padding: 8px; }
+            .banner-wrap[data-logo-mode="glass"] .banner-logo { width: 65%; height: 65%; padding: 10px; }
             .banner-wrap[data-logo-mode="corner"] .banner-logo { height: 26%; max-width: 25%; }
             .banner-wrap[data-logo-mode="overlay"][data-overlay-shape="square"] .banner-logo { max-height: 65%; }
             .banner-wrap[data-logo-mode="badge"][data-overlay-shape="square"] .banner-logo { max-height: 70%; }
@@ -4413,6 +4425,13 @@
                 <select id="overlayShapeSelect" onchange="updateOverlayShape(this.value)" style="padding:5px 8px;font-family:inherit;font-size:0.88em;border:1px solid #a0b8d0;border-radius:5px;background:#f8fafb;color:#1a2a40;">
                     <option value="rectangle">Rectangle</option>
                     <option value="square">Square</option>
+                </select>
+            </div>
+            <div class="settings-row" style="margin-top:8px;" id="glassFrostRow">
+                <label>Glass Frost</label>
+                <select id="glassFrostSelect" onchange="updateGlassFrost(this.value)" style="padding:5px 8px;font-family:inherit;font-size:0.88em;border:1px solid #a0b8d0;border-radius:5px;background:#f8fafb;color:#1a2a40;">
+                    <option value="on">On</option>
+                    <option value="off">Off</option>
                 </select>
             </div>
             <div class="settings-row" style="margin-top:8px;">
@@ -5349,6 +5368,7 @@
         var bannerSize = 'compact'; // 'compact' (current) or 'showcase' (large)
         var overlayShape = 'rectangle'; // 'rectangle' or 'square'
         var logoPosition = 'center'; // 'left', 'center', 'right'
+        var glassFrost = 'on'; // 'on' or 'off'
         let bannerDragging = false;
         let bannerDragStartX = 0, bannerDragStartY = 0;
         let bannerDragStartAdjX = 0, bannerDragStartAdjY = 0;
@@ -7642,7 +7662,8 @@
                         bannerLogoMode: bannerLogoMode,
                         bannerSize: bannerSize,
                         overlayShape: overlayShape,
-                        logoPosition: logoPosition
+                        logoPosition: logoPosition,
+                        glassFrost: glassFrost
                     }
                 };
                 var json = JSON.stringify(backup);
@@ -7807,6 +7828,7 @@
                     if (appS.bannerSize) safeLocalSet('church411_bannerSize', appS.bannerSize);
                     if (appS.overlayShape) safeLocalSet('church411_overlayShape', appS.overlayShape);
                     if (appS.logoPosition) safeLocalSet('church411_logoPosition', appS.logoPosition);
+                    if (appS.glassFrost) safeLocalSet('church411_glassFrost', appS.glassFrost);
                     // Legacy: restore old single-PIN format
                     if (!backup.users && appS.pin) {
                         var legId = generateUserId();
@@ -9998,6 +10020,17 @@
                     applyLogoPosition();
                 }
             });
+            db.ref('churchDirectory/settings/glassFrost').on('value', function(snap) {
+                if (recentlySaved('settings/glassFrost')) return;
+                var val = snap.val();
+                if (val && (val === 'on' || val === 'off')) {
+                    glassFrost = val;
+                    safeLocalSet('church411_glassFrost', val);
+                    var sel = document.getElementById('glassFrostSelect');
+                    if (sel) sel.value = val;
+                    applyGlassFrost();
+                }
+            });
             db.ref('churchDirectory/settings/browseStyle').on('value', function(snap) {
                 if (recentlySaved('settings/browseStyle')) return;
                 var val = snap.val();
@@ -10188,6 +10221,7 @@
                     var rmBtn = document.getElementById('removeLogo');
                     if (rmBtn) rmBtn.style.display = '';
                     applyBannerLogo(true);
+                    saveBannerStore();
                 });
             };
             reader.readAsDataURL(file);
@@ -10198,6 +10232,7 @@
             bannerState.logoAdj = { zoom: 100, x: 0, y: 0 };
             document.getElementById('logoEditorSection').style.display = 'none';
             applyBannerLogo();
+            saveBannerStore();
             var rmBtn = document.getElementById('removeLogo');
             if (rmBtn) rmBtn.style.display = 'none';
         }
@@ -10296,6 +10331,9 @@
             // Update shape label for context
             var shapeLabel = shapeRow ? shapeRow.querySelector('label') : null;
             if (shapeLabel) shapeLabel.textContent = 'Logo Shape';
+            // Frost row: only visible for glass mode
+            var frostRow = document.getElementById('glassFrostRow');
+            if (frostRow) frostRow.style.display = (m === 'glass') ? '' : 'none';
         }
         function updateOverlayShape(val) {
             overlayShape = val;
@@ -10305,6 +10343,20 @@
                 markSaved('settings/overlayShape');
                 markSaved('settings');
                 db.ref('churchDirectory/settings/overlayShape').set(val);
+            }
+        }
+        function applyGlassFrost() {
+            var wrap = document.getElementById('bannerWrap');
+            if (wrap) wrap.setAttribute('data-glass-frost', glassFrost);
+        }
+        function updateGlassFrost(val) {
+            glassFrost = val;
+            safeLocalSet('church411_glassFrost', val);
+            applyGlassFrost();
+            if (typeof db !== 'undefined' && db) {
+                markSaved('settings/glassFrost');
+                markSaved('settings');
+                db.ref('churchDirectory/settings/glassFrost').set(val);
             }
         }
         function loadOverlayShape() {
@@ -14288,6 +14340,14 @@
                 if (posSel) posSel.value = savedLogoPos;
             }
             applyLogoPosition();
+            // Load glass frost
+            var savedFrost = safeLocalGet('church411_glassFrost');
+            if (savedFrost && (savedFrost === 'on' || savedFrost === 'off')) {
+                glassFrost = savedFrost;
+                var frostSel = document.getElementById('glassFrostSelect');
+                if (frostSel) frostSel.value = savedFrost;
+            }
+            applyGlassFrost();
             // Load overlay shape
             loadOverlayShape();
             var shapeSel = document.getElementById('overlayShapeSelect');
