@@ -195,12 +195,23 @@
             border-radius: 12px;
             object-fit: cover;
         }
+        /* Badge large size */
+        .banner-wrap[data-logo-mode="badge"][data-badge-size="large"] {
+            margin-bottom: 60px;
+        }
+        .banner-wrap[data-logo-mode="badge"][data-badge-size="large"] .banner-logo {
+            height: 65%; max-width: 560px;
+        }
         /* Badge extended drop — pushes 2/3 outside banner for logos with text */
         .banner-wrap[data-logo-mode="badge"][data-badge-drop="extended"] {
             margin-bottom: 70px;
         }
         .banner-wrap[data-logo-mode="badge"][data-badge-drop="extended"] .banner-logo {
             bottom: -25%;
+        }
+        /* Badge large + extended combo */
+        .banner-wrap[data-logo-mode="badge"][data-badge-size="large"][data-badge-drop="extended"] {
+            margin-bottom: 100px;
         }
         /* Mode D: Corner Bug — small logo pinned to top-left like a TV network bug */
         .banner-wrap[data-logo-mode="corner"] .banner-logo {
@@ -276,6 +287,9 @@
         .banner-wrap[data-banner-size="showcase"][data-logo-mode="badge"] .banner-logo { bottom: 0; }
         .banner-wrap[data-banner-size="showcase"][data-logo-mode="badge"][data-badge-drop="extended"] .banner-logo { bottom: -10%; }
         .banner-wrap[data-banner-size="showcase"][data-logo-mode="badge"][data-badge-drop="extended"] { margin-bottom: 80px; }
+        .banner-wrap[data-banner-size="showcase"][data-logo-mode="badge"][data-badge-size="large"] .banner-logo { max-height: 130px; }
+        .banner-wrap[data-banner-size="showcase"][data-logo-mode="badge"][data-badge-size="large"] { margin-bottom: 80px; }
+        .banner-wrap[data-banner-size="showcase"][data-logo-mode="badge"][data-badge-size="large"][data-badge-drop="extended"] { margin-bottom: 120px; }
 
         /* ═══ Logo Shape: Square ═══ */
         /* Overlay square */
@@ -3578,6 +3592,9 @@
             .banner-wrap[data-logo-mode="badge"][data-badge-drop="extended"] { margin-bottom: 80px; }
             .banner-wrap[data-logo-mode="badge"] .banner-logo { height: 48%; bottom: -8px; }
             .banner-wrap[data-logo-mode="badge"][data-badge-drop="extended"] .banner-logo { bottom: -25%; }
+            .banner-wrap[data-logo-mode="badge"][data-badge-size="large"] .banner-logo { height: 68%; }
+            .banner-wrap[data-logo-mode="badge"][data-badge-size="large"] { margin-bottom: 70px; }
+            .banner-wrap[data-logo-mode="badge"][data-badge-size="large"][data-badge-drop="extended"] { margin-bottom: 100px; }
             .banner-wrap[data-logo-mode="overlay"] .banner-logo { height: 45%; }
             .banner-wrap[data-logo-mode="glass"] .banner-logo { width: 55%; height: 65%; }
             .banner-wrap[data-logo-mode="corner"] .banner-logo { height: 32%; }
@@ -3637,6 +3654,9 @@
             .banner-wrap[data-logo-mode="badge"] { margin-bottom: 25px; }
             .banner-wrap[data-logo-mode="badge"][data-badge-drop="extended"] { margin-bottom: 50px; }
             .banner-wrap[data-logo-mode="badge"] .banner-logo { height: 36%; }
+            .banner-wrap[data-logo-mode="badge"][data-badge-size="large"] .banner-logo { height: 55%; }
+            .banner-wrap[data-logo-mode="badge"][data-badge-size="large"] { margin-bottom: 45px; }
+            .banner-wrap[data-logo-mode="badge"][data-badge-size="large"][data-badge-drop="extended"] { margin-bottom: 70px; }
             .banner-wrap[data-logo-mode="overlay"] .banner-logo { height: 34%; }
             .banner-wrap[data-logo-mode="glass"] .banner-logo { width: 65%; height: 65%; padding: 10px; }
             .banner-wrap[data-logo-mode="corner"] .banner-logo { height: 26%; }
@@ -4502,6 +4522,13 @@
                 <select id="badgeDropSelect" onchange="updateBadgeDrop(this.value)" style="padding:5px 8px;font-family:inherit;font-size:0.88em;border:1px solid #a0b8d0;border-radius:5px;background:#f8fafb;color:#1a2a40;">
                     <option value="standard">Standard (1/3)</option>
                     <option value="extended">Extended (2/3)</option>
+                </select>
+            </div>
+            <div class="settings-row" style="margin-top:8px;display:none;" id="badgeSizeRow">
+                <label>Badge Size</label>
+                <select id="badgeSizeSelect" onchange="updateBadgeSize(this.value)" style="padding:5px 8px;font-family:inherit;font-size:0.88em;border:1px solid #a0b8d0;border-radius:5px;background:#f8fafb;color:#1a2a40;">
+                    <option value="small">Small</option>
+                    <option value="large">Large</option>
                 </select>
             </div>
             <div class="settings-row" style="margin-top:8px;">
@@ -5440,6 +5467,7 @@
         var logoPosition = 'center'; // 'left', 'center', 'right', 'upper-left', 'upper-right', 'lower-left', 'lower-right'
         var glassFrost = 'on'; // 'on' or 'off'
         var badgeDrop = 'standard'; // 'standard' or 'extended'
+        var badgeSize = 'small'; // 'small' or 'large'
         let bannerDragging = false;
         let bannerDragStartX = 0, bannerDragStartY = 0;
         let bannerDragStartAdjX = 0, bannerDragStartAdjY = 0;
@@ -6325,6 +6353,9 @@
                 // Sync badge drop dropdown
                 var bdSel = document.getElementById('badgeDropSelect');
                 if (bdSel) bdSel.value = badgeDrop;
+                // Sync badge size dropdown
+                var bsSel = document.getElementById('badgeSizeSelect');
+                if (bsSel) bsSel.value = badgeSize;
                 // Refresh all mode-dependent row visibility
                 applyOverlayShape();
                 // Sync backup reminder dropdown
@@ -7741,7 +7772,8 @@
                         overlayShape: overlayShape,
                         logoPosition: logoPosition,
                         glassFrost: glassFrost,
-                        badgeDrop: badgeDrop
+                        badgeDrop: badgeDrop,
+                        badgeSize: badgeSize
                     }
                 };
                 var json = JSON.stringify(backup);
@@ -7908,6 +7940,7 @@
                     if (appS.logoPosition) safeLocalSet('church411_logoPosition', appS.logoPosition);
                     if (appS.glassFrost) safeLocalSet('church411_glassFrost', appS.glassFrost);
                     if (appS.badgeDrop) safeLocalSet('church411_badgeDrop', appS.badgeDrop);
+                    if (appS.badgeSize) safeLocalSet('church411_badgeSize', appS.badgeSize);
                     // Legacy: restore old single-PIN format
                     if (!backup.users && appS.pin) {
                         var legId = generateUserId();
@@ -10121,6 +10154,17 @@
                     applyBadgeDrop();
                 }
             });
+            db.ref('churchDirectory/settings/badgeSize').on('value', function(snap) {
+                if (recentlySaved('settings/badgeSize')) return;
+                var val = snap.val();
+                if (val && (val === 'small' || val === 'large')) {
+                    badgeSize = val;
+                    safeLocalSet('church411_badgeSize', val);
+                    var sel = document.getElementById('badgeSizeSelect');
+                    if (sel) sel.value = val;
+                    applyBadgeSize();
+                }
+            });
             db.ref('churchDirectory/settings/browseStyle').on('value', function(snap) {
                 if (recentlySaved('settings/browseStyle')) return;
                 var val = snap.val();
@@ -10444,6 +10488,9 @@
             // Badge drop row: only visible for badge mode
             var dropRow = document.getElementById('badgeDropRow');
             if (dropRow) dropRow.style.display = (m === 'badge') ? '' : 'none';
+            // Badge size row: only visible for badge mode
+            var sizeRow = document.getElementById('badgeSizeRow');
+            if (sizeRow) sizeRow.style.display = (m === 'badge') ? '' : 'none';
         }
         function updateOverlayShape(val) {
             overlayShape = val;
@@ -10481,6 +10528,20 @@
                 markSaved('settings/badgeDrop');
                 markSaved('settings');
                 db.ref('churchDirectory/settings/badgeDrop').set(val);
+            }
+        }
+        function applyBadgeSize() {
+            var wrap = document.getElementById('bannerWrap');
+            if (wrap) wrap.setAttribute('data-badge-size', badgeSize);
+        }
+        function updateBadgeSize(val) {
+            badgeSize = val;
+            safeLocalSet('church411_badgeSize', val);
+            applyBadgeSize();
+            if (typeof db !== 'undefined' && db) {
+                markSaved('settings/badgeSize');
+                markSaved('settings');
+                db.ref('churchDirectory/settings/badgeSize').set(val);
             }
         }
         function loadOverlayShape() {
@@ -14480,6 +14541,14 @@
                 if (dropSel) dropSel.value = savedDrop;
             }
             applyBadgeDrop();
+            // Load badge size
+            var savedSize = safeLocalGet('church411_badgeSize');
+            if (savedSize && (savedSize === 'small' || savedSize === 'large')) {
+                badgeSize = savedSize;
+                var sizeSel = document.getElementById('badgeSizeSelect');
+                if (sizeSel) sizeSel.value = savedSize;
+            }
+            applyBadgeSize();
             // Load overlay shape
             loadOverlayShape();
             var shapeSel = document.getElementById('overlayShapeSelect');
