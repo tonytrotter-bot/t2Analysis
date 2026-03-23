@@ -10013,7 +10013,7 @@
             db.ref('churchDirectory/settings/bannerLogoMode').on('value', function(snap) {
                 if (recentlySaved('settings/bannerLogoMode')) return;
                 var val = snap.val();
-                if (val && (val === 'none' || val === 'overlay' || val === 'glass' || val === 'badge')) {
+                if (val && (val === 'none' || val === 'overlay' || val === 'glass' || val === 'badge' || val === 'corner')) {
                     bannerLogoMode = val;
                     safeLocalSet('church411_bannerLogoMode', val);
                     var sel = document.getElementById('bannerLogoModeSelect');
