@@ -248,11 +248,13 @@
             top: auto; left: auto; right: 10px; bottom: 8px;
         }
 
-        /* ═══ Browse Button: flip to left when logo is upper-right ═══ */
-        .banner-wrap[data-logo-pos="upper-right"] .banner-browse-btn {
+        /* ═══ Browse Button: flip to left when logo occupies right side ═══ */
+        .banner-wrap[data-logo-pos="upper-right"] .banner-browse-btn,
+        .banner-wrap[data-logo-pos="lower-right"][data-logo-mode="overlay"] .banner-browse-btn {
             right: auto; left: 10px;
         }
-        .banner-wrap[data-logo-pos="upper-right"] .banner-browse-btn::after {
+        .banner-wrap[data-logo-pos="upper-right"] .banner-browse-btn::after,
+        .banner-wrap[data-logo-pos="lower-right"][data-logo-mode="overlay"] .banner-browse-btn::after {
             right: auto; left: calc(100% + 6px);
         }
 
@@ -3642,7 +3644,8 @@
             .card-flip-overlay { align-items: flex-start; padding-top: 5vh; }
             .card-flip-hint { font-size: 0.7em; margin-top: 10px; }
             .banner-browse-btn { width: 32px; height: 32px; top: 7px; right: 7px; }
-            .banner-wrap[data-logo-pos="upper-right"] .banner-browse-btn { right: auto; left: 7px; }
+            .banner-wrap[data-logo-pos="upper-right"] .banner-browse-btn,
+            .banner-wrap[data-logo-pos="lower-right"][data-logo-mode="overlay"] .banner-browse-btn { right: auto; left: 7px; }
             .banner-browse-btn svg { width: 15px; height: 15px; }
             .editor-preview-wrap { width: 94vw; }
             .editor-zoom-row input[type="range"] { width: 140px; }
