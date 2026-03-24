@@ -10628,10 +10628,6 @@
                 document.getElementById('fileInput').click();
                 return;
             }
-            // Match editor preview to actual banner aspect ratio (Compact vs Showcase)
-            beUpdateCropRatio();
-            // Match logo editor preview to shape/mode
-            beUpdateLogoCropShape();
             tempBannerAdj = { ...bannerState.adj };
             document.getElementById('bannerEditorImg').src = bannerState.src;
             document.getElementById('bannerEditorZoom').value = tempBannerAdj.zoom;
@@ -10662,9 +10658,11 @@
             }
             // Sync settings tab
             beSyncSettingsUI();
-            // Open the overlay
+            // Open the overlay FIRST so elements have layout dimensions
             document.getElementById('bannerEditorOverlay').classList.add('show');
-            // Initialize live previews
+            // THEN update crop ratios and previews (needs offsetWidth/Height)
+            beUpdateCropRatio();
+            beUpdateLogoCropShape();
             beUpdatePreviews();
         }
 
@@ -10687,41 +10685,40 @@
             var logoPreview = document.getElementById('logoEditorPreview');
             if (!logoPreview) return;
             var isSquare = (overlayShape === 'square');
+            // Get actual parent width (overlay must be visible first)
+            var parentW = logoPreview.parentElement ? logoPreview.parentElement.offsetWidth : 0;
+            if (!parentW) parentW = 600; // fallback
 
-            // Reset — use CSS-only values so it works even before overlay is visible
+            // Reset
             logoPreview.style.width = '';
             logoPreview.style.maxWidth = '';
             logoPreview.style.height = '0';
             logoPreview.style.paddingBottom = '0';
             logoPreview.style.margin = '0 auto';
 
+            var w, h;
             if (bannerLogoMode === 'badge') {
                 if (isSquare) {
-                    // Square badge — 1:1, 30% of parent (= square because pb% is relative to parent too)
-                    logoPreview.style.width = '30%';
-                    logoPreview.style.maxWidth = '220px';
-                    logoPreview.style.paddingBottom = '30%';
+                    w = Math.min(220, parentW * 0.35);
+                    h = w; // 1:1
                     logoPreview.style.borderRadius = '10px';
                 } else {
-                    // Rectangle badge 16:5 — 80% width, pb = 80% * 5/16 = 25%
-                    logoPreview.style.width = '80%';
-                    logoPreview.style.maxWidth = '520px';
-                    logoPreview.style.paddingBottom = '25%';
+                    w = Math.min(520, parentW * 0.8);
+                    h = w * 5 / 16; // 16:5
                     logoPreview.style.borderRadius = '12px';
                 }
             } else if (bannerLogoMode === 'overlay' || bannerLogoMode === 'corner') {
-                // Overlay/corner — square crop, 25% of parent
-                logoPreview.style.width = '25%';
-                logoPreview.style.maxWidth = '180px';
-                logoPreview.style.paddingBottom = '25%';
+                w = Math.min(180, parentW * 0.3);
+                h = w; // always square for logos
                 logoPreview.style.borderRadius = '10px';
             } else {
-                // Glass — wide rectangle
-                logoPreview.style.width = '80%';
-                logoPreview.style.maxWidth = '520px';
-                logoPreview.style.paddingBottom = '25%';
+                // Glass — wide
+                w = Math.min(520, parentW * 0.8);
+                h = w * 5 / 16;
                 logoPreview.style.borderRadius = '10px';
             }
+            logoPreview.style.width = w + 'px';
+            logoPreview.style.paddingBottom = h + 'px';
         }
 
         // ═══ Unified Editor — Update crop area & previews to match banner size ═══
