@@ -587,6 +587,21 @@
             object-fit: cover;
             display: block;
         }
+        .be-preview-logo-overlay {
+            position: absolute;
+            bottom: 4px; left: 4px;
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+            z-index: 2;
+            display: none;
+        }
+        .be-preview-logo-overlay img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
         .be-preview-content {
             padding: 8px 4px 6px;
             text-align: center;
@@ -5156,7 +5171,10 @@
                             <div class="be-preview-banner" style="height:55px;">
                                 <img id="bePreviewPhoneImg" src="" alt="">
                                 <div class="be-preview-badge" id="bePreviewPhoneBadge" style="width:55%;aspect-ratio:16/5;">
-                                    <img id="bePreviewPhoneLogoImg" src="" alt="">
+                                    <img id="bePreviewPhoneBadgeImg" src="" alt="">
+                                </div>
+                                <div class="be-preview-logo-overlay" id="bePreviewPhoneOverlay">
+                                    <img id="bePreviewPhoneOverlayImg" src="" alt="">
                                 </div>
                             </div>
                             <div class="be-preview-content">
@@ -5170,7 +5188,10 @@
                             <div class="be-preview-banner" style="height:65px;">
                                 <img id="bePreviewTabletImg" src="" alt="">
                                 <div class="be-preview-badge" id="bePreviewTabletBadge" style="width:38%;aspect-ratio:16/5;">
-                                    <img id="bePreviewTabletLogoImg" src="" alt="">
+                                    <img id="bePreviewTabletBadgeImg" src="" alt="">
+                                </div>
+                                <div class="be-preview-logo-overlay" id="bePreviewTabletOverlay">
+                                    <img id="bePreviewTabletOverlayImg" src="" alt="">
                                 </div>
                             </div>
                             <div class="be-preview-content">
@@ -5185,7 +5206,10 @@
                             <div class="be-preview-banner" style="height:70px;">
                                 <img id="bePreviewDesktopImg" src="" alt="">
                                 <div class="be-preview-badge" id="bePreviewDesktopBadge" style="width:28%;aspect-ratio:16/5;">
-                                    <img id="bePreviewDesktopLogoImg" src="" alt="">
+                                    <img id="bePreviewDesktopBadgeImg" src="" alt="">
+                                </div>
+                                <div class="be-preview-logo-overlay" id="bePreviewDesktopOverlay">
+                                    <img id="bePreviewDesktopOverlayImg" src="" alt="">
                                 </div>
                             </div>
                             <div class="be-preview-content">
@@ -10685,9 +10709,8 @@
             var logoPreview = document.getElementById('logoEditorPreview');
             if (!logoPreview) return;
             var isSquare = (overlayShape === 'square');
-            // Get actual parent width (overlay must be visible first)
             var parentW = logoPreview.parentElement ? logoPreview.parentElement.offsetWidth : 0;
-            if (!parentW) parentW = 600; // fallback
+            if (!parentW) parentW = 600;
 
             // Reset
             logoPreview.style.width = '';
@@ -10700,7 +10723,7 @@
             if (bannerLogoMode === 'badge') {
                 if (isSquare) {
                     w = Math.min(220, parentW * 0.35);
-                    h = w; // 1:1
+                    h = w;
                     logoPreview.style.borderRadius = '10px';
                 } else {
                     w = Math.min(520, parentW * 0.8);
@@ -10708,13 +10731,29 @@
                     logoPreview.style.borderRadius = '12px';
                 }
             } else if (bannerLogoMode === 'overlay' || bannerLogoMode === 'corner') {
-                w = Math.min(180, parentW * 0.3);
-                h = w; // always square for logos
-                logoPreview.style.borderRadius = '10px';
+                if (isSquare) {
+                    w = Math.min(200, parentW * 0.35);
+                    h = w; // 1:1
+                    logoPreview.style.borderRadius = '10px';
+                } else {
+                    w = Math.min(400, parentW * 0.6);
+                    h = w * 7 / 16; // 16:7 — matches real overlay/corner ratio
+                    logoPreview.style.borderRadius = '8px';
+                }
+            } else if (bannerLogoMode === 'glass') {
+                if (isSquare) {
+                    w = Math.min(250, parentW * 0.4);
+                    h = w;
+                    logoPreview.style.borderRadius = '10px';
+                } else {
+                    w = Math.min(500, parentW * 0.75);
+                    h = w * 0.6; // glass is wide, ~5:3
+                    logoPreview.style.borderRadius = '18px';
+                }
             } else {
-                // Glass — wide
-                w = Math.min(520, parentW * 0.8);
-                h = w * 5 / 16;
+                // None — generic fallback
+                w = Math.min(400, parentW * 0.6);
+                h = w * 7 / 16;
                 logoPreview.style.borderRadius = '10px';
             }
             logoPreview.style.width = w + 'px';
@@ -10820,14 +10859,15 @@
 
         // ═══ Unified Editor — Live Preview Updates ═══
         function beUpdatePreviews() {
-            // Update preview images from the crop areas
             var bannerSrc = bannerState.src || '';
             var logoSrc = bannerState.logoSrc || '';
             var adj = tempBannerAdj || { zoom: 100, x: 0, y: 0 };
             var lAdj = tempLogoAdj || { zoom: 100, x: 0, y: 0 };
+            var isSq = (overlayShape === 'square');
+            var mode = bannerLogoMode;
 
-            // Apply banner image + adjustments to all three preview banners
             ['Phone', 'Tablet', 'Desktop'].forEach(function(device) {
+                // Banner image
                 var img = document.getElementById('bePreview' + device + 'Img');
                 if (img) {
                     img.src = bannerSrc;
@@ -10835,56 +10875,90 @@
                     var scale = adj.zoom / 100;
                     img.style.transform = 'translate(' + adj.x + '%, ' + adj.y + '%) scale(' + scale + ')';
                 }
-                var logoImg = document.getElementById('bePreview' + device + 'LogoImg');
-                if (logoImg && logoSrc) {
-                    logoImg.src = logoSrc;
-                    var lScale = lAdj.zoom / 100;
-                    logoImg.style.transform = 'translate(' + lAdj.x + '%, ' + lAdj.y + '%) scale(' + lScale + ')';
-                }
-                // Show/hide badge based on logo mode
+
+                var bannerDiv = img ? img.parentElement : null;
+                var bH = bannerDiv ? bannerDiv.offsetHeight : 70;
+                var bW = bannerDiv ? bannerDiv.offsetWidth : 200;
+                var lScale = lAdj.zoom / 100;
+                var logoTransform = 'translate(' + lAdj.x + '%, ' + lAdj.y + '%) scale(' + lScale + ')';
+
+                // === BADGE element (floating below banner) ===
                 var badge = document.getElementById('bePreview' + device + 'Badge');
+                var badgeImg = document.getElementById('bePreview' + device + 'BadgeImg');
+                var showBadge = (mode === 'badge' && logoSrc);
                 if (badge) {
-                    var showBadge = (bannerLogoMode === 'badge' && logoSrc);
                     badge.style.display = showBadge ? '' : 'none';
                     if (showBadge) {
-                        // Compute badge size to match real CSS logic
-                        var bannerDiv = badge.parentElement;
-                        var bH = bannerDiv ? bannerDiv.offsetHeight : 70;
-                        var bW = bannerDiv ? bannerDiv.offsetWidth : 200;
+                        if (badgeImg) { badgeImg.src = logoSrc; badgeImg.style.transform = logoTransform; }
                         var isBadgeLarge = (badgeSize === 'large');
-                        var isSqBadge = (overlayShape === 'square');
-                        // Height percentages per device (from CSS breakpoints)
                         var hPct = device === 'Phone' ? (isBadgeLarge ? 0.40 : 0.28) :
                                    device === 'Tablet' ? (isBadgeLarge ? 0.45 : 0.30) :
                                    (isBadgeLarge ? 0.50 : 0.34);
                         var badgeH = bH * hPct;
-                        // Square badge: 1:1, Rectangle badge: 16:5
-                        var aspectW = isSqBadge ? 1 : (16 / 5);
+                        var aspectW = isSq ? 1 : (16 / 5);
                         var badgeW = badgeH * aspectW;
                         var maxWPct = isBadgeLarge ? 0.58 : 0.42;
-                        var finalW = Math.min(badgeW, bW * maxWPct);
-                        badge.style.width = finalW + 'px';
-                        badge.style.aspectRatio = isSqBadge ? '1 / 1' : '16 / 5';
-                        // Apply badge drop position (reduced % for miniature preview scale)
-                        var isExtended = (badgeDrop === 'extended');
-                        badge.style.transform = isExtended
-                            ? 'translate(-50%, 45%)'
-                            : 'translate(-50%, 20%)';
+                        badge.style.width = Math.min(badgeW, bW * maxWPct) + 'px';
+                        badge.style.aspectRatio = isSq ? '1 / 1' : '16 / 5';
+                        var isExt = (badgeDrop === 'extended');
+                        badge.style.transform = isExt ? 'translate(-50%, 45%)' : 'translate(-50%, 20%)';
                     }
                 }
-                // Adjust content padding to account for badge drop (scaled to preview size)
+
+                // === OVERLAY element (logo ON the banner) ===
+                var overlay = document.getElementById('bePreview' + device + 'Overlay');
+                var overlayImg = document.getElementById('bePreview' + device + 'OverlayImg');
+                var showOverlay = ((mode === 'overlay' || mode === 'corner' || mode === 'glass') && logoSrc);
+                if (overlay) {
+                    overlay.style.display = showOverlay ? '' : 'none';
+                    if (showOverlay && overlayImg) {
+                        overlayImg.src = logoSrc;
+                        overlayImg.style.transform = logoTransform;
+                        // Position & size based on mode
+                        if (mode === 'glass') {
+                            // Centered, large
+                            overlay.style.top = '50%'; overlay.style.left = '50%'; overlay.style.bottom = '';
+                            overlay.style.transform = 'translate(-50%, -50%)';
+                            overlay.style.width = isSq ? (bH * 0.7) + 'px' : '65%';
+                            overlay.style.height = isSq ? (bH * 0.7) + 'px' : '70%';
+                            overlay.style.borderRadius = '8px';
+                            overlay.style.background = 'rgba(255,255,255,0.12)';
+                        } else if (mode === 'corner') {
+                            // Small, upper-left
+                            overlay.style.top = '3px'; overlay.style.left = '3px'; overlay.style.bottom = '';
+                            overlay.style.transform = '';
+                            var cH = bH * (isSq ? 0.50 : 0.35);
+                            overlay.style.height = cH + 'px';
+                            overlay.style.width = isSq ? cH + 'px' : (cH * 16/7) + 'px';
+                            overlay.style.borderRadius = '3px';
+                            overlay.style.background = '';
+                        } else {
+                            // Overlay — lower-left
+                            overlay.style.top = ''; overlay.style.left = '3px'; overlay.style.bottom = '3px';
+                            overlay.style.transform = '';
+                            var oH = bH * (isSq ? 0.65 : 0.40);
+                            overlay.style.height = oH + 'px';
+                            overlay.style.width = isSq ? oH + 'px' : (oH * 16/7) + 'px';
+                            overlay.style.borderRadius = '4px';
+                            overlay.style.background = '';
+                        }
+                    }
+                }
+
+                // Content padding
                 var content = document.getElementById('bePreview' + device);
                 if (content) {
                     var contentDiv = content.querySelector('.be-preview-content');
-                    if (contentDiv && showBadge) {
-                        var isExt = (badgeDrop === 'extended');
-                        var isLrg = (badgeSize === 'large');
-                        // Scale padding relative to preview width (phone~100, tablet~200, desktop~300+)
-                        var scale = device === 'Phone' ? 0.4 : device === 'Tablet' ? 0.6 : 1.0;
-                        var basePad = isExt ? (isLrg ? 22 : 18) : (isLrg ? 14 : 8);
-                        contentDiv.style.paddingTop = Math.round(basePad * scale) + 'px';
-                    } else if (contentDiv) {
-                        contentDiv.style.paddingTop = '8px';
+                    if (contentDiv) {
+                        if (showBadge) {
+                            var padScale = device === 'Phone' ? 0.4 : device === 'Tablet' ? 0.6 : 1.0;
+                            var isExt2 = (badgeDrop === 'extended');
+                            var isLrg2 = (badgeSize === 'large');
+                            var basePad = isExt2 ? (isLrg2 ? 22 : 18) : (isLrg2 ? 14 : 8);
+                            contentDiv.style.paddingTop = Math.round(basePad * padScale) + 'px';
+                        } else {
+                            contentDiv.style.paddingTop = '8px';
+                        }
                     }
                 }
             });
