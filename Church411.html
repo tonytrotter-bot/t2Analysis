@@ -10687,40 +10687,39 @@
             var logoPreview = document.getElementById('logoEditorPreview');
             if (!logoPreview) return;
             var isSquare = (overlayShape === 'square');
-            // Get parent width to compute actual pixel dimensions
-            var parentW = logoPreview.parentElement ? logoPreview.parentElement.offsetWidth : 600;
 
-            // Reset
+            // Reset — use CSS-only values so it works even before overlay is visible
             logoPreview.style.width = '';
+            logoPreview.style.maxWidth = '';
             logoPreview.style.height = '0';
             logoPreview.style.paddingBottom = '0';
             logoPreview.style.margin = '0 auto';
 
             if (bannerLogoMode === 'badge') {
                 if (isSquare) {
-                    // Square badge — 1:1, max 220px
-                    var sqSize = Math.min(220, parentW * 0.4);
-                    logoPreview.style.width = sqSize + 'px';
-                    logoPreview.style.paddingBottom = sqSize + 'px';
+                    // Square badge — 1:1, 30% of parent (= square because pb% is relative to parent too)
+                    logoPreview.style.width = '30%';
+                    logoPreview.style.maxWidth = '220px';
+                    logoPreview.style.paddingBottom = '30%';
                     logoPreview.style.borderRadius = '10px';
                 } else {
-                    // Rectangle badge 16:5
-                    var rW = Math.min(520, parentW * 0.8);
-                    logoPreview.style.width = rW + 'px';
-                    logoPreview.style.paddingBottom = (rW * 5 / 16) + 'px';
+                    // Rectangle badge 16:5 — 80% width, pb = 80% * 5/16 = 25%
+                    logoPreview.style.width = '80%';
+                    logoPreview.style.maxWidth = '520px';
+                    logoPreview.style.paddingBottom = '25%';
                     logoPreview.style.borderRadius = '12px';
                 }
             } else if (bannerLogoMode === 'overlay' || bannerLogoMode === 'corner') {
-                // Overlay/corner — always square crop (no circles for logos)
-                var oSize = Math.min(180, parentW * 0.35);
-                logoPreview.style.width = oSize + 'px';
-                logoPreview.style.paddingBottom = oSize + 'px';
+                // Overlay/corner — square crop, 25% of parent
+                logoPreview.style.width = '25%';
+                logoPreview.style.maxWidth = '180px';
+                logoPreview.style.paddingBottom = '25%';
                 logoPreview.style.borderRadius = '10px';
             } else {
-                // Glass — wide
-                var gW = Math.min(520, parentW * 0.8);
-                logoPreview.style.width = gW + 'px';
-                logoPreview.style.paddingBottom = (gW * 5 / 16) + 'px';
+                // Glass — wide rectangle
+                logoPreview.style.width = '80%';
+                logoPreview.style.maxWidth = '520px';
+                logoPreview.style.paddingBottom = '25%';
                 logoPreview.style.borderRadius = '10px';
             }
         }
