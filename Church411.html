@@ -347,7 +347,7 @@
             display: none;
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.88);
+            background: #111;
             z-index: 100;
             flex-direction: column;
             overflow-y: auto;
@@ -563,10 +563,11 @@
             position: relative;
             width: 100%;
             border-radius: 9px 9px 0 0;
-            overflow: hidden;
+            overflow: visible;
         }
         .be-preview-banner img {
             width: 100%;
+            height: 100%;
             display: block;
             object-fit: cover;
         }
@@ -578,6 +579,7 @@
             border-radius: 8px;
             overflow: hidden;
             box-shadow: 0 1px 6px rgba(0,0,0,0.2);
+            z-index: 2;
         }
         .be-preview-badge img {
             width: 100%;
@@ -5152,9 +5154,9 @@
                         <div class="be-preview-frame" id="bePreviewPhone">
                             <div class="be-preview-banner" style="height:55px;">
                                 <img id="bePreviewPhoneImg" src="" alt="">
-                            </div>
-                            <div class="be-preview-badge" id="bePreviewPhoneBadge" style="width:55%;aspect-ratio:16/5;">
-                                <img id="bePreviewPhoneLogoImg" src="" alt="">
+                                <div class="be-preview-badge" id="bePreviewPhoneBadge" style="width:55%;aspect-ratio:16/5;">
+                                    <img id="bePreviewPhoneLogoImg" src="" alt="">
+                                </div>
                             </div>
                             <div class="be-preview-content">
                                 <div class="be-preview-pill">🙏 Prayers</div>
@@ -5166,9 +5168,9 @@
                         <div class="be-preview-frame" id="bePreviewTablet">
                             <div class="be-preview-banner" style="height:65px;">
                                 <img id="bePreviewTabletImg" src="" alt="">
-                            </div>
-                            <div class="be-preview-badge" id="bePreviewTabletBadge" style="width:38%;aspect-ratio:16/5;">
-                                <img id="bePreviewTabletLogoImg" src="" alt="">
+                                <div class="be-preview-badge" id="bePreviewTabletBadge" style="width:38%;aspect-ratio:16/5;">
+                                    <img id="bePreviewTabletLogoImg" src="" alt="">
+                                </div>
                             </div>
                             <div class="be-preview-content">
                                 <div class="be-preview-pill">🙏 Prayers 9</div>
@@ -5181,9 +5183,9 @@
                         <div class="be-preview-frame" id="bePreviewDesktop">
                             <div class="be-preview-banner" style="height:70px;">
                                 <img id="bePreviewDesktopImg" src="" alt="">
-                            </div>
-                            <div class="be-preview-badge" id="bePreviewDesktopBadge" style="width:28%;aspect-ratio:16/5;">
-                                <img id="bePreviewDesktopLogoImg" src="" alt="">
+                                <div class="be-preview-badge" id="bePreviewDesktopBadge" style="width:28%;aspect-ratio:16/5;">
+                                    <img id="bePreviewDesktopLogoImg" src="" alt="">
+                                </div>
                             </div>
                             <div class="be-preview-content">
                                 <div class="be-preview-pill">🙏 Prayers 9</div>
@@ -10625,20 +10627,20 @@
                 document.getElementById('fileInput').click();
                 return;
             }
-            // Match editor preview to actual banner aspect ratio
-            var bannerEl = document.getElementById('bannerWrap');
-            var previewWrap = document.getElementById('bannerEditorPreview');
-            if (bannerEl && previewWrap) {
-                var bw = bannerEl.offsetWidth || 900;
-                var bh = bannerEl.offsetHeight || 200;
-                var ratio = (bh / bw) * 100;
-                previewWrap.style.paddingBottom = Math.min(ratio, 45) + '%';
-            }
-            // Match logo editor preview to shape
+            // Match editor preview to actual banner aspect ratio (Compact vs Showcase)
+            beUpdateCropRatio();
+            // Match logo editor preview to shape/mode
             var logoPreview = document.getElementById('logoEditorPreview');
             if (logoPreview) {
-                var isSquare = (overlayShape === 'square' && (bannerLogoMode === 'overlay' || bannerLogoMode === 'corner'));
-                logoPreview.style.paddingBottom = isSquare ? 'min(25vw, 180px)' : 'min(18vw, 120px)';
+                if (bannerLogoMode === 'badge') {
+                    // Match badge aspect ratio: 16:5 → height = width * 5/16 = 31.25%
+                    logoPreview.style.paddingBottom = '31.25%';
+                    logoPreview.style.borderRadius = '12px';
+                } else {
+                    var isSquare = (overlayShape === 'square' && (bannerLogoMode === 'overlay' || bannerLogoMode === 'corner'));
+                    logoPreview.style.paddingBottom = isSquare ? 'min(25vw, 180px)' : 'min(18vw, 120px)';
+                    logoPreview.style.borderRadius = isSquare ? '10px' : '50%';
+                }
             }
             tempBannerAdj = { ...bannerState.adj };
             document.getElementById('bannerEditorImg').src = bannerState.src;
@@ -10690,6 +10692,26 @@
             if (panelId) document.getElementById(panelId).classList.add('active');
         }
 
+        // ═══ Unified Editor — Update crop area & previews to match banner size ═══
+        function beUpdateCropRatio() {
+            var previewWrap = document.getElementById('bannerEditorPreview');
+            if (!previewWrap) return;
+            // Compact: 200/900 ≈ 22.2%, Showcase: 320/900 ≈ 35.6%
+            var ratio = (bannerSize === 'showcase') ? 35.6 : 22.2;
+            previewWrap.style.paddingBottom = ratio + '%';
+            // Update the three device preview banner heights proportionally
+            var heights = (bannerSize === 'showcase')
+                ? { Phone: 70, Tablet: 85, Desktop: 95 }
+                : { Phone: 55, Tablet: 65, Desktop: 70 };
+            ['Phone', 'Tablet', 'Desktop'].forEach(function(d) {
+                var frame = document.getElementById('bePreview' + d);
+                if (frame) {
+                    var banner = frame.querySelector('.be-preview-banner');
+                    if (banner) banner.style.height = heights[d] + 'px';
+                }
+            });
+        }
+
         // ═══ Unified Editor — Sync zoom sliders (sidebar ↔ crop area) ═══
         function beSyncBannerZoom(val) {
             val = parseInt(val);
@@ -10720,6 +10742,7 @@
             updateBannerSize(val);
             var sel = document.getElementById('bannerSizeSelect');
             if (sel) sel.value = val;
+            beUpdateCropRatio();
             beUpdatePreviews();
         }
         function beUpdateShape(val) {
@@ -10787,7 +10810,15 @@
                 // Show/hide badge based on logo mode
                 var badge = document.getElementById('bePreview' + device + 'Badge');
                 if (badge) {
-                    badge.style.display = (bannerLogoMode !== 'none' && logoSrc) ? '' : 'none';
+                    var showBadge = (bannerLogoMode === 'badge' && logoSrc);
+                    badge.style.display = showBadge ? '' : 'none';
+                    if (showBadge) {
+                        // Apply badge size styling
+                        var isBadgeLarge = (badgeSize === 'large');
+                        badge.style.width = device === 'Phone' ? (isBadgeLarge ? '70%' : '55%') :
+                                            device === 'Tablet' ? (isBadgeLarge ? '45%' : '38%') :
+                                            (isBadgeLarge ? '35%' : '28%');
+                    }
                 }
             });
         }
