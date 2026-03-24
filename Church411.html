@@ -575,7 +575,7 @@
             position: absolute;
             bottom: 0;
             left: 50%;
-            transform: translate(-50%, 35%);
+            transform: translate(-50%, 20%);
             border-radius: 8px;
             overflow: hidden;
             box-shadow: 0 1px 6px rgba(0,0,0,0.2);
@@ -10630,18 +10630,7 @@
             // Match editor preview to actual banner aspect ratio (Compact vs Showcase)
             beUpdateCropRatio();
             // Match logo editor preview to shape/mode
-            var logoPreview = document.getElementById('logoEditorPreview');
-            if (logoPreview) {
-                if (bannerLogoMode === 'badge') {
-                    // Match badge aspect ratio: 16:5 → height = width * 5/16 = 31.25%
-                    logoPreview.style.paddingBottom = '31.25%';
-                    logoPreview.style.borderRadius = '12px';
-                } else {
-                    var isSquare = (overlayShape === 'square' && (bannerLogoMode === 'overlay' || bannerLogoMode === 'corner'));
-                    logoPreview.style.paddingBottom = isSquare ? 'min(25vw, 180px)' : 'min(18vw, 120px)';
-                    logoPreview.style.borderRadius = isSquare ? '10px' : '50%';
-                }
-            }
+            beUpdateLogoCropShape();
             tempBannerAdj = { ...bannerState.adj };
             document.getElementById('bannerEditorImg').src = bannerState.src;
             document.getElementById('bannerEditorZoom').value = tempBannerAdj.zoom;
@@ -10692,6 +10681,37 @@
             if (panelId) document.getElementById(panelId).classList.add('active');
         }
 
+        // ═══ Unified Editor — Update logo crop area to match shape/mode ═══
+        function beUpdateLogoCropShape() {
+            var logoPreview = document.getElementById('logoEditorPreview');
+            if (!logoPreview) return;
+            var isSquare = (overlayShape === 'square');
+            if (bannerLogoMode === 'badge') {
+                if (isSquare) {
+                    // Square badge: 1:1 aspect ratio
+                    logoPreview.style.paddingBottom = '100%';
+                    logoPreview.style.borderRadius = '10px';
+                } else {
+                    // Rectangle badge: 16:5 aspect ratio
+                    logoPreview.style.paddingBottom = '31.25%';
+                    logoPreview.style.borderRadius = '12px';
+                }
+            } else if (bannerLogoMode === 'overlay' || bannerLogoMode === 'corner') {
+                if (isSquare) {
+                    logoPreview.style.paddingBottom = '100%';
+                    logoPreview.style.borderRadius = '10px';
+                } else {
+                    // Circle
+                    logoPreview.style.paddingBottom = '100%';
+                    logoPreview.style.borderRadius = '50%';
+                }
+            } else {
+                // Glass or none — generic
+                logoPreview.style.paddingBottom = 'min(18vw, 120px)';
+                logoPreview.style.borderRadius = '10px';
+            }
+        }
+
         // ═══ Unified Editor — Update crop area & previews to match banner size ═══
         function beUpdateCropRatio() {
             var previewWrap = document.getElementById('bannerEditorPreview');
@@ -10736,6 +10756,7 @@
             var sel = document.getElementById('bannerLogoModeSelect');
             if (sel) sel.value = val;
             beSyncSettingsUI();
+            beUpdateLogoCropShape();
             beUpdatePreviews();
         }
         function beUpdateBannerSize(val) {
@@ -10749,6 +10770,7 @@
             updateOverlayShape(val);
             var sel = document.getElementById('overlayShapeSelect');
             if (sel) sel.value = val;
+            beUpdateLogoCropShape();
             beUpdatePreviews();
         }
         function beUpdateBadgeDrop(val) {
@@ -10813,41 +10835,44 @@
                     var showBadge = (bannerLogoMode === 'badge' && logoSrc);
                     badge.style.display = showBadge ? '' : 'none';
                     if (showBadge) {
-                        // Compute badge width to match real CSS logic:
-                        // Real: height = X% of banner, width = height * 16/5, capped by max-width
+                        // Compute badge size to match real CSS logic
                         var bannerDiv = badge.parentElement;
                         var bH = bannerDiv ? bannerDiv.offsetHeight : 70;
                         var bW = bannerDiv ? bannerDiv.offsetWidth : 200;
                         var isBadgeLarge = (badgeSize === 'large');
+                        var isSqBadge = (overlayShape === 'square');
                         // Height percentages per device (from CSS breakpoints)
                         var hPct = device === 'Phone' ? (isBadgeLarge ? 0.40 : 0.28) :
                                    device === 'Tablet' ? (isBadgeLarge ? 0.45 : 0.30) :
                                    (isBadgeLarge ? 0.50 : 0.34);
-                        // Showcase uses same percentages but taller banner, so badge is bigger
                         var badgeH = bH * hPct;
-                        var badgeW = badgeH * (16 / 5);
-                        // Cap to max-width ratio (real: 380px/520px on 900px ≈ 42%/58%)
+                        // Square badge: 1:1, Rectangle badge: 16:5
+                        var aspectW = isSqBadge ? 1 : (16 / 5);
+                        var badgeW = badgeH * aspectW;
                         var maxWPct = isBadgeLarge ? 0.58 : 0.42;
                         var finalW = Math.min(badgeW, bW * maxWPct);
                         badge.style.width = finalW + 'px';
-                        // Apply badge drop position
+                        badge.style.aspectRatio = isSqBadge ? '1 / 1' : '16 / 5';
+                        // Apply badge drop position (reduced % for miniature preview scale)
                         var isExtended = (badgeDrop === 'extended');
                         badge.style.transform = isExtended
-                            ? 'translate(-50%, 65%)'
-                            : 'translate(-50%, 35%)';
+                            ? 'translate(-50%, 45%)'
+                            : 'translate(-50%, 20%)';
                     }
                 }
-                // Adjust content padding to account for badge drop
+                // Adjust content padding to account for badge drop (scaled to preview size)
                 var content = document.getElementById('bePreview' + device);
                 if (content) {
                     var contentDiv = content.querySelector('.be-preview-content');
                     if (contentDiv && showBadge) {
                         var isExt = (badgeDrop === 'extended');
                         var isLrg = (badgeSize === 'large');
-                        var topPad = isExt ? (isLrg ? 35 : 28) : (isLrg ? 22 : 16);
-                        contentDiv.style.paddingTop = topPad + 'px';
+                        // Scale padding relative to preview width (phone~100, tablet~200, desktop~300+)
+                        var scale = device === 'Phone' ? 0.4 : device === 'Tablet' ? 0.6 : 1.0;
+                        var basePad = isExt ? (isLrg ? 22 : 18) : (isLrg ? 14 : 8);
+                        contentDiv.style.paddingTop = Math.round(basePad * scale) + 'px';
                     } else if (contentDiv) {
-                        contentDiv.style.paddingTop = '10px';
+                        contentDiv.style.paddingTop = '8px';
                     }
                 }
             });
