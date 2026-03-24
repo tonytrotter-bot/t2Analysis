@@ -10711,10 +10711,11 @@
                     logoPreview.style.borderRadius = '12px';
                 }
             } else if (bannerLogoMode === 'overlay' || bannerLogoMode === 'corner') {
+                // Overlay/corner — always square crop (no circles for logos)
                 var oSize = Math.min(180, parentW * 0.35);
                 logoPreview.style.width = oSize + 'px';
                 logoPreview.style.paddingBottom = oSize + 'px';
-                logoPreview.style.borderRadius = isSquare ? '10px' : '50%';
+                logoPreview.style.borderRadius = '10px';
             } else {
                 // Glass — wide
                 var gW = Math.min(520, parentW * 0.8);
@@ -10816,6 +10817,9 @@
             if (dropRow) dropRow.style.display = isBadge ? '' : 'none';
             var sizeRow = document.getElementById('beBadgeSizeRow');
             if (sizeRow) sizeRow.style.display = isBadge ? '' : 'none';
+            // Show/hide shape row (not relevant for 'none' or 'glass' modes)
+            var shapeRow = ss ? ss.parentElement : null;
+            if (shapeRow) shapeRow.style.display = (bannerLogoMode === 'none' || bannerLogoMode === 'glass') ? 'none' : '';
         }
 
         // ═══ Unified Editor — Live Preview Updates ═══
