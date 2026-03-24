@@ -588,22 +588,23 @@
             display: block;
         }
         .be-preview-content {
-            padding: 20px 8px 10px;
+            padding: 8px 4px 6px;
             text-align: center;
         }
         .be-preview-pill {
             display: inline-block;
             background: #5a3a10;
             color: #e8c44a;
-            padding: 3px 10px;
-            border-radius: 12px;
-            font-size: 0.55em;
+            padding: 1px 5px;
+            border-radius: 6px;
+            font-size: 0.32em;
             font-weight: 600;
+            line-height: 1.4;
         }
         .be-preview-members {
-            font-size: 0.5em;
+            font-size: 0.28em;
             color: #5a7a9a;
-            margin-top: 3px;
+            margin-top: 1px;
         }
 
         /* ── Bottom action bar ── */
@@ -10686,28 +10687,42 @@
             var logoPreview = document.getElementById('logoEditorPreview');
             if (!logoPreview) return;
             var isSquare = (overlayShape === 'square');
+            // Reset all sizing — use padding-bottom trick since children are position:absolute
+            logoPreview.style.width = '';
+            logoPreview.style.maxWidth = '';
+            logoPreview.style.height = '0';
+            logoPreview.style.paddingBottom = '0';
+            logoPreview.style.aspectRatio = '';
+            logoPreview.style.margin = '0 auto';
+
             if (bannerLogoMode === 'badge') {
                 if (isSquare) {
-                    // Square badge: 1:1 aspect ratio
+                    // Square badge — constrained 1:1, padding-bottom % is relative to width
+                    logoPreview.style.width = 'min(220px, 40%)';
                     logoPreview.style.paddingBottom = '100%';
                     logoPreview.style.borderRadius = '10px';
                 } else {
-                    // Rectangle badge: 16:5 aspect ratio
+                    // Rectangle badge 16:5 — capped width, 5/16 = 31.25%
+                    logoPreview.style.width = 'min(520px, 80%)';
                     logoPreview.style.paddingBottom = '31.25%';
                     logoPreview.style.borderRadius = '12px';
                 }
             } else if (bannerLogoMode === 'overlay' || bannerLogoMode === 'corner') {
                 if (isSquare) {
+                    // Square overlay — constrained 1:1
+                    logoPreview.style.width = 'min(180px, 35%)';
                     logoPreview.style.paddingBottom = '100%';
                     logoPreview.style.borderRadius = '10px';
                 } else {
-                    // Circle
+                    // Circle overlay — constrained circle
+                    logoPreview.style.width = 'min(180px, 35%)';
                     logoPreview.style.paddingBottom = '100%';
                     logoPreview.style.borderRadius = '50%';
                 }
             } else {
-                // Glass or none — generic
-                logoPreview.style.paddingBottom = 'min(18vw, 120px)';
+                // Glass — wide banner-like
+                logoPreview.style.width = 'min(520px, 80%)';
+                logoPreview.style.paddingBottom = '31.25%';
                 logoPreview.style.borderRadius = '10px';
             }
         }
