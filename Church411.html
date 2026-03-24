@@ -342,38 +342,64 @@
         .banner-wrap[data-banner-size="showcase"][data-logo-mode="glass"][data-overlay-shape="square"] .banner-logo { height: 70%; }
 
         /* ── Banner Editor Overlay ── */
+        /* ═══ Banner Editor — Concept C Unified Panel (desktop/tablet) + Concept B Inline (phone) ═══ */
         .banner-editor-overlay {
             display: none;
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.88);
             z-index: 100;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            overflow-y: auto;
             animation: fadeIn 0.2s ease;
         }
         .banner-editor-overlay.show { display: flex; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .editor-title {
-            color: #fff;
-            font-size: 1.1em;
-            margin-bottom: 16px;
-            text-align: center;
+
+        /* ── Unified layout container ── */
+        .be-unified {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            padding: 16px 20px;
+            max-width: 960px;
+            margin: 0 auto;
+            width: 100%;
+            flex: 1;
         }
-        .editor-title small {
-            display: block;
-            font-size: 0.72em;
-            color: rgba(255,255,255,0.5);
-            font-style: italic;
-            margin-top: 4px;
+        .be-top-row {
+            display: flex;
+            gap: 16px;
+            flex: 1;
+            min-height: 0;
+        }
+        /* ── Crop area (left) ── */
+        .be-crop-col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+        .be-crop-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+        .be-crop-label span:first-child {
+            font-size: 0.78em;
+            color: #e8c44a;
+            font-weight: 600;
+        }
+        .be-crop-label span:last-child {
+            font-size: 0.62em;
+            color: rgba(255,255,255,0.4);
         }
         .editor-preview-wrap {
             position: relative;
-            width: 90vw;
-            max-width: 700px;
+            width: 100%;
             height: 0;
-            padding-bottom: min(30vw, 230px);
+            padding-bottom: min(30vw, 220px);
             overflow: hidden;
             border-radius: 10px;
             border: 2px solid rgba(255,255,255,0.25);
@@ -395,32 +421,210 @@
         .editor-zoom-row {
             display: flex;
             align-items: center;
-            gap: 12px;
-            margin-top: 16px;
-            color: rgba(255,255,255,0.6);
-            font-size: 0.82em;
+            gap: 10px;
+            margin-top: 8px;
+            color: rgba(255,255,255,0.5);
+            font-size: 0.78em;
         }
         .editor-zoom-row input[type="range"] {
-            width: 200px;
-            accent-color: #2a5a8a;
+            flex: 1;
+            accent-color: #e8c44a;
         }
-        .zoom-label { min-width: 44px; text-align: center; color: #fff; }
-        .editor-actions {
+        .zoom-label { min-width: 40px; text-align: right; color: #fff; font-family: monospace; }
+        /* ── Controls panel (right) ── */
+        .be-ctrl-col {
+            width: 260px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        .be-ctrl-tabs {
+            display: flex;
+            gap: 3px;
+            margin-bottom: 10px;
+        }
+        .be-ctrl-tab {
+            flex: 1;
+            padding: 7px 0;
+            text-align: center;
+            font-size: 0.72em;
+            font-weight: 600;
+            color: #6a6a8a;
+            background: rgba(255,255,255,0.04);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.15s;
+            border: none;
+            font-family: inherit;
+        }
+        .be-ctrl-tab:hover { color: #aaa; }
+        .be-ctrl-tab.active {
+            background: rgba(232,196,74,0.15);
+            color: #e8c44a;
+        }
+        .be-tab-panel { display: none; }
+        .be-tab-panel.active { display: block; }
+        .be-ctrl-section h4 {
+            font-size: 0.7em;
+            color: #e8c44a;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
+            padding-bottom: 4px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+        .be-ctrl-row {
+            margin-bottom: 8px;
+        }
+        .be-ctrl-row label {
+            display: block;
+            font-size: 0.7em;
+            color: #8a8ab0;
+            margin-bottom: 3px;
+        }
+        .be-ctrl-row input[type="range"] {
+            width: 100%;
+            accent-color: #e8c44a;
+        }
+        .be-ctrl-row select {
+            width: 100%;
+            padding: 5px 8px;
+            border-radius: 5px;
+            background: #2a2a3a;
+            border: 1px solid #3a3a5a;
+            color: #ccc;
+            font-size: 0.82em;
+            font-family: inherit;
+        }
+        .be-btn-row {
+            display: flex;
+            gap: 6px;
+            margin-top: 8px;
+        }
+        .be-btn {
+            flex: 1;
+            padding: 7px 6px;
+            border-radius: 6px;
+            font-size: 0.72em;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            transition: filter 0.15s;
+        }
+        .be-btn:hover { filter: brightness(1.15); }
+        .be-btn-photo { background: #3a3a5a; color: #ccc; }
+        .be-btn-logo { background: #2a5a8a; color: #e8c44a; }
+        .be-btn-remove { background: #6a2a2a; color: #e8a0a0; }
+
+        /* ── Multi-device preview strip (bottom) ── */
+        .be-preview-strip {
+            flex-shrink: 0;
+        }
+        .be-preview-strip-label {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .be-preview-strip-label span:first-child {
+            font-size: 0.72em;
+            color: #e8c44a;
+            font-weight: 600;
+        }
+        .be-preview-strip-label span:last-child {
+            font-size: 0.6em;
+            color: #6a6a8a;
+        }
+        .be-previews {
+            display: flex;
+            gap: 14px;
+            justify-content: center;
+            align-items: flex-start;
+        }
+        .be-preview-device {
+            flex-shrink: 0;
+            text-align: center;
+        }
+        .be-preview-device-label {
+            font-size: 0.6em;
+            color: #6a6a8a;
+            margin-bottom: 4px;
+        }
+        .be-preview-frame {
+            background: #e8eef4;
+            border-radius: 10px;
+            overflow: visible;
+            border: 1px solid #3a3a5a;
+            position: relative;
+        }
+        .be-preview-banner {
+            position: relative;
+            width: 100%;
+            border-radius: 9px 9px 0 0;
+            overflow: hidden;
+        }
+        .be-preview-banner img {
+            width: 100%;
+            display: block;
+            object-fit: cover;
+        }
+        .be-preview-badge {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translate(-50%, 35%);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.2);
+        }
+        .be-preview-badge img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .be-preview-content {
+            padding: 20px 8px 10px;
+            text-align: center;
+        }
+        .be-preview-pill {
+            display: inline-block;
+            background: #5a3a10;
+            color: #e8c44a;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.55em;
+            font-weight: 600;
+        }
+        .be-preview-members {
+            font-size: 0.5em;
+            color: #5a7a9a;
+            margin-top: 3px;
+        }
+
+        /* ── Bottom action bar ── */
+        .be-action-bar {
             display: flex;
             gap: 10px;
-            margin-top: 20px;
+            justify-content: center;
+            padding: 12px 20px 16px;
+            background: rgba(0,0,0,0.3);
+            flex-shrink: 0;
         }
-        .editor-actions button {
+        .editor-actions { display: flex; gap: 10px; } /* legacy compat */
+        .editor-actions button, .be-action-bar button {
             font-family: inherit;
-            font-size: 0.9em;
+            font-size: 0.85em;
             padding: 9px 24px;
             border-radius: 6px;
             cursor: pointer;
         }
-        .btn-editor-save { background: #2a5a8a; color: #fff; border: 1px solid #2a5a8a; }
-        .btn-editor-save:hover { background: #3a6a9a; }
-        .btn-editor-cancel { background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.3); }
-        .btn-editor-cancel:hover { background: rgba(255,255,255,0.25); }
+        .btn-editor-save { background: #2a7a4a; color: #fff; border: 1px solid #2a7a4a; }
+        .btn-editor-save:hover { background: #3a8a5a; }
+        .btn-editor-cancel { background: rgba(255,255,255,0.12); color: #fff; border: 1px solid rgba(255,255,255,0.25); }
+        .btn-editor-cancel:hover { background: rgba(255,255,255,0.2); }
         .btn-editor-change {
             background: rgba(255,255,255,0.1);
             color: rgba(255,255,255,0.7);
@@ -3646,6 +3850,12 @@
             .edit-field { min-width: 0; }
             .edit-actions { flex-direction: column; }
             .edit-actions button { width: 100%; text-align: center; }
+            /* Editor: stack on tablet */
+            .be-top-row { flex-direction: column; }
+            .be-ctrl-col { width: 100%; }
+            .be-previews { gap: 10px; }
+            .be-preview-device:first-child { width: 80px; }
+            .be-preview-device:nth-child(2) { width: 160px; }
         }
 
         @media (max-width: 500px) {
@@ -3664,6 +3874,14 @@
             .banner-wrap[data-logo-mode="overlay"][data-overlay-shape="square"] .banner-logo { max-height: 65%; }
             .banner-wrap[data-logo-mode="badge"][data-overlay-shape="square"] .banner-logo { max-height: 70%; }
             .banner-wrap[data-logo-mode="corner"][data-overlay-shape="square"] .banner-logo { max-height: 34px; }
+            /* Phone editor: hide preview strip, slim down controls */
+            .be-unified { padding: 10px 12px; gap: 10px; }
+            .be-top-row { flex-direction: column; gap: 10px; }
+            .be-ctrl-col { width: 100%; }
+            .be-preview-strip { display: none; }
+            .be-action-bar { padding: 10px 12px; }
+            .be-action-bar button { padding: 8px 16px; font-size: 0.8em; }
+            .editor-preview-wrap { padding-bottom: min(40vw, 160px); }
             .card-grid { grid-template-columns: repeat(2, 1fr); }
             .photo-frame { width: 95px; height: 95px; border-width: 2px; margin: 0 auto 4px; }
             .person-name { font-size: 0.8em; }
@@ -4809,34 +5027,175 @@
 
     <!-- Banner Editor Overlay -->
     <div class="banner-editor-overlay" id="bannerEditorOverlay">
-        <div class="editor-title">
-            Adjust Banner Photo
-            <small>Drag to reposition &bull; Scroll or use slider to zoom</small>
-        </div>
-        <div class="editor-preview-wrap" id="bannerEditorPreview">
-            <img class="editor-preview-img" id="bannerEditorImg" src="" alt="">
-        </div>
-        <div class="editor-zoom-row">
-            <span>Zoom</span>
-            <input type="range" id="bannerEditorZoom" min="100" max="300" value="100" step="5">
-            <span class="zoom-label" id="bannerEditorZoomLabel">100%</span>
-        </div>
-        <!-- Logo editor section (shown when logo loaded) -->
-        <div id="logoEditorSection" style="display:none;">
-            <div style="color:#e8c44a;font-size:0.85em;font-weight:600;margin:10px 0 6px;text-align:center;">Logo Overlay — Drag to reposition</div>
-            <div class="editor-preview-wrap" id="logoEditorPreview" style="padding-bottom:min(20vw,140px);">
-                <img class="editor-preview-img" id="logoEditorImg" src="" alt="">
+        <div class="be-unified">
+            <!-- Top row: crop + controls -->
+            <div class="be-top-row">
+                <!-- LEFT: Crop areas -->
+                <div class="be-crop-col">
+                    <div class="be-crop-label">
+                        <span>Banner Photo</span>
+                        <span>Drag to reposition &bull; Scroll to zoom</span>
+                    </div>
+                    <div class="editor-preview-wrap" id="bannerEditorPreview">
+                        <img class="editor-preview-img" id="bannerEditorImg" src="" alt="">
+                    </div>
+                    <div class="editor-zoom-row">
+                        <span>Zoom</span>
+                        <input type="range" id="bannerEditorZoom" min="100" max="300" value="100" step="5">
+                        <span class="zoom-label" id="bannerEditorZoomLabel">100%</span>
+                    </div>
+                    <!-- Logo crop (shown when logo loaded) -->
+                    <div id="logoEditorSection" style="display:none;margin-top:10px;">
+                        <div class="be-crop-label">
+                            <span>Logo Image</span>
+                            <span>Drag to reposition within frame</span>
+                        </div>
+                        <div class="editor-preview-wrap" id="logoEditorPreview" style="padding-bottom:min(16vw,100px);">
+                            <img class="editor-preview-img" id="logoEditorImg" src="" alt="">
+                        </div>
+                        <div class="editor-zoom-row">
+                            <span>Logo Zoom</span>
+                            <input type="range" id="logoEditorZoom" min="100" max="300" value="100" step="5">
+                            <span class="zoom-label" id="logoEditorZoomLabel">100%</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- RIGHT: Tabbed controls -->
+                <div class="be-ctrl-col">
+                    <div class="be-ctrl-tabs">
+                        <button class="be-ctrl-tab active" onclick="beTabSwitch('banner',this)">Banner</button>
+                        <button class="be-ctrl-tab" onclick="beTabSwitch('logo',this)">Logo</button>
+                        <button class="be-ctrl-tab" onclick="beTabSwitch('settings',this)">Settings</button>
+                    </div>
+                    <!-- Banner tab -->
+                    <div class="be-tab-panel active" id="beTabBanner">
+                        <div class="be-ctrl-section">
+                            <h4>Banner Photo</h4>
+                            <div class="be-ctrl-row">
+                                <label>Photo Zoom</label>
+                                <input type="range" id="beBannerZoom2" min="100" max="300" value="100" step="5" oninput="beSyncBannerZoom(this.value)">
+                            </div>
+                            <div class="be-btn-row">
+                                <button class="be-btn be-btn-photo" onclick="changeBannerPhoto()">Change Photo</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Logo tab -->
+                    <div class="be-tab-panel" id="beTabLogo">
+                        <div class="be-ctrl-section">
+                            <h4>Logo Image</h4>
+                            <div class="be-ctrl-row">
+                                <label>Logo Zoom</label>
+                                <input type="range" id="beLogoZoom2" min="100" max="300" value="100" step="5" oninput="beSyncLogoZoom(this.value)">
+                            </div>
+                            <div class="be-btn-row">
+                                <button class="be-btn be-btn-logo" onclick="changeBannerLogo()">Change Logo</button>
+                                <button class="be-btn be-btn-remove" id="removeLogo" onclick="removeBannerLogo()" style="display:none;">Remove</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Settings tab -->
+                    <div class="be-tab-panel" id="beTabSettings">
+                        <div class="be-ctrl-section">
+                            <h4>Quick Settings</h4>
+                            <div class="be-ctrl-row">
+                                <label>Logo Mode</label>
+                                <select id="beLogoModeSelect" onchange="beUpdateLogoMode(this.value)">
+                                    <option value="none">None</option>
+                                    <option value="overlay">Cover Overlay</option>
+                                    <option value="corner">Corner Bug</option>
+                                    <option value="badge">Floating Badge</option>
+                                    <option value="glass">Frosted Glass</option>
+                                </select>
+                            </div>
+                            <div class="be-ctrl-row">
+                                <label>Banner Size</label>
+                                <select id="beBannerSizeSelect" onchange="beUpdateBannerSize(this.value)">
+                                    <option value="compact">Compact</option>
+                                    <option value="showcase">Showcase</option>
+                                </select>
+                            </div>
+                            <div class="be-ctrl-row" id="beShapeRow">
+                                <label>Logo Shape</label>
+                                <select id="beShapeSelect" onchange="beUpdateShape(this.value)">
+                                    <option value="rectangle">Rectangle</option>
+                                    <option value="square">Square</option>
+                                </select>
+                            </div>
+                            <div class="be-ctrl-row" id="beBadgeDropRow" style="display:none;">
+                                <label>Badge Drop</label>
+                                <select id="beBadgeDropSelect" onchange="beUpdateBadgeDrop(this.value)">
+                                    <option value="standard">Standard (1/3)</option>
+                                    <option value="extended">Extended (2/3)</option>
+                                </select>
+                            </div>
+                            <div class="be-ctrl-row" id="beBadgeSizeRow" style="display:none;">
+                                <label>Badge Size</label>
+                                <select id="beBadgeSizeSelect" onchange="beUpdateBadgeSize(this.value)">
+                                    <option value="small">Small</option>
+                                    <option value="large">Large</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="editor-zoom-row">
-                <span>Logo Zoom</span>
-                <input type="range" id="logoEditorZoom" min="100" max="300" value="100" step="5">
-                <span class="zoom-label" id="logoEditorZoomLabel">100%</span>
+            <!-- Bottom: multi-device preview strip -->
+            <div class="be-preview-strip">
+                <div class="be-preview-strip-label">
+                    <span>Live Preview</span>
+                    <span>Updates as you edit</span>
+                </div>
+                <div class="be-previews">
+                    <div class="be-preview-device" style="width:100px;">
+                        <div class="be-preview-device-label">Phone</div>
+                        <div class="be-preview-frame" id="bePreviewPhone">
+                            <div class="be-preview-banner" style="height:55px;">
+                                <img id="bePreviewPhoneImg" src="" alt="">
+                            </div>
+                            <div class="be-preview-badge" id="bePreviewPhoneBadge" style="width:55%;aspect-ratio:16/5;">
+                                <img id="bePreviewPhoneLogoImg" src="" alt="">
+                            </div>
+                            <div class="be-preview-content">
+                                <div class="be-preview-pill">🙏 Prayers</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="be-preview-device" style="width:200px;">
+                        <div class="be-preview-device-label">Tablet</div>
+                        <div class="be-preview-frame" id="bePreviewTablet">
+                            <div class="be-preview-banner" style="height:65px;">
+                                <img id="bePreviewTabletImg" src="" alt="">
+                            </div>
+                            <div class="be-preview-badge" id="bePreviewTabletBadge" style="width:38%;aspect-ratio:16/5;">
+                                <img id="bePreviewTabletLogoImg" src="" alt="">
+                            </div>
+                            <div class="be-preview-content">
+                                <div class="be-preview-pill">🙏 Prayers 9</div>
+                                <div class="be-preview-members">137 members</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="be-preview-device" style="flex:1;max-width:340px;">
+                        <div class="be-preview-device-label">Desktop</div>
+                        <div class="be-preview-frame" id="bePreviewDesktop">
+                            <div class="be-preview-banner" style="height:70px;">
+                                <img id="bePreviewDesktopImg" src="" alt="">
+                            </div>
+                            <div class="be-preview-badge" id="bePreviewDesktopBadge" style="width:28%;aspect-ratio:16/5;">
+                                <img id="bePreviewDesktopLogoImg" src="" alt="">
+                            </div>
+                            <div class="be-preview-content">
+                                <div class="be-preview-pill">🙏 Prayers 9</div>
+                                <div class="be-preview-members">137 members</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="editor-actions">
-            <button class="btn-editor-change" onclick="changeBannerPhoto()">Change Photo</button>
-            <button class="btn-editor-change" onclick="changeBannerLogo()" style="background:#2a5a8a;color:#e8c44a;">Logo</button>
-            <button class="btn-editor-change" id="removeLogo" onclick="removeBannerLogo()" style="background:#8a3a3a;color:#fff;display:none;">Remove Logo</button>
+        <!-- Bottom action bar -->
+        <div class="be-action-bar">
             <button class="btn-editor-cancel" onclick="closeBannerEditor()">Cancel</button>
             <button class="btn-editor-save" onclick="saveBanner()">Save</button>
         </div>
@@ -10302,12 +10661,135 @@
                 if (rmBtn) rmBtn.style.display = 'none';
                 if (logoSect) logoSect.style.display = 'none';
             }
+            // Sync unified editor sidebar zoom sliders
+            var bz2 = document.getElementById('beBannerZoom2');
+            if (bz2) bz2.value = tempBannerAdj.zoom;
+            if (bannerState.logoSrc) {
+                var lz2 = document.getElementById('beLogoZoom2');
+                if (lz2) lz2.value = tempLogoAdj.zoom;
+            }
+            // Sync settings tab
+            beSyncSettingsUI();
+            // Open the overlay
             document.getElementById('bannerEditorOverlay').classList.add('show');
+            // Initialize live previews
+            beUpdatePreviews();
         }
 
         function closeBannerEditor() {
             document.getElementById('bannerEditorOverlay').classList.remove('show');
             if (pendingRemoteRender) { pendingRemoteRender = false; setTimeout(render, 100); }
+        }
+
+        // ═══ Unified Editor — Tab switching ═══
+        function beTabSwitch(tab, btn) {
+            document.querySelectorAll('.be-ctrl-tab').forEach(function(t) { t.classList.remove('active'); });
+            document.querySelectorAll('.be-tab-panel').forEach(function(p) { p.classList.remove('active'); });
+            btn.classList.add('active');
+            var panelId = { banner: 'beTabBanner', logo: 'beTabLogo', settings: 'beTabSettings' }[tab];
+            if (panelId) document.getElementById(panelId).classList.add('active');
+        }
+
+        // ═══ Unified Editor — Sync zoom sliders (sidebar ↔ crop area) ═══
+        function beSyncBannerZoom(val) {
+            val = parseInt(val);
+            tempBannerAdj.zoom = val;
+            document.getElementById('bannerEditorZoom').value = val;
+            document.getElementById('bannerEditorZoomLabel').textContent = val + '%';
+            applyBannerAdj(document.getElementById('bannerEditorImg'), tempBannerAdj);
+            beUpdatePreviews();
+        }
+        function beSyncLogoZoom(val) {
+            val = parseInt(val);
+            tempLogoAdj.zoom = val;
+            document.getElementById('logoEditorZoom').value = val;
+            document.getElementById('logoEditorZoomLabel').textContent = val + '%';
+            applyBannerAdj(document.getElementById('logoEditorImg'), tempLogoAdj);
+            beUpdatePreviews();
+        }
+
+        // ═══ Unified Editor — Settings tab quick controls ═══
+        function beUpdateLogoMode(val) {
+            updateBannerLogoMode(val);
+            var sel = document.getElementById('bannerLogoModeSelect');
+            if (sel) sel.value = val;
+            beSyncSettingsUI();
+            beUpdatePreviews();
+        }
+        function beUpdateBannerSize(val) {
+            updateBannerSize(val);
+            var sel = document.getElementById('bannerSizeSelect');
+            if (sel) sel.value = val;
+            beUpdatePreviews();
+        }
+        function beUpdateShape(val) {
+            updateOverlayShape(val);
+            var sel = document.getElementById('overlayShapeSelect');
+            if (sel) sel.value = val;
+            beUpdatePreviews();
+        }
+        function beUpdateBadgeDrop(val) {
+            updateBadgeDrop(val);
+            var sel = document.getElementById('badgeDropSelect');
+            if (sel) sel.value = val;
+            beUpdatePreviews();
+        }
+        function beUpdateBadgeSize(val) {
+            updateBadgeSize(val);
+            var sel = document.getElementById('badgeSizeSelect');
+            if (sel) sel.value = val;
+            beUpdatePreviews();
+        }
+
+        // Sync the Settings tab UI to current state
+        function beSyncSettingsUI() {
+            var ms = document.getElementById('beLogoModeSelect');
+            if (ms) ms.value = bannerLogoMode;
+            var bs = document.getElementById('beBannerSizeSelect');
+            if (bs) bs.value = bannerSize;
+            var ss = document.getElementById('beShapeSelect');
+            if (ss) ss.value = overlayShape;
+            var ds = document.getElementById('beBadgeDropSelect');
+            if (ds) ds.value = badgeDrop;
+            var sz = document.getElementById('beBadgeSizeSelect');
+            if (sz) sz.value = badgeSize;
+            // Show/hide badge-specific rows
+            var isBadge = (bannerLogoMode === 'badge');
+            var dropRow = document.getElementById('beBadgeDropRow');
+            if (dropRow) dropRow.style.display = isBadge ? '' : 'none';
+            var sizeRow = document.getElementById('beBadgeSizeRow');
+            if (sizeRow) sizeRow.style.display = isBadge ? '' : 'none';
+        }
+
+        // ═══ Unified Editor — Live Preview Updates ═══
+        function beUpdatePreviews() {
+            // Update preview images from the crop areas
+            var bannerSrc = bannerState.src || '';
+            var logoSrc = bannerState.logoSrc || '';
+            var adj = tempBannerAdj || { zoom: 100, x: 0, y: 0 };
+            var lAdj = tempLogoAdj || { zoom: 100, x: 0, y: 0 };
+
+            // Apply banner image + adjustments to all three preview banners
+            ['Phone', 'Tablet', 'Desktop'].forEach(function(device) {
+                var img = document.getElementById('bePreview' + device + 'Img');
+                if (img) {
+                    img.src = bannerSrc;
+                    img.style.objectFit = 'cover';
+                    var scale = adj.zoom / 100;
+                    img.style.transform = 'translate(' + adj.x + '%, ' + adj.y + '%) scale(' + scale + ')';
+                }
+                var logoImg = document.getElementById('bePreview' + device + 'LogoImg');
+                if (logoImg && logoSrc) {
+                    logoImg.src = logoSrc;
+                    var lScale = lAdj.zoom / 100;
+                    logoImg.style.transform = 'translate(' + lAdj.x + '%, ' + lAdj.y + '%) scale(' + lScale + ')';
+                }
+                // Show/hide badge based on logo mode
+                var badge = document.getElementById('bePreview' + device + 'Badge');
+                if (badge) {
+                    badge.style.display = (bannerLogoMode !== 'none' && logoSrc) ? '' : 'none';
+                }
+            });
         }
 
         function handleFileSelect(e) {
@@ -10322,7 +10804,11 @@
                     document.getElementById('bannerEditorZoom').value = 100;
                     document.getElementById('bannerEditorZoomLabel').textContent = '100%';
                     applyBannerAdj(document.getElementById('bannerEditorImg'), tempBannerAdj);
+                    var bz2f = document.getElementById('beBannerZoom2');
+                    if (bz2f) bz2f.value = 100;
+                    beSyncSettingsUI();
                     document.getElementById('bannerEditorOverlay').classList.add('show');
+                    beUpdatePreviews();
                 });
             };
             reader.readAsDataURL(file);
@@ -10357,6 +10843,9 @@
                     if (rmBtn) rmBtn.style.display = '';
                     applyBannerLogo(true);
                     saveBannerStore();
+                    var lz2n = document.getElementById('beLogoZoom2');
+                    if (lz2n) lz2n.value = 100;
+                    beUpdatePreviews();
                 });
             };
             reader.readAsDataURL(file);
@@ -10571,7 +11060,10 @@
         document.getElementById('bannerEditorZoom').addEventListener('input', function() {
             tempBannerAdj.zoom = parseInt(this.value);
             document.getElementById('bannerEditorZoomLabel').textContent = tempBannerAdj.zoom + '%';
+            var bz2 = document.getElementById('beBannerZoom2');
+            if (bz2) bz2.value = tempBannerAdj.zoom;
             applyBannerAdj(document.getElementById('bannerEditorImg'), tempBannerAdj);
+            beUpdatePreviews();
         });
 
         document.getElementById('bannerEditorPreview').addEventListener('wheel', function(e) {
@@ -10580,7 +11072,10 @@
             tempBannerAdj.zoom = Math.max(100, Math.min(300, tempBannerAdj.zoom + delta));
             document.getElementById('bannerEditorZoom').value = tempBannerAdj.zoom;
             document.getElementById('bannerEditorZoomLabel').textContent = tempBannerAdj.zoom + '%';
+            var bz2w = document.getElementById('beBannerZoom2');
+            if (bz2w) bz2w.value = tempBannerAdj.zoom;
             applyBannerAdj(document.getElementById('bannerEditorImg'), tempBannerAdj);
+            beUpdatePreviews();
         }, { passive: false });
 
         const bannerPreview = document.getElementById('bannerEditorPreview');
@@ -10603,6 +11098,7 @@
             tempBannerAdj.x = Math.max(-maxShift, Math.min(maxShift, bannerDragStartAdjX + dx));
             tempBannerAdj.y = Math.max(-maxShift, Math.min(maxShift, bannerDragStartAdjY + dy));
             applyBannerAdj(document.getElementById('bannerEditorImg'), tempBannerAdj);
+            beUpdatePreviews();
         });
 
         document.addEventListener('mouseup', function() {
@@ -10630,6 +11126,7 @@
             tempBannerAdj.x = Math.max(-maxShift, Math.min(maxShift, bannerDragStartAdjX + dx));
             tempBannerAdj.y = Math.max(-maxShift, Math.min(maxShift, bannerDragStartAdjY + dy));
             applyBannerAdj(document.getElementById('bannerEditorImg'), tempBannerAdj);
+            beUpdatePreviews();
         }, { passive: false });
 
         bannerPreview.addEventListener('touchend', function() {
@@ -10648,7 +11145,10 @@
         document.getElementById('logoEditorZoom').addEventListener('input', function() {
             tempLogoAdj.zoom = parseInt(this.value);
             document.getElementById('logoEditorZoomLabel').textContent = tempLogoAdj.zoom + '%';
+            var lz2 = document.getElementById('beLogoZoom2');
+            if (lz2) lz2.value = tempLogoAdj.zoom;
             applyBannerAdj(document.getElementById('logoEditorImg'), tempLogoAdj);
+            beUpdatePreviews();
         });
 
         var logoPreview = document.getElementById('logoEditorPreview');
@@ -10658,7 +11158,10 @@
             tempLogoAdj.zoom = Math.max(100, Math.min(300, tempLogoAdj.zoom + delta));
             document.getElementById('logoEditorZoom').value = tempLogoAdj.zoom;
             document.getElementById('logoEditorZoomLabel').textContent = tempLogoAdj.zoom + '%';
+            var lz2w = document.getElementById('beLogoZoom2');
+            if (lz2w) lz2w.value = tempLogoAdj.zoom;
             applyBannerAdj(document.getElementById('logoEditorImg'), tempLogoAdj);
+            beUpdatePreviews();
         }, { passive: false });
 
         logoPreview.addEventListener('mousedown', function(e) {
@@ -10679,6 +11182,7 @@
             tempLogoAdj.x = Math.max(-maxShift, Math.min(maxShift, logoDragStartAdjX + dx));
             tempLogoAdj.y = Math.max(-maxShift, Math.min(maxShift, logoDragStartAdjY + dy));
             applyBannerAdj(document.getElementById('logoEditorImg'), tempLogoAdj);
+            beUpdatePreviews();
         });
         document.addEventListener('mouseup', function() {
             logoDragging = false;
@@ -10703,6 +11207,7 @@
             tempLogoAdj.x = Math.max(-maxShift, Math.min(maxShift, logoDragStartAdjX + dx));
             tempLogoAdj.y = Math.max(-maxShift, Math.min(maxShift, logoDragStartAdjY + dy));
             applyBannerAdj(document.getElementById('logoEditorImg'), tempLogoAdj);
+            beUpdatePreviews();
         }, { passive: false });
         logoPreview.addEventListener('touchend', function() {
             logoDragging = false;
